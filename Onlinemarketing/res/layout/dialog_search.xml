@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="450dp"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/edit_namSPSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Từ khóa tìm kiếm"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/btn_addressSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn địa chỉ bạn muốn tìm" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Giá: " />
+
+        <Spinner
+            android:id="@+id/sinpnerPriceSearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Danh mục : " />
+
+        <Spinner
+            android:id="@+id/sinpnerCategorySearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+           
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Loại hàng : " />
+
+        <RadioGroup
+            android:id="@+id/radioGroup1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/rdbSearchOld"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Cũ" />
+
+            <RadioButton
+                android:id="@+id/rdbSearchNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mới" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Thời gian đăng: " />
+
+        <Spinner
+            android:id="@+id/sinpnerTimerSearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_Search"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tìm kiếm" />
+
+        <Button
+            android:id="@+id/txt_saveSearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Lưu tìm kiếm" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_listSaveSearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Danh sách lưu tin" />
+
+</LinearLayout>

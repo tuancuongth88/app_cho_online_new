@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.example.onlinemarketing.HomePageActivity$PlaceholderFragment" >
+
+    <GridView
+        android:id="@+id/gridHomePage"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="2" >
+    </GridView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#383A47"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnHome_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_home" />
+
+        <Button
+            android:id="@+id/btnChat_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_chat" />
+
+        <Button
+            android:id="@+id/btnFavorite_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_favorite" />
+
+        <Button
+            android:id="@+id/btnProfile_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_profile" />
+    </LinearLayout>
+
+</RelativeLayout>

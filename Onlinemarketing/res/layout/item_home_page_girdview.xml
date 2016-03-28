@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center|left"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="@drawable/images" >
+
+        <TextView
+            android:id="@+id/item_txt_giaSP"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom|center"
+            android:background="#7f000000"
+            android:gravity="center_horizontal"
+            android:text="90.000 VND"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/item_txt_tenSP"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Giầy mới 2015"
+                android:textColor="#373B47"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/item_txt_ngay"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="29/06/2015"
+                android:textSize="12sp" />
+        </LinearLayout>
+        <ImageView 
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon_user"
+            />
+    </LinearLayout>
+
+</LinearLayout>

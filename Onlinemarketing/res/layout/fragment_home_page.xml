@@ -1,0 +1,73 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.example.onlinemarketing.HomePageActivity$PlaceholderFragment" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/linearMenu" >
+
+        <ListView
+            android:id="@+id/listHomePage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" >
+        </ListView>
+
+        <ImageView
+            android:id="@+id/imgPostHomepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/icon_post" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/linearMenu"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#383A47"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btnHome_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_home" />
+
+        <Button
+            android:id="@+id/btnChat_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_sms" />
+
+        <Button
+            android:id="@+id/btnFavorite_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_favorite" />
+
+        <Button
+            android:id="@+id/btnProfile_FragmentCategory"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/icon_profile" />
+    </LinearLayout>
+
+</RelativeLayout>

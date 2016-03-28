@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2.5"
+        android:background="@drawable/icon_title_profile"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingBottom="10dp" >
+
+        <ImageView
+            android:id="@+id/imgAvatar_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:src="@drawable/icon_user" />
+
+        <EditText
+            android:id="@+id/editName_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:hint="Họ Tên"
+            android:inputType="text"
+            android:textColor="#FEFEFE" />
+
+        <TextView
+            android:id="@+id/editEmail_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Email"
+            android:textColor="#FEFEFE" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/editPhone_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/background_boder"
+            android:drawableLeft="@drawable/icon_phone"
+            android:hint="Phone"
+            android:inputType="number"
+            android:paddingLeft="5dp" />
+
+        <TextView
+            android:id="@+id/btnApprovePhone_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="right"
+            android:text="Xác minh số điện thoại"
+            android:textColor="#AF3D3D" />
+
+        <EditText
+            android:id="@+id/editAddress_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/background_boder"
+            android:drawableLeft="@drawable/icon_phone"
+            android:hint="Địa chỉ"
+            android:inputType="text"
+            android:paddingLeft="5dp" />
+
+        <TextView
+            android:id="@+id/txtChangePass_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:gravity="left"
+            android:text="Đổi mật khẩu?"
+            android:textColor="#AF3D3D" />
+
+        <EditText
+            android:id="@+id/editOldPass_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/background_boder"
+            android:drawableLeft="@drawable/icon_old_pass"
+            android:hint="Mật khẩu"
+            android:inputType="textPassword"
+            android:paddingLeft="5dp" />
+
+        <EditText
+            android:id="@+id/editPass_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/background_boder"
+            android:drawableLeft="@drawable/icon_new_pass"
+            android:hint="Mật khẩu"
+            android:inputType="textPassword"
+            android:paddingLeft="5dp" />
+
+        <EditText
+            android:id="@+id/editConfigPass_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/background_boder"
+            android:drawableLeft="@drawable/icon_confrim_pass"
+            android:hint="Nhập lại mật khẩu"
+            android:inputType="textPassword"
+            android:paddingLeft="5dp" />
+
+        <Button
+            android:id="@+id/btnBackList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="#B23C3C"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Danh sach người bị chặn"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnSave_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:background="#B23C3C"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="Cập nhật"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>

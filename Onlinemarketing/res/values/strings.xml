@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Online Marketing</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawer_close">Close</string>
+    <string name="drawer_open">Open</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="title_activity_home_page">HomePageActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="facebook_app_id">180898835599747</string>
+    <string name="title_activity_product_detail">ProductDetailActivity</string>
+    <string name="title_activity_poster_detail">PosterDetailActivity</string>
+    <string name="title_activity_back_list">BackListActivity</string>
+    <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="title_activity_save_news_list">SaveNewsListActivity</string>
+    <string name="title_activity_list_save_search">ListSaveSearchActivity</string>
+    <string name="title_activity_promotion">PromotionActivity</string>
+    <string name="title_activity_post">PostActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>

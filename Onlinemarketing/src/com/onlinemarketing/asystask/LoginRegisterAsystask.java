@@ -71,6 +71,13 @@ public class LoginRegisterAsystask extends
 					SystemConfig.session_id, SystemConfig.statusRegister);
 			break;
 		case SystemConfig.statusfacebook:
+			SystemConfig.logginType = SystemConfig.statusfacebook;
+			account = json.paserLoginFacebook(
+					SystemConfig.device_id, SystemConfig.user_id,
+					SystemConfig.session_id, facebook_id,google_id,user_name);
+			break;
+		case SystemConfig.statusgoogle:
+			SystemConfig.logginType = SystemConfig.statusgoogle;
 			account = json.paserLoginFacebook(
 					SystemConfig.device_id, SystemConfig.user_id,
 					SystemConfig.session_id, facebook_id,google_id,user_name);

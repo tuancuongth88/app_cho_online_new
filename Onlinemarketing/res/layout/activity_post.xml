@@ -164,17 +164,34 @@
                     android:textColor="#343B43" />
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/edit_AddPost"
+            <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/background_boder"
-                android:gravity="top"
-                android:hint="Địa chỉ"
-                android:textColor="#343B43" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <EditText
+                    android:id="@+id/edit_AddPost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="top"
+                    android:hint="Địa chỉ"
+                    android:textColor="#343B43" />
+
+                <ImageView
+                    android:id="@+id/imgLocalPost"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5" 
+                    android:src="@drawable/icon_km"/>
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/edit_DescripPost"
@@ -193,12 +210,12 @@
                 android:id="@+id/btnpost"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
                 android:background="#B23C3C"
-                android:text="Đăng bài"
+                android:text="Đăng bán"
                 android:textColor="#FFFFFF" >
             </Button>
         </LinearLayout>

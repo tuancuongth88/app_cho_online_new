@@ -3,6 +3,8 @@ package com.onlinemarketing.config;
 import com.onlinemarketing.object.LoginRegister;
 import com.onlinemarketing.object.OutputProduct;
 
+import android.graphics.Bitmap;
+
 public class SystemConfig {
 	public static final String API = "http://onlinemakerting.tk/api/";
 //  tên các method 
@@ -82,6 +84,10 @@ public class SystemConfig {
 	public static OutputProduct oOputproduct = new OutputProduct();
 	public static LoginRegister loginRegiter ;
 	public static String Avatar ;
+	
+	//google
+	public static int logginType;
+	public static Bitmap avatar;
 	// method
 	public static int httpget = 1;
 	public static int httppost = 2;

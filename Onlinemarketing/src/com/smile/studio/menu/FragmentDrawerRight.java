@@ -107,7 +107,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 							SaveNewsListActivity.status = Constan.getIntProperty("dangban");
 							SaveNewsListActivity.link = objsetting.getLink();
 							startActivity(new Intent(context, SaveNewsListActivity.class));
-							
+
 						}
 						// doi duyet(FragmentCategory)
 						if (objsetting.getId() == Constan.getIntProperty("doiduyet")) {
@@ -181,7 +181,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 
 						}
 						mDrawerLayout.closeDrawer(containerView);
-						
+
 					}
 
 					@Override
@@ -206,9 +206,9 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
-//				if (!isAdded()) {
-//					return;
-//				}
+				// if (!isAdded()) {
+				// return;
+				// }
 				getActivity().supportInvalidateOptionsMenu();
 			}
 

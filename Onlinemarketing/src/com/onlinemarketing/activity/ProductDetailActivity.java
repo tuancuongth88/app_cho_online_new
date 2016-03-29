@@ -2,6 +2,7 @@ package com.onlinemarketing.activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,23 +51,20 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 	public static OutputProduct out;
 	public static int id_product;
 	public static ProductVO objproductDetail;
+	ViewPager mPager;
 	ProgressDialog progressDialog;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_product_detail);
-		fragments = new ArrayList<Fragment>();
-		fragments.add(new FragmentProductDetail(R.drawable.anh1));
-		fragments.add(new FragmentProductDetail(R.drawable.anh2));
-		fragments.add(new FragmentProductDetail(R.drawable.ic_launcher));
-		String strs[] = new String[] { "Tab 1", "Tab 2 ", "Tab 3" };
-		ProductDetailAdapter mAdapter = new ProductDetailAdapter(getSupportFragmentManager(), fragments,
-				Arrays.asList(strs));
-		ViewPager mPager = (ViewPager) findViewById(R.id.pager);
-		mPager.setAdapter(mAdapter);
-		mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-		mIndicator.setViewPager(mPager);
-		autoChange();
+//		fragments = new ArrayList<Fragment>();
+//		fragments.add(new FragmentProductDetail(R.drawable.anh1));
+		mPager = (ViewPager) findViewById(R.id.pager);
+//		ProductDetailAdapter mAdapter = new ProductDetailAdapter(getSupportFragmentManager(), fragments);
+//		mPager.setAdapter(mAdapter);
+//		mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+//		mIndicator.setViewPager(mPager);
+//		autoChange();
 		findById();
 		new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductDetail);
 		
@@ -250,7 +248,18 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 					} else {
 						aQuery.id(btnPoster).image(objproductDetail.getUser_avatar(), true, true, 0, R.drawable.ic_launcher);
 					}
-					
+					fragments = new ArrayList<Fragment>();
+					List<String> image = new  ArrayList<String>();
+					for (int i = 0; i < objproductDetail.getArrImageDetail().size(); i++) {
+						image.add(objproductDetail.getArrImageDetail().get(i));
+						fragments.add(new FragmentProductDetail(image.get(i)));
+					}
+					Debug.e("Link Anhaaaaaaa: " + objproductDetail.getArrImageDetail());
+					ProductDetailAdapter mAdapter = new ProductDetailAdapter(getSupportFragmentManager(),fragments);
+					mPager.setAdapter(mAdapter);
+					mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+					mIndicator.setViewPager(mPager);
+					autoChange();
 					Debug.e("objproductDetail.isCheck(): " + objproductDetail.isCheck());
 					if (objproductDetail.isCheck() ) {
 						btnCall.setClickable(false);

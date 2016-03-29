@@ -6,11 +6,9 @@ import com.androidquery.AQuery;
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
 import com.lib.recycler.OnItemTouchListener;
-import com.onlinemarketing.activity.FavoriteActivity;
 import com.onlinemarketing.activity.ListSaveSearchActivity;
 import com.onlinemarketing.activity.LoginActivity;
 import com.onlinemarketing.activity.MainActivity;
-import com.onlinemarketing.activity.ProfileActivity;
 import com.onlinemarketing.activity.PromotionActivity;
 import com.onlinemarketing.activity.RegisterActivity;
 import com.onlinemarketing.activity.SaveNewsListActivity;
@@ -59,10 +57,11 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 	private FragmentDrawerListener drawerListener = null;
 	TextView txtalert, txt_nameNavigaterReight;
 	Context context;
-	ImageView imgNavigator,imgAvataNavigator;
+	ImageView imgNavigator, imgAvataNavigator;
 	static Dialog dialog;
 	Button btnOk, btnCancle;
 	private AQuery aQuery;
+
 	public FragmentDrawerRight() {
 
 	}
@@ -89,7 +88,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 		imgNavigator = (ImageView) layout.findViewById(R.id.imgNavigator);
 		txt_nameNavigaterReight = (TextView) layout.findViewById(R.id.txt_nameNavigaterReight);
 		imgAvataNavigator = (ImageView) layout.findViewById(R.id.imgAvataNavigator);
-		
+
 		imgNavigator.setOnClickListener(this);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recyclerView.addOnItemTouchListener(
@@ -97,7 +96,6 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 					@Override
 					public void onClick(View view, int position) {
 						// drawerListener.onDrawerItemSelected(view, position);
-						// mDrawerLayout.closeDrawer(containerView);
 						// su li cac thu menu phai o day
 						// load dang ban
 						listSetting = SystemConfig.oOputproduct.getSettingVO();
@@ -109,6 +107,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 							SaveNewsListActivity.status = Constan.getIntProperty("dangban");
 							SaveNewsListActivity.link = objsetting.getLink();
 							startActivity(new Intent(context, SaveNewsListActivity.class));
+							
 						}
 						// doi duyet(FragmentCategory)
 						if (objsetting.getId() == Constan.getIntProperty("doiduyet")) {
@@ -181,6 +180,8 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 						if (objsetting.getId() == Constan.getIntProperty("kieuxem")) {
 
 						}
+						mDrawerLayout.closeDrawer(containerView);
+						
 					}
 
 					@Override
@@ -205,6 +206,9 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
+//				if (!isAdded()) {
+//					return;
+//				}
 				getActivity().supportInvalidateOptionsMenu();
 			}
 
@@ -225,7 +229,6 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 		});
 
 	}
-	
 
 	@Override
 	public void onResume() {
@@ -234,7 +237,6 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 		new SettingAsystask().execute();
 		super.onResume();
 	}
-
 
 	public class SettingAsystask extends AsyncTask<Integer, Integer, OutputProduct> {
 		JsonSetting setting;
@@ -256,7 +258,6 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			Debug.e("SystemConfig.oOputproduct.getSettingVO():  " + listSetting.size());
 			adapter = new NavigationDrawerRightAdapter(getActivity(), listSetting);
 			recyclerView.setAdapter(adapter);
 		}
@@ -325,7 +326,8 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 	public class getProfileAsystask extends AsyncTask<Integer, String, OutputProduct> {
 		JsonProfile profile;
 		ArrayList<ProfileVO> listProfile = new ArrayList<ProfileVO>();
-		OutputProduct obj = new  OutputProduct();
+		OutputProduct obj = new OutputProduct();
+
 		@Override
 		protected void onPreExecute() {
 			profile = new JsonProfile();
@@ -335,9 +337,9 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 
 		@Override
 		protected OutputProduct doInBackground(Integer... params) {
-			obj  = profile.paserProfile(SystemConfig.user_id, SystemConfig.session_id,
-						SystemConfig.device_id, SystemConfig.statusProfile);
-				SystemConfig.oOputproduct.setProfileVO(obj.getProfileVO());
+			obj = profile.paserProfile(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+					SystemConfig.statusProfile);
+			SystemConfig.oOputproduct.setProfileVO(obj.getProfileVO());
 			return MainActivity.oOput;
 		}
 

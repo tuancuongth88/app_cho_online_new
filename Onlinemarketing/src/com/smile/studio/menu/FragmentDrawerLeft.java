@@ -1,7 +1,6 @@
 package com.smile.studio.menu;
 
 import com.example.onlinemarketing.R;
-import com.lib.Debug;
 import com.lib.recycler.OnItemTouchListener;
 import com.onlinemarketing.activity.MainActivity;
 import com.onlinemarketing.config.SystemConfig;
@@ -59,15 +58,12 @@ public class FragmentDrawerLeft extends Fragment {
 				new OnItemTouchListener(getActivity(), recyclerView, new OnItemTouchListener.ClickListener() {
 					@Override
 					public void onClick(View view, int position) {
-						// drawerListener.onDrawerItemSelected(view, position);
-						// mDrawerLayout.closeDrawer(containerView);
-						MainActivity.id_category = SystemConfig.oOputproduct.getCategoryVO().get(position ).getId();
+						MainActivity.id_category = SystemConfig.oOputproduct.getCategoryVO().get(position).getId();
 						MainActivity.status = SystemConfig.statusCategoryProduct;
 						FragmentManager fragmentManager = getFragmentManager();
-						fragmentManager
-								.beginTransaction()
-								.replace(R.id.container_body,
-										FragmentCategory.newInstance(position + 1)).commit();
+						fragmentManager.beginTransaction()
+								.replace(R.id.container_body, FragmentCategory.newInstance(position + 1)).commit();
+						mDrawerLayout.closeDrawer(containerView);
 
 					}
 
@@ -93,6 +89,10 @@ public class FragmentDrawerLeft extends Fragment {
 			@Override
 			public void onDrawerClosed(View drawerView) {
 				super.onDrawerClosed(drawerView);
+
+				if (!isAdded()) {
+					return;
+				}
 				getActivity().supportInvalidateOptionsMenu();
 			}
 
@@ -102,6 +102,7 @@ public class FragmentDrawerLeft extends Fragment {
 				super.onDrawerSlide(drawerView, slideOffset);
 				toolbar.setAlpha(1 - slideOffset / 2);
 			}
+
 		};
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);

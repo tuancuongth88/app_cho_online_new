@@ -97,6 +97,12 @@
                 android:layout_marginTop="5dp"
                 android:background="#D3D3D5"
                 android:orientation="horizontal" >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerPost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp" />
             </LinearLayout>
 
             <EditText
@@ -193,10 +199,10 @@
                 android:id="@+id/btnpost"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="10dp"
                 android:background="#B23C3C"
                 android:text="Đăng bài"
                 android:textColor="#FFFFFF" >

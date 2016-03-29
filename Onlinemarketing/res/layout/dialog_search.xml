@@ -1,139 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="280dp"
-    android:layout_height="450dp"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <EditText
         android:id="@+id/edit_namSPSearch"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@drawable/background_boder"
         android:hint="Từ khóa tìm kiếm"
         android:inputType="text" />
-
-    <Button
-        android:id="@+id/btn_addressSearch"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Chọn địa chỉ bạn muốn tìm" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/background_boder"
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Giá: " />
+            android:src="@drawable/icon_price" />
+
+        <Spinner
+            android:id="@+id/sinpnerAddSearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon_spiner" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/background_boder"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:src="@drawable/icon_price" />
 
         <Spinner
             android:id="@+id/sinpnerPriceSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon_spiner" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/background_boder"
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Danh mục : " />
+            android:src="@drawable/icon_category" />
 
         <Spinner
             android:id="@+id/sinpnerCategorySearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-           
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon_spiner" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/background_boder"
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Loại hàng : " />
+            android:src="@drawable/icon_type_product" />
 
-        <RadioGroup
-            android:id="@+id/radioGroup1"
+        <Spinner
+            android:id="@+id/sinpnerTypeProductSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal" >
+            android:background="@android:color/transparent" />
 
-            <RadioButton
-                android:id="@+id/rdbSearchOld"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Cũ" />
-
-            <RadioButton
-                android:id="@+id/rdbSearchNew"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mới" />
-        </RadioGroup>
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon_spiner" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/background_boder"
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Thời gian đăng: " />
+            android:src="@drawable/icon_time" />
 
         <Spinner
             android:id="@+id/sinpnerTimerSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:background="@android:color/transparent" />
+
+        <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:scaleType="fitStart"
+            android:src="@drawable/icon_spiner" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:gravity="center"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal" >
 
         <Button
             android:id="@+id/btn_Search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="Tìm kiếm" />
+            android:background="#b03c3c"
+            android:drawableLeft="@drawable/icon_search"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:text="Tìm kiếm"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/txt_saveSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:layout_weight="1"
-            android:text="Lưu tìm kiếm" />
+            android:background="#363945"
+            android:drawableLeft="@drawable/icon_save_new"
+            android:paddingLeft="5dp"
+            android:text="Lưu tìm kiếm"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/txt_listSaveSearch"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Danh sách lưu tin" />
 
 </LinearLayout>

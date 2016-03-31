@@ -1,52 +1,65 @@
 package com.onlinemarketing.adapter;
 
+import java.util.List;
+
+import com.androidquery.AQuery;
 import com.example.onlinemarketing.R;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-public class PostRecycleAdapter extends RecyclerView.Adapter<PostRecycleAdapter.MyViewHolder> {
-	private LayoutInflater inflater;
-	private Context context;
+public class PostRecycleAdapter extends RecyclerView.Adapter<PostRecycleAdapter.ViewHolder> {
+	private List<String> linkImg;
+	private List<Bitmap> bit;
+	Context context;
+	AQuery aQuery;
 
-	
-	
-	public PostRecycleAdapter(LayoutInflater inflater, Context context) {
-		super();
-		this.inflater = inflater;
+	// contructer
+	public PostRecycleAdapter(Context context, List<String> linkImg, List<Bitmap> bit) {
+		this.linkImg = linkImg;
+		this.bit = bit;
 		this.context = context;
 	}
 
 	@Override
 	public int getItemCount() {
-		return 0;
-	}
-
-	@Override
-	public void onBindViewHolder(MyViewHolder arg0, int arg1) {
 		// TODO Auto-generated method stub
-		
+		return linkImg.size();
 	}
 
 	@Override
-	public MyViewHolder onCreateViewHolder(ViewGroup parent, int arg1) {
-		View view = inflater.inflate(R.layout.item_imgproduct_post, parent, false);
-		MyViewHolder holder = new MyViewHolder(view);
-		return holder;
-	}
-
-	class MyViewHolder extends RecyclerView.ViewHolder {
-
-		private ImageView imageview = null;
-
-		public MyViewHolder(View itemView) {
-			super(itemView);
-			imageview = (ImageView) itemView.findViewById(R.id.img_showproductPost);
-		}
+	public void onBindViewHolder(ViewHolder holder, int position) {
+		// TODO Auto-generated method stub
+		// holder.mTextView.setText(linkImg[position]);
+		// set image o day
+		String link= linkImg.get(position);
+		Bitmap bitmap = bit.get(position);
+		holder.imgViewIcon.setImageBitmap(bitmap);
 
 	}
+
+	@Override
+	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		// TODO Auto-generated method stub
+		// create a new view
+		View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_imgproduct_post, null);
+		ViewHolder viewHolder = new ViewHolder(itemLayoutView);
+		return viewHolder;
+	}
+
+	public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imgViewIcon;
+        public ViewHolder(View itemLayoutView) {
+            super(itemLayoutView);
+            imgViewIcon = (ImageView) itemLayoutView.findViewById(R.id.img_showproductPost);
+        }
+    }
+
 }

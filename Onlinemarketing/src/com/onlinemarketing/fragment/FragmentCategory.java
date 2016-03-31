@@ -219,7 +219,10 @@ public class FragmentCategory extends Fragment implements OnItemClickListener,
 					.execute(SystemConfig.statusProfile);
 			break;
 		case R.id.imgPostHomepage:
-			startActivity(new Intent(context, PostActivity.class));
+			if(!SystemConfig.session_id.isEmpty())
+				startActivity(new Intent(context, PostActivity.class));
+			else 
+				startActivity(new Intent(context, LoginActivity.class));
 			break;
 		}
 		

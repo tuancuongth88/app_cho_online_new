@@ -2,6 +2,7 @@ package com.onlinemarketing.json;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -65,7 +66,6 @@ public class JsonProduct {
 					objproduct.setDelete_at(objjson_product.get("deleted_at").toString());
 					objproduct.setCreate_at(objjson_product.get("created_at").toString());
 					arrProduct.add(objproduct);
-					Debug.e("objproduct: " + objproduct.getAvatar());
 				}
 				obj.setProductVO(arrProduct);
 			}
@@ -87,7 +87,6 @@ public class JsonProduct {
 			request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
-			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
@@ -111,7 +110,6 @@ public class JsonProduct {
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 			request.append("&message=").append(URLEncoder.encode(message, "UTF-8"));
 
-			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
@@ -143,7 +141,6 @@ public class JsonProduct {
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 
-			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
@@ -167,7 +164,6 @@ public class JsonProduct {
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 
-			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
@@ -251,7 +247,6 @@ public class JsonProduct {
 				objproduct.setArrImageDetail(img);
 
 				arrProduct.add(objproduct);
-				Debug.e("objproduct: " + objproduct.getAvatar());
 				obj.setProductVO(arrProduct);
 			}
 
@@ -311,6 +306,53 @@ public class JsonProduct {
 
 		return obj;
 
+	}
+	
+	//upload file
+	public Output doFileUpload(String user_id, String session_id, String device_id, String file) {
+		Output output = new Output();
+		output = Util.UploadImageProduct(user_id, session_id, device_id, file);
+		return output;
+	}
+
+	
+	public Output paserPostProduct(String user_id, String session_id, String device_id, 
+			List<String> image_url, String avatar, String name, String category_id,
+			String type_id, String lat, String log, String price, String description, String city_id, String address
+			) {
+		Output obj = new Output();
+		String str = null;
+		try {
+			 String arrimg = Arrays.toString(image_url.toArray()); 
+			request = new StringBuilder(SystemConfig.API);
+			request.append(SystemConfig.Post_product);
+			request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
+			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
+			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
+			request.append("&image_url[]=").append(URLEncoder.encode(arrimg, "UTF-8"));
+			request.append("&avatar=").append(URLEncoder.encode(avatar, "UTF-8"));
+			request.append("&name=").append(URLEncoder.encode(name, "UTF-8"));
+			request.append("&category_id=").append(URLEncoder.encode(category_id, "UTF-8"));
+			request.append("&type_id=").append(URLEncoder.encode(type_id, "UTF-8"));
+			request.append("&lat=").append(URLEncoder.encode(lat, "UTF-8"));
+			request.append("&long=").append(URLEncoder.encode(log, "UTF-8"));
+			request.append("&price=").append(URLEncoder.encode(price, "UTF-8"));
+			request.append("&description=").append(URLEncoder.encode(description, "UTF-8"));
+			request.append("&city=").append(URLEncoder.encode(city_id = city_id == null ? "" : city_id, "UTF-8"));
+			request.append("&address=").append(URLEncoder.encode(address, "UTF-8"));
+
+			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
+			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
+			Debug.e("Str: " + str);
+			jsonObject = new JSONObject(str);
+			obj.setCode(jsonObject.getInt("code"));
+			obj.setMessage(jsonObject.getString("message"));
+			obj.setSession_id(jsonObject.getString("session_id"));
+			obj.setUser_Id(jsonObject.getString("user_id"));
+		} catch (Exception e) {
+			Debug.e(e.toString());
+		}
+		return obj;
 	}
 
 }

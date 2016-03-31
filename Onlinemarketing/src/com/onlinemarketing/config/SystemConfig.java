@@ -36,6 +36,9 @@ public class SystemConfig {
 	public static final String sendUserChar = "user";
 	public static final String DeleteMessage = "delete";
 	public static final String BlockMessage = "block";
+	
+	//api google
+	public static final String linkGetLaglogFromAddress = "http://maps.google.com/maps/api/geocode/json";
 	//asystark
 	public static final int statusLogin = 1;
 	public static final int statusRegister = 2;
@@ -83,7 +86,8 @@ public class SystemConfig {
 	public static String Email, Pass;
 	public static OutputProduct oOputproduct = new OutputProduct();
 	public static LoginRegister loginRegiter ;
-	public static String Avatar ;
+	public static String Avatar;
+	public static String productImage ;
 	
 	//google
 	public static int logginType;

@@ -13,15 +13,14 @@ public class ProductDetailAdapter extends FragmentPagerAdapter {
 	private ArrayList<Fragment> fragments;
 	private List<String> titles;
 
-	public ProductDetailAdapter(FragmentManager fm, ArrayList<Fragment> fragments, List<String> titles) {
+	public ProductDetailAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
 		super(fm);
 		this.fragments = fragments;
-		this.titles = titles;
 	}
 
 	@Override
 	public Fragment getItem(int position) {
-		return fragments.get(position % titles.size());
+		return fragments.get(position);
 	}
 
 	@Override

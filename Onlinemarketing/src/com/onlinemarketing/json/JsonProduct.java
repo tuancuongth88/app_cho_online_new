@@ -225,7 +225,7 @@ public class JsonProduct {
 				objproduct.setCategory_id(objjson_product.getInt("category_id"));
 				objproduct.setUser_id(objjson_product.getInt("user_id"));
 				objproduct.setType_id(objjson_product.getInt("type_id"));
-				objproduct.setCity_id(objjson_product.getInt("city_id"));
+//				objproduct.setCity_id(objjson_product.getInt("city_id"));
 				objproduct.setStartdate(objjson_product.get("start_time").toString());
 				objproduct.setStatus(objjson_product.getInt("status"));
 				objproduct.setPosition(objjson_product.getInt("position"));
@@ -234,7 +234,7 @@ public class JsonProduct {
 				objproduct.setDescription(objjson_product.getString("description"));
 				objproduct.setCategory_name(objjson_product.getString("category_name"));
 				objproduct.setType_name(objjson_product.getString("type_name"));
-				objproduct.setCity_name(objjson_product.getString("city_name"));
+				objproduct.setCity_name(objjson_product.getString("city"));
 				objproduct.setLat(objjson_product.getString("lat"));
 				objproduct.setLog(objjson_product.getString("long"));
 				objproduct.setStatus_name(objjson_product.getString("status_name"));

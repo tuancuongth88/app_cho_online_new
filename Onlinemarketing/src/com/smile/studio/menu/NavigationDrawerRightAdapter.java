@@ -75,7 +75,6 @@ public class NavigationDrawerRightAdapter extends RecyclerView.Adapter<Navigatio
 		}
 
 		public void init(SettingVO item) {
-			Debug.e("avata aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " + item.getAvatar());
 			Bitmap bitmap = aQuery.getCachedImage(item.getAvatar());
 			if (bitmap != null) {
 				aQuery.id(imageview).image(bitmap);

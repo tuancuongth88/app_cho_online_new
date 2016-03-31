@@ -1,5 +1,7 @@
 package com.onlinemarketing.activity;
 
+import java.io.File;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,33 +14,39 @@ import com.lib.Debug;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.onlinemarketing.adapter.PostRecycleAdapter;
+import com.onlinemarketing.asystask.UploadProduct;
+import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
+import com.onlinemarketing.json.JsonProduct;
+import com.onlinemarketing.json.JsonProfile;
+import com.onlinemarketing.logingoogle.Dialog;
 import com.onlinemarketing.logingoogle.GPSTracker;
 import com.onlinemarketing.logingoogle.LocationAddress;
 import com.onlinemarketing.object.CategoryVO;
+import com.onlinemarketing.object.Output;
+import com.onlinemarketing.object.OutputGoogle;
 import com.onlinemarketing.object.TypeProductVO;
 import com.onlinemarketing.util.CallWSAsynsHttp;
 import com.onlinemarketing.util.Util;
-
-import android.R.bool;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.drm.DrmStore.Action;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
+import android.graphics.Matrix;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -49,6 +57,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * @author tuanc_000
+ *
+ */
 public class PostActivity extends BaseActivity implements OnClickListener {
 	ProgressDialog prgDialog;
 	ImageView imgCamrePost,imgLocalPost;
@@ -56,10 +68,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	Spinner spnCategoryPost, spnMenuPost;
 	Button btnpost;
 	JSONObject json;
+	static String imagePart;
 	List<String> arrImgFromCamere;
-	private ArrayList<String> imagesPathList;
-	private Bitmap yourbitmap;
-	private Bitmap resized;
+	List<Bitmap> arrImgFromCamereBitmap;
 	private final int PICK_IMAGE_MULTIPLE = 1;
 	private LinearLayout lnrImages;
 	private Uri fileUri;
@@ -68,8 +79,15 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	private List<TypeProductVO> listType;
 	protected LocationManager locationManager;
 	protected LocationListener locationListener;
-	double lag,log;
+	String lag,log = "";
 	GPSTracker gps;
+	Output out;
+	OutputGoogle outputgoogle;
+	static String title, price,address,description;
+	static int id_category,id_type;
+	 private RecyclerView mRecyclerView;
+	    private PostRecycleAdapter mAdapter;
+	    private RecyclerView.LayoutManager mLayoutManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,12 +116,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		
 		 listCategory = new ArrayList<CategoryVO>();
 		 listType = new ArrayList<TypeProductVO>();
-		loadDataToForm();
-
-	}
-
-	public void loadDataToForm() {
-		CallWSAsynsHttp callWS = new CallWSAsynsHttp(this, SystemConfig.API + SystemConfig.Post_product,
+		 arrImgFromCamere = new ArrayList<String>();
+		 arrImgFromCamereBitmap = new ArrayList<Bitmap>();
+		 CallWSAsynsHttp callWS = new CallWSAsynsHttp(this, SystemConfig.API + SystemConfig.Post_product,
 				SystemConfig.httpget);
 		RequestParams params = new RequestParams();
 		params.put("user_id", SystemConfig.user_id);
@@ -113,6 +128,10 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 
 	}
 
+	/**
+	 * ham nay load cac thong tin tren form tao moi san pham
+	 * @param params
+	 */
 	public void invokeWSGet(RequestParams params) {
 		// TODO Auto-generated method stub
 		// Show Progress Dialog
@@ -175,14 +194,52 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		                     data.getData(), Toast.LENGTH_LONG).show();
 		            Uri uri= data.getData();
 		           String linkFromCamera=  getPicturePath(uri);
-		           arrImgFromCamere.add(linkFromCamera);
-		        } else if (resultCode == RESULT_CANCELED) {
-		            // User cancelled the image capture
-		        } else {
-		            // Image capture failed, advise user
+		           Bitmap bit = null;//= getThumbnail(linkFromCamera);
+		           
+		           linkFromCamera = getPicturePath(uri);
+		           bit = getThumbnail(linkFromCamera);
+		           bit = rotateImageIfRequired(bit, uri);
+		           
+		           imagePart = linkFromCamera;
+//		           arrImgFromCamere.add(linkFromCamera);
+		           arrImgFromCamereBitmap.add(bit);
+		           new UpdateAsystask().execute();
 		        }
 		 }
-		
+	}
+	private Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) {
+		// Detect rotation
+		int rotation = getRotation(selectedImage);
+		if (rotation != 0) {
+			Matrix matrix = new Matrix();
+			matrix.postRotate(rotation);
+			Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+			img.recycle();
+			return rotatedImg;
+		} else {
+			return img;
+		}
+	}
+	private int getRotation(Uri uri) {
+		String[] filePathColumn = { MediaStore.Images.Media.ORIENTATION };
+		Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
+		cursor.moveToFirst();
+
+		int rotation = 0;
+		rotation = cursor.getInt(0);
+		cursor.close();
+		return rotation;
+	}
+	public Bitmap getThumbnail(String pathHinh) {
+		BitmapFactory.Options bounds = new BitmapFactory.Options();
+		bounds.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(pathHinh, bounds);
+		if ((bounds.outWidth == -1) || (bounds.outHeight == -1))
+			return null;
+		int originalSize = (bounds.outHeight > bounds.outWidth) ? bounds.outHeight : bounds.outWidth;
+		BitmapFactory.Options opts = new BitmapFactory.Options();
+		opts.inSampleSize = originalSize / 500;
+		return BitmapFactory.decodeFile(pathHinh, opts);
 	}
 	public String getPicturePath(Uri uriImage) {
 		String[] filePathColumn = { MediaStore.Images.Media.DATA };
@@ -199,6 +256,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.imgCamrePost:
 //			intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+			SystemConfig.productImage ="";
 			Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 			startActivityForResult(i, PICK_IMAGE_MULTIPLE);
@@ -208,19 +266,17 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 			PostProduct();
 			break;
 		case R.id.imgLocalPost:
-
-			
 			  gps = new GPSTracker(PostActivity.this);
 
 				// check if GPS enabled		
 		        if(gps.canGetLocation()){
 		        	
-		        	lag = gps.getLatitude();
-		        	log = gps.getLongitude();
+		        	lag = String.valueOf(gps.getLatitude());
+		        	log = String.valueOf(gps.getLongitude());
 		        	// \n is for new line
 		        	Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + lag + "\nLong: " + log, Toast.LENGTH_LONG).show();
 		        	  LocationAddress locationAddress = new LocationAddress();
-	                    locationAddress.getAddressFromLocation(lag, log,
+	                    locationAddress.getAddressFromLocation( Double.parseDouble(lag),Double.parseDouble(log),
 	                            getApplicationContext(), new GeocoderHandler());
 		        }else{
 		        	// can't get location
@@ -233,20 +289,30 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		}
 	}
 	public void PostProduct(){
+		 title = edit_TitlePost.getText().toString();
+		 id_category = listCategory.get(spnCategoryPost.getSelectedItemPosition()).getId();
+		 id_type = listType.get(spnMenuPost.getSelectedItemPosition()).getId();
+		 price  = edit_PricePost.getText().toString();
+		 address =  edit_AddPost.getText().toString();
+		 description =  edit_DescripPost.getText().toString();
+		boolean checkform = checkform(title, id_category, id_type, price, address, description);
+		// lay location va post anh luon 
 		
-		boolean checkform = checkform();
 		if(checkform){
-			
+			if(arrImgFromCamere.size() == 0)
+			{
+				com.onlinemarketing.util.Message msg = new com.onlinemarketing.util.Message(this);
+				msg.showMessage("Bạn phải chụp ảnh sản phẩm!");
+			}else {
+				
+				new AsystarkPostProduct().execute();
+			}
 		}
+		
 	}
-	public boolean checkform(){
+
+	public boolean checkform(String title, int id_category, int id_type, String price, String address, String description){
 		boolean tmp = false;
-		String title = edit_TitlePost.getText().toString();
-		int id_category = listCategory.get(spnCategoryPost.getSelectedItemPosition()).getId();
-		int id_type = listType.get(spnMenuPost.getSelectedItemPosition()).getId();
-		String price  = edit_PricePost.getText().toString();
-		String address =  edit_AddPost.getText().toString();
-		String description =  edit_DescripPost.getText().toString();
 		if(!Util.isNotNull(title))
 		{
 			edit_TitlePost.setError( "Bạn phải nhập tiêu đề!" );
@@ -282,8 +348,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		return tmp;
 	}
 
-	
-	 private class GeocoderHandler extends Handler {
+
+	@SuppressLint("HandlerLeak")
+	private class GeocoderHandler extends Handler {
 	        @Override
 	        public void handleMessage(Message message) {
 	            String locationAddress;
@@ -298,5 +365,99 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	            edit_AddPost.setText(locationAddress);
 	        }
 	    }
+	/**
+	 * Su ly upload anh trong ActivityResult
+	 * @author tuanc_000
+	 *
+	 */
+	public class UpdateAsystask extends AsyncTask<Void, Void, Output> {
 
+		JsonProduct jsonProfile;
+
+		@Override
+		protected void onPreExecute() {
+			jsonProfile = new JsonProduct();
+			 prgDialog.show();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Output doInBackground(Void... params) {
+				out = jsonProfile.doFileUpload(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+						imagePart);
+			return out;
+		}
+
+		@Override
+		protected void onPostExecute(Output result) {
+			prgDialog.dismiss();
+			if (result.getCode() == Constan.getIntProperty("success")) {
+				 LinearLayoutManager layoutManager  = new LinearLayoutManager(PostActivity.this, LinearLayoutManager.HORIZONTAL, false);
+				 mRecyclerView = (RecyclerView) findViewById(R.id.recyclerPost);
+		           mRecyclerView.setHasFixedSize(true);
+		           mLayoutManager = new LinearLayoutManager(PostActivity.this);
+		           mRecyclerView.setLayoutManager(mLayoutManager);
+		           mAdapter = new PostRecycleAdapter(PostActivity.this ,arrImgFromCamere,arrImgFromCamereBitmap);
+		           mRecyclerView.setLayoutManager(layoutManager);
+		           mRecyclerView.setAdapter(mAdapter);
+		           arrImgFromCamere.add(SystemConfig.productImage);
+			}
+			super.onPostExecute(result);
+		}
+
+	}
+	
+	
+	 /**
+	  * su ly upload san pham
+	 * @author tuanc_000
+	 *
+	 */
+	public class AsystarkPostProduct extends AsyncTask<Void, Void, Output>{
+		 Context contextasysn;
+		 UploadProduct upload;
+		 List<String> linkImgFromGallery;
+		 Output output;
+		JsonProduct jsonProduct;
+		@Override
+		protected void onPreExecute() {
+			// TODO Auto-generated method stub
+			jsonProduct = new JsonProduct();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Output doInBackground(Void... params) {
+				try{
+				StringBuffer str = new StringBuffer(SystemConfig.linkGetLaglogFromAddress);
+				str.append("?address=").append(URLEncoder.encode(address, "UTF-8"));
+				str.append("&sensor=").append(false);
+				
+				String response = Util.getjSonUrl(str.toString(), SystemConfig.httpget);
+				 JSONObject obj = new JSONObject(response);
+				 outputgoogle = LocationAddress.getLatLong(obj);
+           	 //su ly post san pham
+					output = jsonProduct.paserPostProduct(
+								SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, 
+								arrImgFromCamere, arrImgFromCamere.get(0), title, String.valueOf(id_category), 
+								String.valueOf(id_type), String.valueOf(outputgoogle.getLat()), 
+								String.valueOf(outputgoogle.getLog()), price, description, outputgoogle.getCity(), address);
+           	 
+				}catch(Exception e){
+					Debug.e(e.toString());
+				}
+			
+			return output;
+		}
+
+		@Override
+		protected void onPostExecute(Output result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			if(result.getCode() == Constan.getIntProperty("success")){
+				Debug.e("post bai thanh cong: "+ result.getMessage());
+			}
+		}
+		 
+	 }
 }

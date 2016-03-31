@@ -33,13 +33,11 @@ public class JsonProfile {
 					request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
 					request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 					request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
-					Debug.e("Link : " + request.toString());
 					if (status == SystemConfig.statusProfile) {
 						str = Util.getjSonUrl(request.toString(), SystemConfig.httpget);
 					}else if (status == SystemConfig.statusFavorite) {
 						str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 					}
-					Debug.e("Str: "+str);
 					jsonObject = new JSONObject(str);
 					obj.setCode(jsonObject.getInt("code"));					
 					obj.setMessage(jsonObject.getString("message"));
@@ -121,7 +119,6 @@ public class JsonProfile {
 						request.append("&avatar=").append(URLEncoder.encode(profile.getAvatar(), "UTF-8"));
 					else
 						request.append("&avatar=");
-					Debug.e("link aaaaaaaaaaaaaaaa: "+ request.toString());
 					str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 					Debug.e("Str: "+str);
 					jsonObject = new JSONObject(str);

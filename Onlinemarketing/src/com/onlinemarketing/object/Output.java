@@ -1,8 +1,18 @@
 package com.onlinemarketing.object;
 
+import java.util.List;
+
 public class Output {
 	private int code ;
 	private String message, session_id,user_Id;
+	private List<String> image;
+	
+	public List<String> getImage() {
+		return image;
+	}
+	public void setImage(List<String> image) {
+		this.image = image;
+	}
 	public int getCode() {
 		return code;
 	}

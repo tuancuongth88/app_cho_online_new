@@ -29,7 +29,6 @@ public class JsonSetting {
 					request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 
 					str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
-					Debug.e("Str: "+str);
 					jsonObject = new JSONObject(str);
 					obj.setCode(jsonObject.getInt("code"));					
 					obj.setMessage(jsonObject.getString("message"));

@@ -92,19 +92,20 @@ public class CallWSAsynsHttp extends BaseActivity{
          return jsonResponse;
 	}
 	 
+	 StringBuffer respont = new StringBuffer();
 	 public String invokeWSPost(RequestParams params){
 			// TODO Auto-generated method stub
 			// Show Progress Dialog
 		 	prgDialog.show();
 	        AsyncHttpClient client = new AsyncHttpClient();
 	        client.get(linkWS,params ,new AsyncHttpResponseHandler() {
-	        	 
 	        	 @Override
 	        	 public void onSuccess(String response) {
 	                 // Hide Progress Dialog
 	        		 prgDialog.hide();
 	                 try {
-	                	
+	                	 respont.append(response) ;
+	                	 jsonResponse = response;
 	                         // JSON Object
 	                         JSONObject obj = new JSONObject(response);
 	                         Log.e("String tra ve: ", response);
@@ -113,12 +114,13 @@ public class CallWSAsynsHttp extends BaseActivity{
 	                        	 jsonResponse = response;
 	                         }
 	                         else{
-	                             Toast.makeText(context.getApplicationContext(), obj.getString("error_msg"), Toast.LENGTH_LONG).show();
+	                             Toast.makeText(context.getApplicationContext(), obj.getString("message"), Toast.LENGTH_LONG).show();
 	                         }
 	                 } catch (JSONException e) {
 	                     Toast.makeText(context.getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
 	                     e.printStackTrace();
 	                 }
+	                 
 	             }
 	             // When the response returned by REST has Http response code other than '200'
 	             @Override

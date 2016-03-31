@@ -30,7 +30,6 @@ public class JsonCategory {
 					URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(
 					URLEncoder.encode(device_id, "UTF-8"));
-			Debug.e("Link: " + request);
 			String str = Util.getjSonUrl(request.toString(),
 					SystemConfig.httppost);
 			jsonObject = new JSONObject(str);
@@ -49,7 +48,6 @@ public class JsonCategory {
 					if(categoryvo.getId()!= 0){
 					categoryvo.setAvatar(objjson_category.getString("image_url"));
 					categoryvo.setLike(objjson_category.getBoolean("like"));
-					Debug.e("image_url: " + categoryvo.getAvatar() + "\n" + "like: " + categoryvo.isLike());
 					}
 					arrCategory.add(categoryvo);
 				}

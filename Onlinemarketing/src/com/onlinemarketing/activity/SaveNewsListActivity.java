@@ -4,39 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.onlinemarketing.R;
-import com.example.onlinemarketing.R.id;
-import com.example.onlinemarketing.R.layout;
-import com.example.onlinemarketing.R.menu;
-import com.onlinemarketing.activity.PosterDetailActivity.NewsPosterAsystask;
 import com.onlinemarketing.adapter.HomePageAdapter;
+import com.onlinemarketing.adapter.SaveNewsListAdapter;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
-import com.onlinemarketing.json.JsonListNewsPoster;
 import com.onlinemarketing.json.JsonProduct;
 import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProductVO;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class SaveNewsListActivity extends BaseActivity implements OnItemClickListener, OnClickListener {
 	List<ProductVO> list = new ArrayList<ProductVO>();
 	ProgressDialog progressDialog;
 	ListView listview;
 	HomePageAdapter adapter;
+	SaveNewsListAdapter newsListAdapter;
 	Intent intent;
 	ImageView imgBack;
 	// status va link ben fragment right goi sang
@@ -89,30 +81,32 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 				MainActivity.oOput = product.paserProductSetting(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, link);
 				list = MainActivity.oOput.getProductVO();
-			}
-			else if (status == Constan.getIntProperty("doiduyet")) {
+			} else if (status == Constan.getIntProperty("doiduyet")) {
+				MainActivity.oOput = product.paserProductSetting(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, link);
+				list = MainActivity.oOput.getProductVO();
+			} else if (status == Constan.getIntProperty("bituchoi")) {
+				MainActivity.oOput = product.paserProductSetting(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, link);
+				list = MainActivity.oOput.getProductVO();
+			} else if (status == Constan.getIntProperty("daan")) {
 				MainActivity.oOput = product.paserProductSetting(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, link);
 				list = MainActivity.oOput.getProductVO();
 			}
-			else if (status == Constan.getIntProperty("bituchoi")) {
-				MainActivity.oOput = product.paserProductSetting(SystemConfig.user_id, SystemConfig.session_id,
-						SystemConfig.device_id, link);
-				list = MainActivity.oOput.getProductVO();
-			}
-			else if (status == Constan.getIntProperty("daan")) {
-				MainActivity.oOput = product.paserProductSetting(SystemConfig.user_id, SystemConfig.session_id,
-						SystemConfig.device_id, link);
-				list = MainActivity.oOput.getProductVO();
-			}
-			
+
 			return MainActivity.oOput;
 		}
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			adapter = new HomePageAdapter(SaveNewsListActivity.this, R.layout.item_trang_chu, list);
-			listview.setAdapter(adapter);
+			if (status == Constan.getIntProperty("tindaluu")) {
+				newsListAdapter = new SaveNewsListAdapter(SaveNewsListActivity.this, R.layout.item_save_news_list, list);
+				listview.setAdapter(newsListAdapter);
+			} else {
+				adapter = new HomePageAdapter(SaveNewsListActivity.this, R.layout.item_trang_chu, list);
+				listview.setAdapter(adapter);
+			}
 			progressDialog.dismiss();
 		}
 	}

@@ -138,6 +138,11 @@ public class JsonProduct {
 				request.append(SystemConfig.Favorite + "/" + id + "/" + SystemConfig.Delete);
 			} else if (status == SystemConfig.statusDeleteSearch) {
 				request.append(SystemConfig.SearchLog + "/" + id + "/" + SystemConfig.Delete);
+			}else if (status == SystemConfig.statusDeleteSaveNewsList) {
+				request.append(SystemConfig.Product_log + "/" + id + "/" + SystemConfig.Delete);
+			}
+			else if (status == SystemConfig.statusFavoriteUser) {
+				request.append(SystemConfig.Favorite + "/" + id + "/" + SystemConfig.Action);
 			}
 			request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
@@ -183,8 +188,7 @@ public class JsonProduct {
 					BackListVO objBackList = new BackListVO();
 					objBackList.setId(objjson_product.getInt("id"));
 					objBackList.setUsername(objjson_product.get("username").toString());
-					objBackList.setAvatar(
-							"http://192.168.3.150/images/products/avatar/" + objjson_product.get("avatar").toString());
+					objBackList.setAvatar( objjson_product.get("avatar").toString());
 					arrBacklist.add(objBackList);
 					Debug.e("objproduct: " + objBackList.getAvatar());
 				}
@@ -229,7 +233,7 @@ public class JsonProduct {
 				objproduct.setStartdate(objjson_product.get("start_time").toString());
 				objproduct.setStatus(objjson_product.getInt("status"));
 				objproduct.setPosition(objjson_product.getInt("position"));
-				 objproduct.setPhone(objjson_product.get("phone").toString());
+				objproduct.setPhone(objjson_product.get("phone").toString());
 				objproduct.setUser_avatar(objjson_product.get("user_avatar").toString());
 				objproduct.setDescription(objjson_product.getString("description"));
 				objproduct.setCategory_name(objjson_product.getString("category_name"));
@@ -298,7 +302,7 @@ public class JsonProduct {
 					objproduct.setStatus(objjson_product.getInt("status"));
 					objproduct.setPosition(objjson_product.getInt("position"));
 					objproduct.setDelete_at(objjson_product.get("deleted_at").toString());
-//					objproduct.setCheck(objjson_product.getBoolean("isCheck"));
+					// objproduct.setCheck(objjson_product.getBoolean("isCheck"));
 					arrProduct.add(objproduct);
 					Debug.e("objproduct: " + objproduct.getAvatar());
 				}
@@ -313,4 +317,27 @@ public class JsonProduct {
 
 	}
 
+	public Output paserForgotPass(String user_id, String session_id, String device_id, String email) {
+		Output obj = new Output();
+		String str = null;
+		try {
+			request = new StringBuilder(SystemConfig.API);
+			request.append(SystemConfig.ResetPassword);
+			request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
+			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
+			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
+			request.append("&email=").append(URLEncoder.encode(email, "UTF-8"));
+			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
+			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
+			Debug.e("Str: " + str);
+			jsonObject = new JSONObject(str);
+			obj.setCode(jsonObject.getInt("code"));
+			obj.setMessage(jsonObject.getString("message"));
+			obj.setSession_id(jsonObject.getString("session_id"));
+			obj.setUser_Id(jsonObject.getString("user_id"));
+		} catch (Exception e) {
+			Debug.e(e.toString());
+		}
+		return obj;
+	}
 }

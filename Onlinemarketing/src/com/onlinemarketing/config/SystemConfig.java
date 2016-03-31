@@ -29,6 +29,7 @@ public class SystemConfig {
 	public static final String TextSetting = "text";
 	public static final String  Action = "action";
 	public static final String  Post_product = "post_product";
+	public static final String  ResetPassword = "resetpassword";
 	//chat dialog
 	public static final String Message = "message";
 	public static final String SendMessage = "send";
@@ -64,7 +65,8 @@ public class SystemConfig {
 	public static final int statusDeleteBackList = 1;
 	public static final int statusDeleteFavorite = 2;
 	public static final int statusDeleteSearch = 3;
-	
+	public static final int statusDeleteSaveNewsList = 4;
+	public static final int statusFavoriteUser = 5;
 	public static final int statusSetting = 1;
 	public static final int statusSaveSearch = 2;
 	

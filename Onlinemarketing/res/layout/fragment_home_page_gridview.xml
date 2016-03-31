@@ -5,14 +5,29 @@
     android:background="@android:color/white"
     tools:context="com.example.onlinemarketing.HomePageActivity$PlaceholderFragment" >
 
-    <GridView
-        android:id="@+id/gridHomePage"
+    <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="2" >
-    </GridView>
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/linearMenu" >
+
+        <GridView
+            android:id="@+id/gridHomePage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:numColumns="2" >
+        </GridView>
+
+        <ImageView
+            android:id="@+id/imgPostHomepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:src="@drawable/icon_post" />
+    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/linearMenu"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

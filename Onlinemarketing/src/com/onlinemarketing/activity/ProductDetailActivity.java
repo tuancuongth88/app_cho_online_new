@@ -41,10 +41,10 @@ import android.widget.TextView;
 public class ProductDetailActivity extends FragmentActivity implements OnClickListener {
 	CirclePageIndicator mIndicator;
 	ArrayList<Fragment> fragments;
-	ImageView btnSendSMS_Detail, btnCall, btnChatDirectly_Detail ,btnProducSave,btnErrorReport, btnPoster;
+	ImageView btnSendSMS_Detail, btnCall, btnChatDirectly_Detail, btnProducSave, btnErrorReport, btnPoster;
 	EditText editErrorReport;
-	TextView txt_titleDetaile,txtPrice_Detail,txtName_Detail,txtDatime_Detail,txtAdd_Detail,
-	txtKM_Detail,txtCategory_Detail,txtTinhTrang_Detail,txt_info_Detail,txt_contact_Detail;
+	TextView txt_titleDetaile, txtPrice_Detail, txtName_Detail, txtDatime_Detail, txtAdd_Detail, txtKM_Detail,
+			txtCategory_Detail, txtTinhTrang_Detail, txt_info_Detail, txt_contact_Detail;
 	Dialog dialog;
 	Button btnOk, btnCancle;
 	Intent intent;
@@ -53,21 +53,15 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 	public static ProductVO objproductDetail;
 	ViewPager mPager;
 	ProgressDialog progressDialog;
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_product_detail);
-//		fragments = new ArrayList<Fragment>();
-//		fragments.add(new FragmentProductDetail(R.drawable.anh1));
 		mPager = (ViewPager) findViewById(R.id.pager);
-//		ProductDetailAdapter mAdapter = new ProductDetailAdapter(getSupportFragmentManager(), fragments);
-//		mPager.setAdapter(mAdapter);
-//		mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-//		mIndicator.setViewPager(mPager);
-//		autoChange();
 		findById();
 		new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductDetail);
-		
+
 	}
 
 	public void findById() {
@@ -77,17 +71,17 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		btnProducSave = (ImageView) findViewById(R.id.btnSave_Detail);
 		btnErrorReport = (ImageView) findViewById(R.id.btnReportViolations_Detail);
 		btnChatDirectly_Detail = (ImageView) findViewById(R.id.btnChatDirectly_Detail);
-		txtPrice_Detail = (TextView)  findViewById(R.id.txtPrice_Detail);
-		txtName_Detail = (TextView)  findViewById(R.id.txtName_Detail);
-		txtDatime_Detail = (TextView)  findViewById(R.id.txtDatime_Detail);
-		txtAdd_Detail = (TextView)  findViewById(R.id.txtAdd_Detail);
-		txtKM_Detail = (TextView)  findViewById(R.id.txtKM_Detail);
-		txtCategory_Detail = (TextView)  findViewById(R.id.txtCategory_Detail);
-		txtTinhTrang_Detail = (TextView)  findViewById(R.id.txtTinhTrang_Detail);
+		txtPrice_Detail = (TextView) findViewById(R.id.txtPrice_Detail);
+		txtName_Detail = (TextView) findViewById(R.id.txtName_Detail);
+		txtDatime_Detail = (TextView) findViewById(R.id.txtDatime_Detail);
+		txtAdd_Detail = (TextView) findViewById(R.id.txtAdd_Detail);
+		txtKM_Detail = (TextView) findViewById(R.id.txtKM_Detail);
+		txtCategory_Detail = (TextView) findViewById(R.id.txtCategory_Detail);
+		txtTinhTrang_Detail = (TextView) findViewById(R.id.txtTinhTrang_Detail);
 		txt_info_Detail = (TextView) findViewById(R.id.txt_info_Detail);
-		txt_contact_Detail = (TextView)  findViewById(R.id.txt_contact_Detail);
-		txtPrice_Detail = (TextView)  findViewById(R.id.txtPrice_Detail);
-		txt_titleDetaile = (TextView)  findViewById(R.id.txt_titleDetaile);
+		txt_contact_Detail = (TextView) findViewById(R.id.txt_contact_Detail);
+		txtPrice_Detail = (TextView) findViewById(R.id.txtPrice_Detail);
+		txt_titleDetaile = (TextView) findViewById(R.id.txt_titleDetaile);
 		btnChatDirectly_Detail.setOnClickListener(this);
 		btnErrorReport.setOnClickListener(this);
 		btnProducSave.setOnClickListener(this);
@@ -132,6 +126,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			startActivity(intent);
 			break;
 		case R.id.btnPoster_Detail:
+			PosterDetailActivity.statutActivityCall = 1;
 			startActivity(new Intent(ProductDetailActivity.this, PosterDetailActivity.class));
 			break;
 		case R.id.btnSave_Detail:
@@ -146,9 +141,13 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			chat.run(SystemConfig.statusGetHistoryMessage);
 			chat.dialogChat(objproductDetail.getUser_id());
 			break;
-			
+
 		case R.id.btnReportViolations_Detail:
-			dialogErrorReport();
+			if (SystemConfig.user_id.isEmpty() && SystemConfig.session_id.isEmpty()) {
+				startActivity(new Intent(ProductDetailActivity.this, LoginActivity.class));
+			} else {
+				dialogErrorReport();
+			}
 			break;
 
 		}
@@ -185,6 +184,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		JsonProduct jsonProduct;
 		AQuery aQuery = null;
 		int status;
+
 		@Override
 		protected void onPreExecute() {
 			jsonProduct = new JsonProduct();
@@ -200,27 +200,24 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 
 		@Override
 		protected OutputProduct doInBackground(Integer... params) {
-			status =params[0];
+			status = params[0];
 			switch (params[0]) {
 			case SystemConfig.statusProductSave:
-
-				Debug.e("User: " + SystemConfig.user_id + " Session: " + SystemConfig.session_id + " device: "
-						+ SystemConfig.device_id);
-				out = jsonProduct.paserNews(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, objproductDetail.getId());
+				out = jsonProduct.paserNews(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+						objproductDetail.getId());
 				break;
 
 			case SystemConfig.statusErrorReport:
-				Debug.e("User: " + SystemConfig.user_id + " Session: " + SystemConfig.session_id + " device: "
-						+ SystemConfig.device_id);
 				out = jsonProduct.paserErrorReport(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, objproductDetail.getId(), editErrorReport.getText().toString());
 				break;
 			case SystemConfig.statusProductDetail:
-				out = jsonProduct.paserProductDetail(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, id_product);
+				out = jsonProduct.paserProductDetail(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, id_product);
 				ProductDetailActivity.objproductDetail = out.getProductVO().get(0);
 				break;
 			}
-			
+
 			return out;
 		}
 
@@ -228,15 +225,14 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		protected void onPostExecute(OutputProduct result) {
 			progressDialog.dismiss();
 			if (result.getCode() == Constan.getIntProperty("success")) {
-					if(status == SystemConfig.statusProductDetail){
+				if (status == SystemConfig.statusProductDetail) {
 					objproductDetail = result.getProductVO().get(0);
-					Debug.e("chi tiet sp:"+ objproductDetail.getName());
+					Debug.e("chi tiet sp:" + objproductDetail.getName());
 					txt_titleDetaile.setText(objproductDetail.getName());
 					txtPrice_Detail.setText(objproductDetail.getPrice());
 					txtName_Detail.setText(objproductDetail.getUser_name());
 					txtDatime_Detail.setText(objproductDetail.getStartdate());
 					txtAdd_Detail.setText(objproductDetail.getStartdate());
-	//				txtKM_Detail,
 					txtCategory_Detail.setText(objproductDetail.getCategory_name());
 					txtTinhTrang_Detail.setText(objproductDetail.getType_name());
 					txt_info_Detail.setText(objproductDetail.getDescription());
@@ -246,42 +242,41 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 						bitmap = Util.getCroppedBitmap(bitmap);
 						aQuery.id(btnPoster).image(bitmap);
 					} else {
-						aQuery.id(btnPoster).image(objproductDetail.getUser_avatar(), true, true, 0, R.drawable.ic_launcher);
+						aQuery.id(btnPoster).image(objproductDetail.getUser_avatar(), true, true, 0,
+								R.drawable.ic_launcher);
 					}
 					fragments = new ArrayList<Fragment>();
-					List<String> image = new  ArrayList<String>();
+					List<String> image = new ArrayList<String>();
 					for (int i = 0; i < objproductDetail.getArrImageDetail().size(); i++) {
 						image.add(objproductDetail.getArrImageDetail().get(i));
 						fragments.add(new FragmentProductDetail(image.get(i)));
 					}
 					Debug.e("Link Anhaaaaaaa: " + objproductDetail.getArrImageDetail());
-					ProductDetailAdapter mAdapter = new ProductDetailAdapter(getSupportFragmentManager(),fragments);
+					ProductDetailAdapter mAdapter = new ProductDetailAdapter(getSupportFragmentManager(), fragments);
 					mPager.setAdapter(mAdapter);
 					mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 					mIndicator.setViewPager(mPager);
 					autoChange();
 					Debug.e("objproductDetail.isCheck(): " + objproductDetail.isCheck());
-					if (objproductDetail.isCheck() ) {
+					if (objproductDetail.isCheck()) {
 						btnCall.setClickable(false);
 						btnSendSMS_Detail.setClickable(false);
 						btnChatDirectly_Detail.setClickable(false);
-					}else if (objproductDetail.isCheck() == false) {
+					} else if (objproductDetail.isCheck() == false) {
 						btnCall.setClickable(true);
 						btnSendSMS_Detail.setClickable(true);
 						btnChatDirectly_Detail.setClickable(true);
 					}
-					if(objproductDetail.isProduct_saved()){
+					if (objproductDetail.isProduct_saved()) {
 						btnProducSave.setImageResource(R.drawable.icon_user);
 						btnProducSave.setClickable(false);
-					}
-					else 
+					} else
 						btnProducSave.setClickable(true);
-					
+
 				}
 			}
 			super.onPostExecute(result);
 		}
 	}
-	
 
 }

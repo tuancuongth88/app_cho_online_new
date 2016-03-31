@@ -5,9 +5,14 @@ import java.util.List;
 
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
+import com.onlinemarketing.adapter.BackListAdapter;
 import com.onlinemarketing.adapter.HomePageAdapter;
+import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.json.JsonListNewsPoster;
+import com.onlinemarketing.json.JsonProduct;
+import com.onlinemarketing.object.BackListVO;
+import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProductVO;
 import com.onlinemarketing.util.ChatDialog;
@@ -27,13 +32,17 @@ import android.widget.ListView;
 
 public class PosterDetailActivity extends BaseActivity implements OnClickListener, OnItemClickListener {
 	List<ProductVO> list = new ArrayList<ProductVO>();
+	List<BackListVO> backListVOs = new ArrayList<BackListVO>();
 	ProgressDialog progressDialog;
 	ListView listview;
+	static Output out;
 	HomePageAdapter adapter;
 	OutputProduct oOput;
-	ImageView btnSendSMS_Detail, btnCall, img_chat, imgBack;
+	ImageView btnSendSMS_Detail, btnCall, img_chat, imgBack, imgFavorite;
 	Intent intent;
-	
+	int idUser;
+	String phone;
+	public static int statutActivityCall;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,13 +52,36 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 		btnCall = (ImageView) findViewById(R.id.btnCall_Detail);
 		img_chat = (ImageView) findViewById(R.id.btnChatDirectly_Detail);
 		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
+		imgFavorite = (ImageView) findViewById(R.id.imgFavoriteTitle);
+		imgFavorite.setOnClickListener(this);
 		btnCall.setOnClickListener(this);
 		btnSendSMS_Detail.setOnClickListener(this);
 		img_chat.setOnClickListener(this);
 		imgBack.setOnClickListener(this);
 		listview.setOnItemClickListener(this);
-		if (isConnect()) {
-			new NewsPosterAsystask().execute();
+		SetData();
+	}
+
+	public void SetData() {
+		if (statutActivityCall == 1) {
+			idUser = ProductDetailActivity.objproductDetail.getUser_id();
+			phone = ProductDetailActivity.objproductDetail.getPhone();
+			if (isConnect()) {
+				new NewsPosterAsystask().execute();
+			}
+
+			if (Integer.parseInt(SystemConfig.user_id) == ProductDetailActivity.objproductDetail.getUser_id()) {
+				imgFavorite.setVisibility(View.INVISIBLE);
+			} else
+				imgFavorite.setVisibility(View.VISIBLE);
+
+		} else if (statutActivityCall == 2) {
+			idUser = FavoriteActivity.id_delete;
+			phone = FavoriteActivity.phone;
+			if (isConnect()) {
+				new NewsPosterAsystask().execute();
+			}
+
 		}
 	}
 
@@ -72,8 +104,7 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 		@Override
 		protected OutputProduct doInBackground(Integer... params) {
 			oOput = newsPoster.paserListNewsPoster(SystemConfig.user_id, SystemConfig.session_id,
-					SystemConfig.device_id, ProductDetailActivity.objproductDetail.getId());
-			Debug.e("ProductDetailActivity.objproductDetail.getId(): " + ProductDetailActivity.objproductDetail.getId());
+					SystemConfig.device_id, idUser);
 			list = oOput.getProductVO();
 			return oOput;
 		}
@@ -95,7 +126,6 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 
 	@Override
 	public void onClick(View v) {
-		String phone = ProductDetailActivity.objproductDetail.getPhone();
 		switch (v.getId()) {
 		case R.id.btnSendSMS_Detail:
 			intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phone));
@@ -109,6 +139,11 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 		case R.id.imgBackTitle:
 			this.finish();
 			break;
+		case R.id.imgFavoriteTitle:
+			if (isConnect()) {
+				new FavoriteUserAsystask().execute();
+			}
+			break;
 		case R.id.btnChatDirectly_Detail:
 			ChatDialog chat = new ChatDialog(this);
 			chat.run(SystemConfig.statusGetHistoryMessage);
@@ -116,4 +151,33 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 			break;
 		}
 	}
+
+	public class FavoriteUserAsystask extends AsyncTask<Integer, String, Output> {
+
+		JsonProduct jsonProduct;
+
+		@Override
+		protected void onPreExecute() {
+			jsonProduct = new JsonProduct();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Output doInBackground(Integer... params) {
+			Debug.e("User: " + ProductDetailActivity.objproductDetail.getUser_id());
+			out = jsonProduct.paserDeleteBackListAndFavorite(SystemConfig.user_id, SystemConfig.session_id,
+					SystemConfig.device_id, idUser,
+					SystemConfig.statusFavoriteUser);
+			return out;
+		}
+
+		@Override
+		protected void onPostExecute(Output result) {
+			if (result.getCode() == Constan.getIntProperty("success")) {
+				Debug.showAlert(PosterDetailActivity.this, result.getMessage());
+			}
+			super.onPostExecute(result);
+		}
+	}
+
 }

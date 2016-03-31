@@ -16,8 +16,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.lib.Debug;
 import com.lib.SharedPreferencesUtils;
 import com.lib.facebook.LoginFacebook;
+import com.onlinemarketing.activity.ProductDetailActivity.ProductSaveAndReportAsynTask;
+import com.onlinemarketing.adapter.BackListAdapter;
 import com.onlinemarketing.asystask.LoginRegisterAsystask;
+import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
+import com.onlinemarketing.json.JsonProduct;
+import com.onlinemarketing.object.Output;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -32,10 +37,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -51,8 +58,8 @@ import com.google.android.gms.plus.PlusOneButton;
 import com.google.android.gms.plus.PlusShare;
 import com.google.android.gms.plus.model.people.Person;
 
-
-public class LoginActivity extends BaseActivity implements  OnClickListener, ConnectionCallbacks, OnConnectionFailedListener {
+public class LoginActivity extends BaseActivity
+		implements OnClickListener, ConnectionCallbacks, OnConnectionFailedListener {
 
 	EditText txtusername, txtpass;
 	Button btnlogin, btnRegister, btnFace, btn_skip;
@@ -63,12 +70,14 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 	LoginRegisterAsystask account;
 	// google
 	SignInButton btngoogle;
-//	private PlusClient mPlusClient;
+	// private PlusClient mPlusClient;
 	private int REQUEST_CODE_RESOLVE_ERR = 301;
 	private CallbackManager callback = null;
-
-	
-	//cuongntlogin google
+	TextView txtFogotPass;
+	Dialog dialog;
+	EditText editErrorReport;
+	Button btnOk, btnCancle;
+	// cuongntlogin google
 	private String link = "https://play.google.com/store/apps/details?id=com.freesmartapps.fancy.dress.changer";
 	private boolean mSignInClicked;
 	private boolean mIntentInProgress;
@@ -77,6 +86,9 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 	private static final int PROFILE_PIC_SIZE = 400;
 	private static final int RC_SIGN_IN = 0;
 	private ImageView imgProfilePic;
+
+	static Output out;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		FacebookSdk.sdkInitialize(this);
@@ -91,44 +103,46 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 		btnFace = (Button) findViewById(R.id.btnFace);
 		btn_skip = (Button) findViewById(R.id.btnSkip);
 		chkRemember = (CheckBox) findViewById(R.id.chkremember);
+		txtFogotPass = (TextView) findViewById(R.id.txtFogotPass);
 		btnlogin.setOnClickListener(this);
-		btnRegister.setOnClickListener(this);  
-//		btngoogle.setOnClickListener(this);
+		btnRegister.setOnClickListener(this);
+		// btngoogle.setOnClickListener(this);
 		btnFace.setOnClickListener(this);
 		btn_skip.setOnClickListener(this);
-		
-		account = new LoginRegisterAsystask(txtusername.getText().toString()
-				.trim(), txtpass.getText().toString().trim(),
-				SystemConfig.device_id, "", "",false,this);
+		txtFogotPass.setOnClickListener(this);
+		account = new LoginRegisterAsystask(txtusername.getText().toString().trim(),
+				txtpass.getText().toString().trim(), SystemConfig.device_id, "", "", false, this);
 		Debug.e(SystemConfig.device_id);
-		
-		mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this).addOnConnectionFailedListener(this)
-				.addApi(Plus.API).addScope(new Scope(Scopes.PROFILE))
-				.build();
-		
+
+		mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(new Scope(Scopes.PROFILE)).build();
+
 	}
+
 	protected void onStart() {
 		super.onStart();
 		mGoogleApiClient.connect();
 	}
+
 	protected void onStop() {
 		super.onStop();
 		if (mGoogleApiClient.isConnected()) {
 			mGoogleApiClient.disconnect();
 		}
 	}
+
 	/**
 	 * Lỗi login
-	 * */
+	 */
 	private void resolveSignInError() {
 		if (mConnectionResult.hasResolution()) {
 			try {
 				mIntentInProgress = true;
-//				mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
-				
+				// mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+
 				Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-			    startActivityForResult(signInIntent, RC_SIGN_IN);
-				
+				startActivityForResult(signInIntent, RC_SIGN_IN);
+
 			} catch (Exception e) {
 				mIntentInProgress = false;
 				mGoogleApiClient.connect();
@@ -136,20 +150,16 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 		}
 	}
 
-	
-	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnlogin:
 			if (isConnect()) {
-				
+
 				boolean checked = chkRemember.isChecked();
-				
-				new LoginRegisterAsystask(txtusername.getText().toString()
-						.trim(), txtpass.getText().toString().trim(),
-						SystemConfig.device_id, "", "",checked,this)
-						.execute(SystemConfig.statusLogin);
+
+				new LoginRegisterAsystask(txtusername.getText().toString().trim(), txtpass.getText().toString().trim(),
+						SystemConfig.device_id, "", "", checked, this).execute(SystemConfig.statusLogin);
 			}
 			break;
 		case R.id.btnRegister:
@@ -158,9 +168,8 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 		case R.id.btnSkip:
 			if (isConnect()) {
 				SharedPreferencesUtils.putString(this, SystemConfig.USER_ID, "");
-		        SharedPreferencesUtils.putString(this, SystemConfig.SESSION_ID, "");
-				startActivity(new Intent(LoginActivity.this,
-						MainActivity.class));
+				SharedPreferencesUtils.putString(this, SystemConfig.SESSION_ID, "");
+				startActivity(new Intent(LoginActivity.this, MainActivity.class));
 			}
 			break;
 
@@ -169,50 +178,106 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 			break;
 
 		case R.id.btnFace:
-			LoginFacebook.onActionLoginFacebook(this, callback,
-					new FacebookCallback<LoginResult>() {
+			LoginFacebook.onActionLoginFacebook(this, callback, new FacebookCallback<LoginResult>() {
 
-						@Override
-						public void onSuccess(LoginResult result) {
-							 Profile profile = Profile.getCurrentProfile();
-//							 intent.putExtra(Account.ID, profile.getId());
-							 String facebook_id = profile.getId().toString();
-							 String name =  profile.getName().toString();
-							 Debug.e("name: "+ name);
-							 if (isConnect()) {
-									
-								 loginFacebook_google(facebook_id, "", name,SystemConfig.statusfacebook);
-									
-								}
-							
-						}
+				@Override
+				public void onSuccess(LoginResult result) {
+					Profile profile = Profile.getCurrentProfile();
+					// intent.putExtra(Account.ID, profile.getId());
+					String facebook_id = profile.getId().toString();
+					String name = profile.getName().toString();
+					Debug.e("name: " + name);
+					if (isConnect()) {
 
-						@Override
-						public void onError(FacebookException error) {
-							Debug.e("Ä�Äƒng nháº­p tháº¥t báº¡i "
-									+ error.toString());
-						}
+						loginFacebook_google(facebook_id, "", name, SystemConfig.statusfacebook);
 
-						@Override
-						public void onCancel() {
-							Debug.e("Há»§y Ä‘Äƒng nháº­p");
-						}
+					}
 
-					});
+				}
+
+				@Override
+				public void onError(FacebookException error) {
+					Debug.e("Ä�Äƒng nháº­p tháº¥t báº¡i " + error.toString());
+				}
+
+				@Override
+				public void onCancel() {
+					Debug.e("Há»§y Ä‘Äƒng nháº­p");
+				}
+
+			});
+			break;
+		case R.id.txtFogotPass:
+			dialogForgotPass();
 			break;
 		}
 	}
-	public  void loginFacebook_google(String facebook_id, String google_id, String user_name, int status) {
-		if(status == SystemConfig.statusfacebook){
-		new LoginRegisterAsystask(
-				SystemConfig.device_id, "", "",facebook_id,"",user_name, LoginActivity.this)
-				.execute(SystemConfig.statusfacebook);
-		}else if(status == SystemConfig.statusgoogle) {
-			new LoginRegisterAsystask(
-					SystemConfig.device_id, "", "",facebook_id,"",user_name, LoginActivity.this)
+
+	public void dialogForgotPass() {
+		dialog = new Dialog(this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dialog_forgot_pass);
+		editErrorReport = (EditText) dialog.findViewById(R.id.editErrorReport);
+		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_ErrorReport);
+		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_ErrorReport);
+		btnOk.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (!editErrorReport.getText().toString().isEmpty()) {
+					new ForgotPassAsynTask().execute();
+					dialog.dismiss();
+				} else {
+					Debug.showAlert(LoginActivity.this, "Không được để null");
+				}
+			}
+		});
+		btnCancle.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
+	}
+
+	public class ForgotPassAsynTask extends AsyncTask<Integer, String, Output> {
+
+		JsonProduct jsonProduct;
+
+		@Override
+		protected void onPreExecute() {
+			jsonProduct = new JsonProduct();
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Output doInBackground(Integer... params) {
+			out = jsonProduct.paserForgotPass(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+					editErrorReport.getText().toString());
+			return out;
+		}
+
+		@Override
+		protected void onPostExecute(Output result) {
+			if (result.getCode() == Constan.getIntProperty("success")) {
+				Debug.showAlert(LoginActivity.this, result.getMessage());
+			}
+			super.onPostExecute(result);
+		}
+	}
+
+	public void loginFacebook_google(String facebook_id, String google_id, String user_name, int status) {
+		if (status == SystemConfig.statusfacebook) {
+			new LoginRegisterAsystask(SystemConfig.device_id, "", "", facebook_id, "", user_name, LoginActivity.this)
+					.execute(SystemConfig.statusfacebook);
+		} else if (status == SystemConfig.statusgoogle) {
+			new LoginRegisterAsystask(SystemConfig.device_id, "", "", facebook_id, "", user_name, LoginActivity.this)
 					.execute(SystemConfig.statusgoogle);
 		}
 	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -237,8 +302,8 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 			}
 		}
 	}
-	
-	//google
+
+	// google
 	@Override
 	public void onConnectionFailed(ConnectionResult result) {
 		if (!result.hasResolution()) {
@@ -252,8 +317,9 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 			if (mSignInClicked) {
 				resolveSignInError();
 			}
-		}		
+		}
 	}
+
 	@Override
 	public void onConnected(Bundle arg0) {
 		mSignInClicked = false;
@@ -263,14 +329,16 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 		getProfileInformation();
 
 	}
+
 	@Override
 	public void onConnectionSuspended(int arg0) {
 		// TODO Auto-generated method stub
 		mGoogleApiClient.connect();
 	}
+
 	/**
 	 * lấy thông tin info user's information name, email, profile pic
-	 * */
+	 */
 	private void getProfileInformation() {
 		try {
 			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
@@ -280,8 +348,8 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 				String personGooglePlusProfile = currentPerson.getUrl();
 				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
-				Log.e("Thong tin Google", "Name: " + personName + ", plusProfile: " + personGooglePlusProfile + ", email: " + email + ", Image: " + personPhotoUrl);
-
+				Log.e("Thong tin Google", "Name: " + personName + ", plusProfile: " + personGooglePlusProfile
+						+ ", email: " + email + ", Image: " + personPhotoUrl);
 
 				// by default the profile url gives 50x50 px image only
 				// we can replace the value with whatever dimension we want by
@@ -297,9 +365,10 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * Sign-in into google
-	 * */
+	 */
 	private void signInWithGplus() {
 		if (!mGoogleApiClient.isConnecting()) {
 			mSignInClicked = true;
@@ -309,16 +378,17 @@ public class LoginActivity extends BaseActivity implements  OnClickListener, Con
 
 	/**
 	 * Sign-out from google
-	 * */
+	 */
 	private void onActionLogoutGoogle() {
 		if (mGoogleApiClient.isConnected()) {
 			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
 			mGoogleApiClient.disconnect();
 		}
 	}
+
 	/**
 	 * Background Async task to load user profile picture from url
-	 * */
+	 */
 	private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
 		ImageView bmImage;
 

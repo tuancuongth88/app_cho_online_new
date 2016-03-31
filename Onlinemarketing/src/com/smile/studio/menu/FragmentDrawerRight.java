@@ -15,6 +15,7 @@ import com.onlinemarketing.activity.SaveNewsListActivity;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.fragment.FragmentCategory;
+import com.onlinemarketing.fragment.FragmentCategoryGridView;
 import com.onlinemarketing.json.JsonProfile;
 import com.onlinemarketing.json.JsonSetting;
 import com.onlinemarketing.object.OutputProduct;
@@ -61,7 +62,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 	static Dialog dialog;
 	Button btnOk, btnCancle;
 	private AQuery aQuery;
-
+	boolean isType = true;
 	public FragmentDrawerRight() {
 
 	}
@@ -102,6 +103,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 						SettingVO objsetting = listSetting.get(position);
 						// đang ban(FragmentCategory)
 						FragmentCategory obj = new FragmentCategory();
+						
 
 						if (objsetting.getId() == Constan.getIntProperty("dangban")) {
 							SaveNewsListActivity.status = Constan.getIntProperty("dangban");
@@ -178,7 +180,15 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 						}
 						// kieu xem
 						if (objsetting.getId() == Constan.getIntProperty("kieuxem")) {
-
+							if (isType) {
+								getFragmentManager().beginTransaction().replace(R.id.container_body, new FragmentCategoryGridView()).commit();
+								isType= false;
+								Debug.e("kiểu xem " + isType);
+							}else {
+								getFragmentManager().beginTransaction().replace(R.id.container_body, new FragmentCategory()).commit();
+								isType= true;
+								Debug.e("kiểu xem " + isType);
+							}
 						}
 						mDrawerLayout.closeDrawer(containerView);
 
@@ -345,14 +355,17 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			ProfileVO objprofile = SystemConfig.oOputproduct.getProfileVO().get(0);
-			txt_nameNavigaterReight.setText(objprofile.getUsername());
-			Bitmap bitmap = aQuery.getCachedImage(objprofile.getAvatar());
-			if (bitmap != null) {
-				bitmap = Util.getCroppedBitmap(bitmap);
-				aQuery.id(imgAvataNavigator).image(bitmap);
-			} else {
-				aQuery.id(imgAvataNavigator).image(objprofile.getAvatar(), true, true, 0, R.drawable.ic_launcher);
+			if (!SystemConfig.session_id.isEmpty()) {
+				ProfileVO objprofile = SystemConfig.oOputproduct.getProfileVO().get(0);
+
+				txt_nameNavigaterReight.setText(objprofile.getUsername());
+				Bitmap bitmap = aQuery.getCachedImage(objprofile.getAvatar());
+				if (bitmap != null) {
+					bitmap = Util.getCroppedBitmap(bitmap);
+					aQuery.id(imgAvataNavigator).image(bitmap);
+				} else {
+					aQuery.id(imgAvataNavigator).image(objprofile.getAvatar(), true, true, 0, R.drawable.ic_launcher);
+				}
 			}
 			super.onPostExecute(result);
 		}

@@ -40,7 +40,7 @@ public class BackListActivity extends BaseActivity implements OnItemClickListene
 	static Output out;
 	Dialog dialog;
 	Button btnOk, btnCancle;
-	private int id_delete , positon;
+	public static int id_delete , positon;
 
 	ImageView imgBack;
 	
@@ -91,67 +91,8 @@ public class BackListActivity extends BaseActivity implements OnItemClickListene
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		id_delete = list.get(arg2).getId();
-		positon = arg2;
-		dialogDelete();
 	}
 
-	public void dialogDelete() { 
-		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.dialog_delete);
-		dialog.setTitle("Thông Báo");
-		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_Delete);
-		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_Delete);
-		btnOk.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (isConnect()) {
-					new DeleteAsynTask().execute();
-				}
-				dialog.dismiss();
-			}
-		});
-		btnCancle.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-			}
-		});
-		dialog.show();
-	}
-	
-	public class DeleteAsynTask extends AsyncTask<Integer, String, Output> {
-
-		JsonProduct jsonProduct;
-
-		@Override
-		protected void onPreExecute() {
-			jsonProduct = new JsonProduct();
-			super.onPreExecute();
-		 }
-
-		@Override
-		protected Output doInBackground(Integer... params) {
-			Debug.e("User: " + SystemConfig.user_id + " Session: " + SystemConfig.session_id + " device: "
-					+ SystemConfig.device_id);
-			out = jsonProduct.paserDeleteBackListAndFavorite(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
-					id_delete, SystemConfig.statusDeleteBackList);
-			return out;
-		}   
-
-		@Override
-		protected void onPostExecute(Output result) {
-			if (result.getCode() == Constan.getIntProperty("success")) {
-				Debug.showAlert(BackListActivity.this, result.getMessage());
-				list.remove(positon);
-				adapter = new BackListAdapter(BackListActivity.this, R.layout.item_backlist, list);
-				Debug.e("danh sach: " + list.size());
-				listview.setAdapter(adapter);
-			}
-			super.onPostExecute(result);
-		}
-	}
 
 	@Override
 	public void onClick(View v) {

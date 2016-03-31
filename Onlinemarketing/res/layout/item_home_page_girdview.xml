@@ -2,18 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:layout_margin="10dp"
+    android:background="@drawable/background_boder"
     android:gravity="center|left"
     android:orientation="vertical" >
 
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:background="@drawable/images" >
+        android:layout_weight="1" >
+
+        <ImageView
+            android:id="@+id/item_frgProduct"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/images" />
 
         <TextView
-            android:id="@+id/item_txt_giaSP"
+            android:id="@+id/item_txt_priceProductGrid"
             android:layout_width="fill_parent"
             android:layout_height="45dp"
             android:layout_gravity="bottom|center"
@@ -38,7 +45,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/item_txt_tenSP"
+                android:id="@+id/item_txt_titleProductGrid"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="Giầy mới 2015"
@@ -46,19 +53,19 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/item_txt_ngay"
+                android:id="@+id/item_txt_dateProductGrid"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="29/06/2015"
                 android:textSize="12sp" />
         </LinearLayout>
-        <ImageView 
+
+        <ImageView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:scaleType="fitStart"
-            android:src="@drawable/icon_user"
-            />
+            android:src="@drawable/icon_km" />
     </LinearLayout>
 
 </LinearLayout>

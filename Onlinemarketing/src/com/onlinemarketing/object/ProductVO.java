@@ -16,6 +16,7 @@ public class ProductVO {
 	private int user_id;
 	private int type_id;
 	private int city_id;
+	private String city;
 	private String startdate;
 	private int status;
 	private String status_name;
@@ -40,6 +41,14 @@ public class ProductVO {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	public void setDescription(String description) {

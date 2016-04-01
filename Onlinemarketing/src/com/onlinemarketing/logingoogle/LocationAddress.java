@@ -50,7 +50,7 @@ public class LocationAddress {
                         for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                             sb.append(address.getAddressLine(i)).append("-");
                         }
-//                        sb.subSequence(sb.length(), 1);
+                        sb.substring(0, sb.length() - 1);
                         result = sb.toString();
                     }
                 } catch (IOException e) {
@@ -93,19 +93,23 @@ public class LocationAddress {
                  .getString("formatted_address"));
          JSONArray jsonarr = ((JSONArray)jsonObject.get("results")).getJSONObject(0)
                  .getJSONArray("address_components");
-         String city =null;
+         String long_name ="";
          for (int i = 0; i < jsonarr.length(); i++) {
         	 JSONObject json = jsonarr.getJSONObject(i);
-        	  city = json.getString("long_name");
+        	 long_name = json.getString("long_name");
+        	  String city="";
         	  JSONArray arrtype = json.getJSONArray("types");
         	  for (int j = 0; j < arrtype.length(); j++) {
-        		  JSONObject jsontype  = arrtype.getJSONObject(j);
-				if(jsontype.has("administrative_area_level_1")){
+        		  String jsontype  = arrtype.getString(0);
+				if(jsontype.equals("administrative_area_level_1")){
+					city= long_name;
 					break;
 				}
         	  }
+        	  if(city.equals(long_name))
+        		  break;
 		}
-         oOputGoogle.setCity(city);
+         oOputGoogle.setCity(long_name);
         } catch (JSONException e) {
         	Debug.e(e.toString());
         }

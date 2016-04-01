@@ -187,11 +187,10 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
+		try{
 		 if (requestCode == PICK_IMAGE_MULTIPLE) {
 		        if (resultCode == RESULT_OK) {
 		            // Image captured and saved to fileUri specified in the Intent
-		            Toast.makeText(this, "Image saved to:\n" +
-		                     data.getData(), Toast.LENGTH_LONG).show();
 		            Uri uri= data.getData();
 		           String linkFromCamera=  getPicturePath(uri);
 		           Bitmap bit = null;//= getThumbnail(linkFromCamera);
@@ -201,11 +200,14 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		           bit = rotateImageIfRequired(bit, uri);
 		           
 		           imagePart = linkFromCamera;
-//		           arrImgFromCamere.add(linkFromCamera);
 		           arrImgFromCamereBitmap.add(bit);
 		           new UpdateAsystask().execute();
 		        }
 		 }
+		}catch(Exception e){
+			startActivity(new Intent(this, PostActivity.class));
+		}
+		
 	}
 	private Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) {
 		// Detect rotation
@@ -455,7 +457,10 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			if(result.getCode() == Constan.getIntProperty("success")){
-				Debug.e("post bai thanh cong: "+ result.getMessage());
+				startActivity(new Intent(PostActivity.this, MainActivity.class));
+			}else {
+				com.onlinemarketing.util.Message msg = new com.onlinemarketing.util.Message(PostActivity.this);
+				msg.showMessage(result.getMessage());
 			}
 		}
 		 

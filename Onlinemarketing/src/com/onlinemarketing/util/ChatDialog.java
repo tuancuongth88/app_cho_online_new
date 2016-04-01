@@ -21,6 +21,7 @@ import android.os.AsyncTask;
 import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -158,6 +159,7 @@ public class ChatDialog {
 
 	public void loadHistoryChat() { 
 		try {
+			
 			listMessage = oOputMsg.getArrMessage();
 			for (int i = 0; i < listMessage.size(); i++) {
 				MessageVO obj = new MessageVO();
@@ -257,6 +259,14 @@ public class ChatDialog {
 		});
 		dialog.show();
 	}
+	
+	public void clearTable(){
+		int count = tab.getChildCount();
+		for (int i = 0; i < count; i++) {
+		    View child = tab.getChildAt(i);
+		    if (child instanceof TableRow) ((ViewGroup) child).removeAllViews();
+		}
+	}
 
 	public class MessageAsystask extends
 			AsyncTask<Integer, Integer, OutputMessage> {
@@ -310,8 +320,10 @@ public class ChatDialog {
 		@Override
 		protected void onPostExecute(OutputMessage result) {
 			if (result.getCode() == Constan.getIntProperty("success") && status_callWS == SystemConfig.statusListMessage) {
+				if(listMessage!=null){
 				adapterListMessage = new ListMessageAdapter(context,R.layout.item_list_message, listMessage);
 				listviewChat.setAdapter(adapterListMessage);
+				}
 			}else if (result.getCode() == Constan.getIntProperty("success") && status_callWS == SystemConfig.statusGetHistoryMessage) {
 				loadHistoryChat();
 			}else if (result.getCode() == Constan.getIntProperty("success")&& status_callWS == SystemConfig.statusSendMessage) {
@@ -327,8 +339,10 @@ public class ChatDialog {
 					}
 				}
 //				tab.removeView(tr2);
+				if(listMessage!=null){
 				oOputMsg.setArrMessage(listMessage);
 				loadHistoryChat();
+				}
 			}
 		}
 	}

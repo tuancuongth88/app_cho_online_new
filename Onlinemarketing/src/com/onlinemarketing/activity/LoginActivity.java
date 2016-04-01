@@ -9,15 +9,19 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
-import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.lib.Debug;
 import com.lib.SharedPreferencesUtils;
 import com.lib.facebook.LoginFacebook;
-import com.onlinemarketing.activity.ProductDetailActivity.ProductSaveAndReportAsynTask;
-import com.onlinemarketing.adapter.BackListAdapter;
 import com.onlinemarketing.asystask.LoginRegisterAsystask;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
@@ -26,7 +30,6 @@ import com.onlinemarketing.object.Output;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.graphics.Bitmap;
@@ -44,19 +47,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.PlusOneButton;
-import com.google.android.gms.plus.PlusShare;
-import com.google.android.gms.plus.model.people.Person;
 
 public class LoginActivity extends BaseActivity
 		implements OnClickListener, ConnectionCallbacks, OnConnectionFailedListener {
@@ -106,7 +96,9 @@ public class LoginActivity extends BaseActivity
 		txtFogotPass = (TextView) findViewById(R.id.txtFogotPass);
 		btnlogin.setOnClickListener(this);
 		btnRegister.setOnClickListener(this);
-		// btngoogle.setOnClickListener(this);
+		btngoogle.setOnClickListener(this);
+		// btngoogle.setEnabled(false);
+		btngoogle.setSize(SignInButton.SIZE_ICON_ONLY);
 		btnFace.setOnClickListener(this);
 		btn_skip.setOnClickListener(this);
 		txtFogotPass.setOnClickListener(this);
@@ -138,12 +130,8 @@ public class LoginActivity extends BaseActivity
 		if (mConnectionResult.hasResolution()) {
 			try {
 				mIntentInProgress = true;
-				// mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
-
-				Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-				startActivityForResult(signInIntent, RC_SIGN_IN);
-
-			} catch (Exception e) {
+				mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+			} catch (SendIntentException e) {
 				mIntentInProgress = false;
 				mGoogleApiClient.connect();
 			}
@@ -324,7 +312,6 @@ public class LoginActivity extends BaseActivity
 	public void onConnected(Bundle arg0) {
 		mSignInClicked = false;
 		Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
-
 		// Get user's information
 		getProfileInformation();
 
@@ -339,28 +326,31 @@ public class LoginActivity extends BaseActivity
 	/**
 	 * lấy thông tin info user's information name, email, profile pic
 	 */
+	@SuppressWarnings("deprecation")
 	private void getProfileInformation() {
+		
 		try {
-			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-				Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-				String personName = currentPerson.getDisplayName();
-				String personPhotoUrl = currentPerson.getImage().getUrl();
-				String personGooglePlusProfile = currentPerson.getUrl();
-				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-
-				Log.e("Thong tin Google", "Name: " + personName + ", plusProfile: " + personGooglePlusProfile
-						+ ", email: " + email + ", Image: " + personPhotoUrl);
-
-				// by default the profile url gives 50x50 px image only
-				// we can replace the value with whatever dimension we want by
-				// replacing sz=X
-				personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2) + PROFILE_PIC_SIZE;
-
-				new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-
-			} else {
-				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
-			}
+			String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
+			Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+			
+			String google_id = signedInUser.getId();
+			Debug.e("emailAddr: " + emailAddr + "\n signedInUser: " + google_id);
+			
+//			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+//				Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+//				String personName = currentPerson.getDisplayName();
+//				String personPhotoUrl = currentPerson.getImage().getUrl();
+//				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+//				String google_id = currentPerson.getId();
+//				Log.e("TAG", "Name: " + personName + ", email: " + email + ", Image: " + personPhotoUrl);
+//				personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2) + PROFILE_PIC_SIZE;
+//				new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
+//				
+//				loginFacebook_google(google_id, "", personName, SystemConfig.statusgoogle);
+//				
+//			} else {
+//				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

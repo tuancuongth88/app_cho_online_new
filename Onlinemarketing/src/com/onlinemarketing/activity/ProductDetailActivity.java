@@ -110,7 +110,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		}, 5000, 5000);
 
 	}
-
+    
 	@Override
 	public void onClick(View v) {
 		String phone = objproductDetail.getPhone();
@@ -138,7 +138,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			break;
 		case R.id.btnChatDirectly_Detail:
 			ChatDialog chat = new ChatDialog(this);
-			chat.run(SystemConfig.statusGetHistoryMessage);
+			chat.run(SystemConfig.statusGetHistoryMessage);  
 			chat.dialogChat(objproductDetail.getUser_id());
 			break;
 
@@ -279,4 +279,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		finish();
+		super.onBackPressed();
+	}
 }

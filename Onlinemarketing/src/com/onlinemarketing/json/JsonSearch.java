@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.lib.Debug;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
@@ -36,7 +37,7 @@ public class JsonSearch {
 			request.append("&category_id=").append(URLEncoder.encode(category_id, "UTF-8"));
 			request.append("&type_id=").append(URLEncoder.encode(type_id, "UTF-8"));
 			request.append("&time_id=").append(URLEncoder.encode(time_id, "UTF-8"));
-			
+
 			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 			Debug.e("Str: " + str);
@@ -50,8 +51,7 @@ public class JsonSearch {
 		}
 		return obj;
 	}
-	
-	
+
 	public OutputProduct paserListSearch(String user_id, String session_id, String device_id) {
 		OutputProduct obj = new OutputProduct();
 		String str = null;
@@ -97,5 +97,47 @@ public class JsonSearch {
 		return obj;
 
 	}
-	
+
+	public OutputProduct getSearch(String user_id, String session_id, String device_id, int id) {
+		OutputProduct obj = new OutputProduct();
+		String str = null;
+		try {
+			request = new StringBuilder(SystemConfig.API);
+			request.append(SystemConfig.Search + "/" + id);
+			request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
+			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
+			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
+			Debug.e("link : " + request.toString());
+			str = Util.getjSonUrl(request.toString(), SystemConfig.httpget);
+			Debug.e("str: " + str.toString());
+			jsonObject = new JSONObject(str);
+			obj.setCode(jsonObject.getInt("code"));
+			obj.setMessage(jsonObject.getString("message"));
+			obj.setSession_id(jsonObject.getString("session_id"));
+			obj.setUser_Id(jsonObject.getString("user_id"));
+			JSONObject jsonSearch = jsonObject.getJSONObject("data");
+			if (obj.getCode() == Constan.getIntProperty("success")) {
+				ArrayList<ProductVO> arrProduct = new ArrayList<ProductVO>();
+				ProductVO objproduct = new ProductVO();
+				objproduct.setId(jsonSearch.getInt("id"));
+				objproduct.setName(jsonSearch.get("name").toString());
+				objproduct.setLat(jsonSearch.getString("lat"));
+				objproduct.setLog(jsonSearch.getString("long"));
+				objproduct.setPrice_id(jsonSearch.getInt("price_id"));
+				objproduct.setCategory_id(jsonSearch.getInt("category_id"));
+				objproduct.setType_id(jsonSearch.getInt("type_id"));
+				objproduct.setTime_id(jsonSearch.getString("time_id"));
+				JSONArray categoryArray = jsonSearch.getJSONArray("categoryArray");
+				for (int i = 0; i < categoryArray.length(); i++) {
+					
+				}
+			}
+
+		} catch (Exception e) {
+			Debug.e(e.toString());
+		}
+
+		return obj;
+
+	}
 }

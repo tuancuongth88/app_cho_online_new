@@ -50,7 +50,7 @@ public class JsonListNewsPoster {
 					objproduct.setCategory_id(objjson_product.getInt("category_id"));
 					objproduct.setUser_id(objjson_product.getInt("user_id"));
 					objproduct.setType_id(objjson_product.getInt("type_id"));
-					objproduct.setCity_id(objjson_product.getInt("city_id"));
+//					objproduct.setCity_id(objjson_product.getInt("city_id"));
 					objproduct.setStartdate(objjson_product.get("start_time").toString());
 					objproduct.setStatus(objjson_product.getInt("status"));
 					objproduct.setPosition(objjson_product.getInt("position"));

@@ -76,6 +76,7 @@ public class LoginActivity extends BaseActivity
 	private static final int PROFILE_PIC_SIZE = 400;
 	private static final int RC_SIGN_IN = 0;
 	private ImageView imgProfilePic;
+	public static int isChecksignOut;
 
 	static Output out;
 
@@ -105,9 +106,8 @@ public class LoginActivity extends BaseActivity
 		account = new LoginRegisterAsystask(txtusername.getText().toString().trim(),
 				txtpass.getText().toString().trim(), SystemConfig.device_id, "", "", false, this);
 		Debug.e(SystemConfig.device_id);
-
-		mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(new Scope(Scopes.PROFILE)).build();
+			mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+					.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(new Scope(Scopes.PROFILE)).build();
 
 	}
 
@@ -135,6 +135,15 @@ public class LoginActivity extends BaseActivity
 				mIntentInProgress = false;
 				mGoogleApiClient.connect();
 			}
+		}
+	}
+
+	public void signOutFromGplus() {
+		if (mGoogleApiClient.isConnected()) {
+			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+			mGoogleApiClient.disconnect();
+			mGoogleApiClient.connect();
+			isChecksignOut = 1;
 		}
 	}
 
@@ -261,7 +270,7 @@ public class LoginActivity extends BaseActivity
 			new LoginRegisterAsystask(SystemConfig.device_id, "", "", facebook_id, "", user_name, LoginActivity.this)
 					.execute(SystemConfig.statusfacebook);
 		} else if (status == SystemConfig.statusgoogle) {
-			new LoginRegisterAsystask(SystemConfig.device_id, "", "", facebook_id, "", user_name, LoginActivity.this)
+			new LoginRegisterAsystask(SystemConfig.device_id, "", "", "", google_id, user_name, LoginActivity.this)
 					.execute(SystemConfig.statusgoogle);
 		}
 	}
@@ -311,10 +320,12 @@ public class LoginActivity extends BaseActivity
 	@Override
 	public void onConnected(Bundle arg0) {
 		mSignInClicked = false;
-		Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
 		// Get user's information
-		getProfileInformation();
-
+		if (isChecksignOut == 2) {
+			signOutFromGplus();
+		} else {
+			getProfileInformation();
+		}
 	}
 
 	@Override
@@ -328,29 +339,18 @@ public class LoginActivity extends BaseActivity
 	 */
 	@SuppressWarnings("deprecation")
 	private void getProfileInformation() {
-		
+
 		try {
-			String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
-			Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-			
-			String google_id = signedInUser.getId();
-			Debug.e("emailAddr: " + emailAddr + "\n signedInUser: " + google_id);
-			
-//			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-//				Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-//				String personName = currentPerson.getDisplayName();
-//				String personPhotoUrl = currentPerson.getImage().getUrl();
-//				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-//				String google_id = currentPerson.getId();
-//				Log.e("TAG", "Name: " + personName + ", email: " + email + ", Image: " + personPhotoUrl);
-//				personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2) + PROFILE_PIC_SIZE;
-//				new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-//				
-//				loginFacebook_google(google_id, "", personName, SystemConfig.statusgoogle);
-//				
-//			} else {
-//				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
-//			}
+
+			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+				String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
+				Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+				String google_id = signedInUser.getId();
+				loginFacebook_google("", google_id, emailAddr, SystemConfig.statusgoogle);
+
+			} else {
+				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -28,6 +28,7 @@ public class SplashActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 		Debug.e(AndroidUtils.getHashKey(this));
+		Debug.e(AndroidUtils.getSHA1(this));
 		runCategoryAsystask();
 	}
 	public void runCategoryAsystask(){
@@ -104,6 +105,7 @@ public class SplashActivity extends BaseActivity {
 					startActivity(intent);
 					finish();
 				} else {
+					LoginActivity.isChecksignOut = 2;
 					Intent intent = new Intent(SplashActivity.this,
 							LoginActivity.class);
 					startActivity(intent);

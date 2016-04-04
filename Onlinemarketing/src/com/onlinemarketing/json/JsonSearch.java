@@ -129,8 +129,24 @@ public class JsonSearch {
 				objproduct.setTime_id(jsonSearch.getString("time_id"));
 				JSONArray categoryArray = jsonSearch.getJSONArray("categoryArray");
 				for (int i = 0; i < categoryArray.length(); i++) {
-					
+					JSONObject objSearch = categoryArray.getJSONObject(i);
+					objproduct.setCategory_name(objSearch.getString("category_name"));
+					objproduct.setCategory_id(objSearch.getInt(("category_id")));
+					JSONArray arrPrice = objSearch.getJSONArray("price");
+					for (int j = 0; j < arrPrice.length(); j++) {
+						JSONObject objPrice = arrPrice.getJSONObject(j);
+						objproduct.setPrice_id(objPrice.getInt("price_id"));
+						objproduct.setStart(objPrice.getString("start"));
+						objproduct.setEnd(objPrice.getString("end"));
+						arrProduct.add(objproduct);
+					}
+					arrProduct.add(objproduct);
 				}
+				
+				
+				
+				
+				obj.setProductVO(arrProduct);  
 			}
 
 		} catch (Exception e) {

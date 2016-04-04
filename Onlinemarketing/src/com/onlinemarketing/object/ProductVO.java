@@ -30,13 +30,29 @@ public class ProductVO {
 	private boolean isCheck;
 	private boolean product_saved;
 	private List<String> arrImageDetail;
-
+	private String start, end;
 	public boolean isProduct_saved() {
 		return product_saved;
 	}
 
 	public void setProduct_saved(boolean product_saved) {
 		this.product_saved = product_saved;
+	}
+
+	public String getStart() {
+		return start;
+	}
+
+	public void setStart(String start) {
+		this.start = start;
+	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public void setEnd(String end) {
+		this.end = end;
 	}
 
 	public String getDescription() {

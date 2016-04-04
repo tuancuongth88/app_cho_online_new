@@ -360,10 +360,10 @@ public class LoginActivity extends BaseActivity
 	 * Sign-in into google
 	 */
 	private void signInWithGplus() {
-		if (!mGoogleApiClient.isConnecting()) {
+		if (!mGoogleApiClient.isConnecting()) {  
 			mSignInClicked = true;
 			resolveSignInError();
-		}
+		}   
 	}
 
 	/**

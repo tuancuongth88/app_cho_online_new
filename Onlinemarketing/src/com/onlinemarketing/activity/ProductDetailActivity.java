@@ -92,24 +92,25 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 
 	private int index = 0;
 
-	private void autoChange() {
-		new Timer().schedule(new TimerTask() {
+//	private void autoChange() {
+//		new Timer().schedule(new TimerTask() {
+//
+//			@Override
+//			public void run() {
+//				runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						index += 1;
+//						index %= fragments.size();
+//						mIndicator.setCurrentItem(index);
+//					}
+//				});
+//
+//			}
+//		}, 5000, 5000);
+//
+//	}
 
-			@Override
-			public void run() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						index += 1;
-						index %= fragments.size();
-						mIndicator.setCurrentItem(index);
-					}
-				});
-
-			}
-		}, 5000, 5000);
-
-	}
 
 	@Override
 	public void onClick(View v) {
@@ -138,7 +139,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			break;
 		case R.id.btnChatDirectly_Detail:
 			ChatDialog chat = new ChatDialog(this);
-			chat.run(SystemConfig.statusGetHistoryMessage);
+			chat.run(SystemConfig.statusGetHistoryMessage,objproductDetail.getUser_id());
 			chat.dialogChat(objproductDetail.getUser_id());
 			break;
 
@@ -256,7 +257,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 					mPager.setAdapter(mAdapter);
 					mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 					mIndicator.setViewPager(mPager);
-					autoChange();
+					//autoChange();
 					Debug.e("objproductDetail.isCheck(): " + objproductDetail.isCheck());
 					if (objproductDetail.isCheck()) {
 						btnCall.setClickable(false);

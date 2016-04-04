@@ -330,27 +330,15 @@ public class LoginActivity extends BaseActivity
 	private void getProfileInformation() {
 		
 		try {
-			String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
-			Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-			
-			String google_id = signedInUser.getId();
-			Debug.e("emailAddr: " + emailAddr + "\n signedInUser: " + google_id);
-			
-//			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
-//				Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-//				String personName = currentPerson.getDisplayName();
-//				String personPhotoUrl = currentPerson.getImage().getUrl();
-//				String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-//				String google_id = currentPerson.getId();
-//				Log.e("TAG", "Name: " + personName + ", email: " + email + ", Image: " + personPhotoUrl);
-//				personPhotoUrl = personPhotoUrl.substring(0, personPhotoUrl.length() - 2) + PROFILE_PIC_SIZE;
-//				new LoadProfileImage(imgProfilePic).execute(personPhotoUrl);
-//				
-//				loginFacebook_google(google_id, "", personName, SystemConfig.statusgoogle);
-//				
-//			} else {
-//				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
-//			}
+			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+				String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
+				Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+				String google_id = signedInUser.getId();
+				Debug.e("emailAddr: " + emailAddr + "\n signedInUser: " + google_id);
+				loginFacebook_google(google_id, "", emailAddr, SystemConfig.statusgoogle);
+			} else {
+				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -369,7 +357,7 @@ public class LoginActivity extends BaseActivity
 	/**
 	 * Sign-out from google
 	 */
-	private void onActionLogoutGoogle() {
+	public void onActionLogoutGoogle() {
 		if (mGoogleApiClient.isConnected()) {
 			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
 			mGoogleApiClient.disconnect();
@@ -404,5 +392,6 @@ public class LoginActivity extends BaseActivity
 			SystemConfig.avatar = result;
 		}
 	}
+	
 
 }

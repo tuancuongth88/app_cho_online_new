@@ -49,7 +49,7 @@ public class ChatDialog {
 	TableLayout tab;
 	static String messageMsg;
 	int idProduct;
-	static int chat_id_room, abc;
+	static int chat_id_room;
 	static int id_send;
 	static int message_id;
 	int status_callWS = 0;
@@ -88,6 +88,13 @@ public class ChatDialog {
 		}
 		
 	}
+	public void run(int status, int id_user){
+		if (status == SystemConfig.statusGetHistoryMessage) {
+			chat_id_room = id_user;
+			status_callWS = SystemConfig.statusGetHistoryMessage;
+			new MessageAsystask().execute(status);
+		}
+	}
 
 	public void dialogListMessage() {
 
@@ -102,7 +109,6 @@ public class ChatDialog {
 					int position, long id) {
 				// idProduct = listMessage.get(position).getReceiver_id();
 				chat_id_room = listMessage.get(position).getReceiver_id();
-				abc = chat_id_room;
 				ChatDialog chat = new ChatDialog(context);
 				chat.run(SystemConfig.statusGetHistoryMessage);
 				dialogChat(idProduct);
@@ -143,11 +149,7 @@ public class ChatDialog {
 			@Override
 			public void onClick(View v) {
 				messageMsg = editSendMessage.getText().toString();
-				if(iduser > 0){
 					chat_id_room = iduser;
-				}else{
-					chat_id_room = abc;
-				}
 				run(SystemConfig.statusSendMessage);
 //				setStyleSendMessage(editSendMessage.getText().toString(), 0);
 				

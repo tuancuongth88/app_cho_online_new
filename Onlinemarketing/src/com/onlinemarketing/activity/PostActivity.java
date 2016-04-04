@@ -63,13 +63,13 @@ import android.widget.Toast;
  */
 public class PostActivity extends BaseActivity implements OnClickListener {
 	ProgressDialog prgDialog;
-	ImageView imgCamrePost,imgLocalPost;
+	ImageView imgCamrePost,imgLocalPost,img_25Post, img_50Post, img_75Post, imgBack;
 	TextView edit_TitlePost, edit_PricePost, edit_AddPost, edit_DescripPost;
 	Spinner spnCategoryPost, spnMenuPost;
 	Button btnpost;
 	JSONObject json;
 	static String imagePart;
-	List<String> arrImgFromCamere;
+	public static List<String> arrImgFromCamere;
 	List<Bitmap> arrImgFromCamereBitmap;
 	private final int PICK_IMAGE_MULTIPLE = 1;
 	private LinearLayout lnrImages;
@@ -110,10 +110,29 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		lnrImages = (LinearLayout) findViewById(R.id.lnrImages);
 		btnpost = (Button) findViewById(R.id.btnpost);
 		imgLocalPost = (ImageView) findViewById(R.id.imgLocalPost);
+		img_25Post = (ImageView) findViewById(R.id.img_25Post);
+		img_50Post = (ImageView) findViewById(R.id.img_50Post);
+		img_75Post = (ImageView) findViewById(R.id.img_75Post);
+		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
 		imgLocalPost.setOnClickListener(this);
 		imgCamrePost.setOnClickListener(this);
 		btnpost.setOnClickListener(this);
-		
+		imgBack.setOnClickListener(this);
+		edit_PricePost.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(!title.isEmpty()&& id_category != 0 && id_type != 0)
+					img_50Post.setImageResource(R.drawable.icon_50_success);
+			}
+		});
+		edit_DescripPost.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(!price.isEmpty())
+					img_75Post.setImageResource(R.drawable.icon_75_success);
+			}
+		});
 		 listCategory = new ArrayList<CategoryVO>();
 		 listType = new ArrayList<TypeProductVO>();
 		 arrImgFromCamere = new ArrayList<String>();
@@ -125,6 +144,8 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		params.put("session_id", SystemConfig.session_id);
 		params.put("device_id", SystemConfig.device_id);
 		invokeWSGet(params);
+		
+		
 
 	}
 
@@ -288,6 +309,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		        }
 			
 			break;
+		case R.id.imgBackTitle:
+			finish();
+			break;
 		}
 	}
 	public void PostProduct(){
@@ -403,6 +427,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		           mRecyclerView.setLayoutManager(layoutManager);
 		           mRecyclerView.setAdapter(mAdapter);
 		           arrImgFromCamere.add(SystemConfig.productImage);
+		           img_25Post.setImageResource(R.drawable.icon_25_success);
 			}
 			super.onPostExecute(result);
 		}
@@ -439,7 +464,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 				 JSONObject obj = new JSONObject(response);
 				 outputgoogle = LocationAddress.getLatLong(obj);
            	 //su ly post san pham
-					output = jsonProduct.paserPostProduct(
+				 output = jsonProduct.paserPostProduct(
 								SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, 
 								arrImgFromCamere, arrImgFromCamere.get(0), title, String.valueOf(id_category), 
 								String.valueOf(id_type), String.valueOf(outputgoogle.getLat()), 

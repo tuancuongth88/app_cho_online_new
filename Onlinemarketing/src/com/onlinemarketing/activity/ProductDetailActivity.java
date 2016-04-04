@@ -53,7 +53,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 	public static ProductVO objproductDetail;
 	ViewPager mPager;
 	ProgressDialog progressDialog;
-
+	ImageView imgback;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -82,6 +82,8 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		txt_contact_Detail = (TextView) findViewById(R.id.txt_contact_Detail);
 		txtPrice_Detail = (TextView) findViewById(R.id.txtPrice_Detail);
 		txt_titleDetaile = (TextView) findViewById(R.id.txt_titleDetaile);
+		imgback = (ImageView) findViewById(R.id.imgBackTitle);
+		imgback.setOnClickListener(this);
 		btnChatDirectly_Detail.setOnClickListener(this);
 		btnErrorReport.setOnClickListener(this);
 		btnProducSave.setOnClickListener(this);
@@ -134,6 +136,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			if (SystemConfig.user_id.isEmpty() && SystemConfig.session_id.isEmpty()) {
 				startActivity(new Intent(ProductDetailActivity.this, LoginActivity.class));
 			} else {
+//				if(!objproductDetail.isProduct_saved())
 				new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductSave);
 			}
 			break;
@@ -150,7 +153,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 				dialogErrorReport();
 			}
 			break;
-
+		case R.id.imgBackTitle:
+			finish();
+			break;
 		}
 
 	}
@@ -280,4 +285,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		finish();
+		super.onBackPressed();
+	}
 }

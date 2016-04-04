@@ -146,7 +146,7 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 			break;
 		case R.id.btnChatDirectly_Detail:
 			ChatDialog chat = new ChatDialog(this);
-			chat.run(SystemConfig.statusGetHistoryMessage);
+			chat.run(SystemConfig.statusGetHistoryMessage,ProductDetailActivity.objproductDetail.getUser_id());
 			chat.dialogChat(ProductDetailActivity.objproductDetail.getUser_id());
 			break;
 		}

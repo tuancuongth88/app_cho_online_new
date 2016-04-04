@@ -68,7 +68,6 @@ public class LoginActivity extends BaseActivity
 	EditText editErrorReport;
 	Button btnOk, btnCancle;
 	// cuongntlogin google
-	private String link = "https://play.google.com/store/apps/details?id=com.freesmartapps.fancy.dress.changer";
 	private boolean mSignInClicked;
 	private boolean mIntentInProgress;
 	private GoogleApiClient mGoogleApiClient;
@@ -76,6 +75,7 @@ public class LoginActivity extends BaseActivity
 	private static final int PROFILE_PIC_SIZE = 400;
 	private static final int RC_SIGN_IN = 0;
 	private ImageView imgProfilePic;
+	public static int isChecksignOut;
 
 	static Output out;
 
@@ -105,9 +105,8 @@ public class LoginActivity extends BaseActivity
 		account = new LoginRegisterAsystask(txtusername.getText().toString().trim(),
 				txtpass.getText().toString().trim(), SystemConfig.device_id, "", "", false, this);
 		Debug.e(SystemConfig.device_id);
-
-		mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-				.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(new Scope(Scopes.PROFILE)).build();
+			mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+					.addOnConnectionFailedListener(this).addApi(Plus.API).addScope(new Scope(Scopes.PROFILE)).build();
 
 	}
 
@@ -135,6 +134,15 @@ public class LoginActivity extends BaseActivity
 				mIntentInProgress = false;
 				mGoogleApiClient.connect();
 			}
+		}
+	}
+
+	public void signOutFromGplus() {
+		if (mGoogleApiClient.isConnected()) {
+			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+			mGoogleApiClient.disconnect();
+			mGoogleApiClient.connect();
+			isChecksignOut = 2;
 		}
 	}
 
@@ -261,7 +269,7 @@ public class LoginActivity extends BaseActivity
 			new LoginRegisterAsystask(SystemConfig.device_id, "", "", facebook_id, "", user_name, LoginActivity.this)
 					.execute(SystemConfig.statusfacebook);
 		} else if (status == SystemConfig.statusgoogle) {
-			new LoginRegisterAsystask(SystemConfig.device_id, "", "", facebook_id, "", user_name, LoginActivity.this)
+			new LoginRegisterAsystask(SystemConfig.device_id, "", "", "", google_id, user_name, LoginActivity.this)
 					.execute(SystemConfig.statusgoogle);
 		}
 	}
@@ -311,10 +319,12 @@ public class LoginActivity extends BaseActivity
 	@Override
 	public void onConnected(Bundle arg0) {
 		mSignInClicked = false;
-		Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
 		// Get user's information
-		getProfileInformation();
-
+		if (isChecksignOut == 2) {
+			signOutFromGplus();
+		} else if(isChecksignOut == 1){
+			getProfileInformation();
+		}
 	}
 
 	@Override
@@ -328,14 +338,16 @@ public class LoginActivity extends BaseActivity
 	 */
 	@SuppressWarnings("deprecation")
 	private void getProfileInformation() {
-		
+
 		try {
+
 			if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
 				String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
 				Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 				String google_id = signedInUser.getId();
 				Debug.e("emailAddr: " + emailAddr + "\n signedInUser: " + google_id);
-				loginFacebook_google(google_id, "", emailAddr, SystemConfig.statusgoogle);
+				loginFacebook_google("", google_id, emailAddr, SystemConfig.statusgoogle);
+
 			} else {
 				Toast.makeText(getApplicationContext(), "Person information is null", Toast.LENGTH_LONG).show();
 			}
@@ -349,6 +361,7 @@ public class LoginActivity extends BaseActivity
 	 */
 	private void signInWithGplus() {
 		if (!mGoogleApiClient.isConnecting()) {
+			isChecksignOut = 1;
 			mSignInClicked = true;
 			resolveSignInError();
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
+import com.onlinemarketing.activity.LoginActivity;
 import com.onlinemarketing.adapter.ListMessageAdapter;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
@@ -15,6 +16,7 @@ import com.smile.android.gsm.utils.AndroidUtils;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -89,10 +91,14 @@ public class ChatDialog {
 		
 	}
 	public void run(int status, int id_user){
+		if(!SystemConfig.session_id.isEmpty())
 		if (status == SystemConfig.statusGetHistoryMessage) {
 			chat_id_room = id_user;
 			status_callWS = SystemConfig.statusGetHistoryMessage;
 			new MessageAsystask().execute(status);
+		}
+		else {
+			context.startActivity(new Intent(context, LoginActivity.class));
 		}
 	}
 

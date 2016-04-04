@@ -111,7 +111,7 @@ public class LoginRegisterAsystask extends
 		super.onPostExecute(result);
 		}catch (Exception e) {
 			// TODO: handle exception
-			Debug.e("Lôi cmnr: " + e.toString());
+			Debug.e( e.toString());
 		}
 	}
 

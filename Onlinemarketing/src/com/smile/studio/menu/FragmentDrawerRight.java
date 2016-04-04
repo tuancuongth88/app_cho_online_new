@@ -299,6 +299,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 			@Override
 			public void onClick(View v) {
 				if (!SystemConfig.session_id.isEmpty()) {
+					LoginActivity.isChecksignOut = 2;
 					SharedPreferences settings = context.getSharedPreferences("smile_studio", Context.MODE_PRIVATE);
 					settings.edit().clear();
 					settings.edit().remove(SystemConfig.USER_ID).commit();
@@ -306,6 +307,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 					settings.edit().remove(SystemConfig.CHECKLOGIN).commit();
 					LoginActivity obj = new LoginActivity();
 					startActivity(new Intent(context, LoginActivity.class));
+					
 				} else {
 					startActivity(new Intent(context, LoginActivity.class));
 				}

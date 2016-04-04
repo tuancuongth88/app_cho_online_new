@@ -7,10 +7,16 @@
     android:orientation="vertical"
     tools:context="com.example.demodesign.MainActivity" >
 
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2.5"
+        layout="@layout/layout_title" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="1.85" >
+        android:layout_weight="2" >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
@@ -276,4 +282,5 @@
             android:layout_weight="1"
             android:src="@drawable/icon_sms" />
     </LinearLayout>
+
 </LinearLayout>

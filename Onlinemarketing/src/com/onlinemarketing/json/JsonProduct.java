@@ -17,6 +17,8 @@ import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProductVO;
 import com.onlinemarketing.util.Util;
 
+import android.graphics.Bitmap;
+
 public class JsonProduct {
 	JSONObject jsonObject;
 	StringBuilder request;
@@ -206,6 +208,8 @@ public class JsonProduct {
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
+			Debug.e(request.toString());
+			Debug.e(str);
 			jsonObject = new JSONObject(str);
 			obj.setCode(jsonObject.getInt("code"));
 			obj.setMessage(jsonObject.getString("message"));
@@ -289,7 +293,7 @@ public class JsonProduct {
 					objproduct.setCategory_id(objjson_product.getInt("category_id"));
 					objproduct.setUser_id(objjson_product.getInt("user_id"));
 					objproduct.setType_id(objjson_product.getInt("type_id"));
-					objproduct.setCity_id(objjson_product.getInt("city_id"));
+//					objproduct.setCity_id(objjson_product.getInt("city_id"));
 					objproduct.setStartdate(objjson_product.get("start_time").toString());
 					objproduct.setStatus(objjson_product.getInt("status"));
 					objproduct.setPosition(objjson_product.getInt("position"));
@@ -310,9 +314,9 @@ public class JsonProduct {
 	}
 	
 	//upload file
-	public Output doFileUpload(String user_id, String session_id, String device_id, String file) {
+	public Output doFileUpload(String user_id, String session_id, String device_id, String file, Bitmap bit) {
 		Output output = new Output();
-		output = Util.UploadImageProduct(user_id, session_id, device_id, file);
+		output = Util.UploadImageProduct(user_id, session_id, device_id, file, bit);
 		return output;
 	}
 

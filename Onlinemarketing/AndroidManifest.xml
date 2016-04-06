@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />	
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -113,6 +113,10 @@
         <activity
             android:name="com.onlinemarketing.activity.PostActivity"
             android:label="@string/title_activity_post" >
+        </activity>
+        <activity
+            android:name="com.onlinemarketing.activity.SearchActivity"
+            android:label="@string/title_activity_search" >
         </activity>
     </application>
 

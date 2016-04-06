@@ -70,9 +70,12 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 				new NewsPosterAsystask().execute();
 			}
 
+			if(!SystemConfig.user_id.isEmpty())
 			if (Integer.parseInt(SystemConfig.user_id) == ProductDetailActivity.objproductDetail.getUser_id()) {
 				imgFavorite.setVisibility(View.INVISIBLE);
 			} else
+				imgFavorite.setVisibility(View.VISIBLE);
+			else 
 				imgFavorite.setVisibility(View.VISIBLE);
 
 		} else if (statutActivityCall == 2) {
@@ -114,6 +117,17 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 			adapter = new HomePageAdapter(PosterDetailActivity.this, R.layout.item_trang_chu, list);
 			listview.setAdapter(adapter);
 			progressDialog.dismiss();
+			if(list.size() > 0){
+				ProductVO objproduct =  list.get(0);
+				if(objproduct.isCheck()){
+					btnCall.setClickable(false);
+					btnSendSMS_Detail.setClickable(false);
+					img_chat.setClickable(false);
+					btnCall.setImageResource(R.drawable.call_hidden);
+					btnSendSMS_Detail.setImageResource(R.drawable.sms_hidden);
+					img_chat.setImageResource(R.drawable.chat_hidden);
+				}
+			}
 
 		}
 	}
@@ -122,6 +136,7 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		ProductDetailActivity.id_product = list.get(arg2).getId();
 		startActivity(new Intent(PosterDetailActivity.this, ProductDetailActivity.class));
+		this.finish();
 	}
 
 	@Override
@@ -136,18 +151,21 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 			intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
 			startActivity(intent);
 			break;
-		case R.id.imgBackTitle:
-			this.finish();
-			break;
-		case R.id.imgFavoriteTitle:
-			if (isConnect()) {
-				new FavoriteUserAsystask().execute();
-			}
-			break;
 		case R.id.btnChatDirectly_Detail:
 			ChatDialog chat = new ChatDialog(this);
-			chat.run(SystemConfig.statusGetHistoryMessage,ProductDetailActivity.objproductDetail.getUser_id());
-			chat.dialogChat(ProductDetailActivity.objproductDetail.getUser_id());
+			chat.run(SystemConfig.statusGetHistoryMessage,idUser);
+			chat.dialogChat(idUser);
+			break;
+		case R.id.imgFavoriteTitle:
+			if (!SystemConfig.session_id.isEmpty()) 
+				if (isConnect()) {
+					new FavoriteUserAsystask().execute();
+				}
+			else
+				Debug.showAlert(PosterDetailActivity.this, "Ban can dang nhap tai khoan!!!!");
+			break;
+		case R.id.imgBackTitle:
+			this.finish();
 			break;
 		}
 	}

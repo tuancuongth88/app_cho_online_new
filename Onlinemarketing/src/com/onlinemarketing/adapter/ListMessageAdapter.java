@@ -68,6 +68,7 @@ public class ListMessageAdapter extends ArrayAdapter<MessageVO>{
 			txtUserName.setText(item.getUsername());
 			txtDecripMessage.setText(item.getMessage());
 			txtDateMessage.setText(item.getCreate_at());
+			
 		}
 	}
 	
@@ -80,6 +81,7 @@ public class ListMessageAdapter extends ArrayAdapter<MessageVO>{
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		if(!listData.get(position).isBlock()){
 		ImageView btnDelet=(ImageView)convertView.findViewById(R.id.itemDeleteMessage);
 		ImageView btnBock=(ImageView)convertView.findViewById(R.id.itemBockMessage);
 		btnDelet.setTag(position);
@@ -100,6 +102,10 @@ public class ListMessageAdapter extends ArrayAdapter<MessageVO>{
 				dialogDelete(id, SystemConfig.statusBlockUser);
 			}
 		});
+		}
+		if(listData.get(position).isBlock()){
+			convertView.setBackgroundColor(R.color.block);
+		}
 		holder.init(listData.get(position));
 		return convertView;
 	}

@@ -272,6 +272,7 @@ public class FragmentCategory extends Fragment implements OnItemClickListener,
 
 			} else if (result.getCode() == Constan.getIntProperty("success")
 					&& status == SystemConfig.statusFavorite) {
+				FavoriteActivity.listProfile = listProfile;
 				startActivity(new Intent(context, FavoriteActivity.class));
 			} else {
 				startActivity(new Intent(context, LoginActivity.class));

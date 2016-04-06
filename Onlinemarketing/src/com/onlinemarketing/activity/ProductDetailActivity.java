@@ -18,6 +18,7 @@ import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProductVO;
 import com.onlinemarketing.util.ChatDialog;
+import com.onlinemarketing.util.Message;
 import com.onlinemarketing.util.Util;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -131,6 +132,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		case R.id.btnPoster_Detail:
 			PosterDetailActivity.statutActivityCall = 1;
 			startActivity(new Intent(ProductDetailActivity.this, PosterDetailActivity.class));
+			finish();
 			break;
 		case R.id.btnSave_Detail:
 			if (SystemConfig.user_id.isEmpty() && SystemConfig.session_id.isEmpty()) {
@@ -268,18 +270,27 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 						btnCall.setClickable(false);
 						btnSendSMS_Detail.setClickable(false);
 						btnChatDirectly_Detail.setClickable(false);
+						btnCall.setImageResource(R.drawable.call_hidden);
+						btnSendSMS_Detail.setImageResource(R.drawable.sms_hidden);
+						btnChatDirectly_Detail.setImageResource(R.drawable.chat_hidden);
 					} else if (objproductDetail.isCheck() == false) {
 						btnCall.setClickable(true);
 						btnSendSMS_Detail.setClickable(true);
 						btnChatDirectly_Detail.setClickable(true);
 					}
 					if (objproductDetail.isProduct_saved()) {
-						btnProducSave.setImageResource(R.drawable.icon_user);
+						btnProducSave.setImageResource(R.drawable.icon_save_detail_true);;
 						btnProducSave.setClickable(false);
 					} else
 						btnProducSave.setClickable(true);
 
+				}else if(status == SystemConfig.statusProductSave){
+					btnProducSave.setClickable(false);
+					btnProducSave.setImageResource(R.drawable.icon_save_detail_true);
 				}
+			}else{
+				Message msg = new Message(ProductDetailActivity.this);
+				msg.showMessage(result.getMessage());
 			}
 			super.onPostExecute(result);
 		}

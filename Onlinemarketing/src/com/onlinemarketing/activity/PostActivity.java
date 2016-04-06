@@ -26,6 +26,7 @@ import com.onlinemarketing.logingoogle.Dialog;
 import com.onlinemarketing.logingoogle.GPSTracker;
 import com.onlinemarketing.logingoogle.LocationAddress;
 import com.onlinemarketing.object.CategoryVO;
+import com.onlinemarketing.object.CityVO;
 import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.OutputGoogle;
 import com.onlinemarketing.object.TypeProductVO;
@@ -68,7 +69,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	ProgressDialog prgDialog;
 	ImageView imgCamrePost, imgLocalPost, img_25Post, img_50Post, img_75Post, imgBack;
 	EditText edit_TitlePost, edit_PricePost, edit_AddPost, edit_DescripPost;
-	Spinner spnCategoryPost, spnMenuPost;
+	Spinner spnCategoryPost, spnMenuPost, spnCityPost;
 	Button btnpost;
 	JSONObject json;
 	static String imagePart;
@@ -80,6 +81,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	String imageEncoded;
 	private List<CategoryVO> listCategory;
 	private List<TypeProductVO> listType;
+	private List<CityVO> listCity;
 	protected LocationManager locationManager;
 	protected LocationListener locationListener;
 	String lag, log = "";
@@ -87,7 +89,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	Output out;
 	OutputGoogle outputgoogle;
 	static String title, price, address, description="";
-	static int id_category, id_type;
+	static int id_category, id_type, city_id;
 	private RecyclerView mRecyclerView;
 	private PostRecycleAdapter mAdapter;
 	private RecyclerView.LayoutManager mLayoutManager;
@@ -110,6 +112,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		edit_DescripPost = (EditText) findViewById(R.id.edit_DescripPost);
 		spnCategoryPost = (Spinner) findViewById(R.id.spnCategoryPost);
 		spnMenuPost = (Spinner) findViewById(R.id.spnMenuPost);
+		spnCityPost = (Spinner) findViewById(R.id.spnCityPost);
 		imgCamrePost = (ImageView) findViewById(R.id.imgCamrePost);
 		lnrImages = (LinearLayout) findViewById(R.id.lnrImages);
 		btnpost = (Button) findViewById(R.id.btnpost);
@@ -133,6 +136,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		});
 		listCategory = new ArrayList<CategoryVO>();
 		listType = new ArrayList<TypeProductVO>();
+		listCity = new ArrayList<CityVO>();
 		arrImgFromCamere = new ArrayList<String>();
 		arrImgFromCamereBitmap = new ArrayList<Bitmap>();
 		CallWSAsynsHttp callWS = new CallWSAsynsHttp(this, SystemConfig.API + SystemConfig.Post_product,
@@ -168,8 +172,10 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 						JSONObject jsondata = json.getJSONObject("data");
 						JSONArray jsonCatagoryArr = jsondata.getJSONArray("categoryArray");
 						JSONArray jsonTypeArr = jsondata.getJSONArray("typeArray");
+						JSONArray jsonCityArr = jsondata.getJSONArray("cityArray");
 						String[] title = new String[jsonCatagoryArr.length()];
 						String[] type = new String[jsonTypeArr.length()];
+						String[] city = new String[jsonCityArr.length()];
 						for (int i = 0; i < jsonCatagoryArr.length(); i++) {
 							JSONObject jsonCategory = jsonCatagoryArr.getJSONObject(i);
 							CategoryVO objcategory = new CategoryVO();
@@ -190,6 +196,15 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 						}
 						spnMenuPost.setAdapter(
 								new ArrayAdapter<String>(PostActivity.this, R.layout.item_spinersearch, type));
+						for (int i = 0; i < jsonCityArr.length(); i++) {
+							JSONObject jsonCity = jsonCityArr.getJSONObject(i);
+							CityVO objCity = new CityVO();
+							objCity.setId(jsonCity.getInt("city_id"));
+							objCity.setName(jsonCity.getString("city_name"));
+							city[i] = jsonCity.getString("city_name");
+							listCity.add(objCity);
+						}
+						spnCityPost.setAdapter(new ArrayAdapter<String>(PostActivity.this,R.layout.item_spinersearch, city));
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -228,6 +243,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 				}
 			}
 		} catch (Exception e) {
+			finish();
 			startActivity(new Intent(this, PostActivity.class));
 		}
 
@@ -330,6 +346,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		title = edit_TitlePost.getText().toString();
 		id_category = listCategory.get(spnCategoryPost.getSelectedItemPosition()).getId();
 		id_type = listType.get(spnMenuPost.getSelectedItemPosition()).getId();
+		city_id = listCity.get(spnCityPost.getSelectedItemPosition()).getId();
 		price = edit_PricePost.getText().toString();
 		address = edit_AddPost.getText().toString();
 		description = edit_DescripPost.getText().toString();
@@ -353,6 +370,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		boolean tmp = false;
 		if (!Util.isNotNull(title)) {
 			edit_TitlePost.setError("Bạn phải nhập tiêu đề!");
+			tmp = false;
+		} else if (city_id == 0) {
+			((TextView) spnCityPost.getSelectedView()).setError("bạn phải chọn thành phố!");
 			tmp = false;
 		} else if (id_category == 0) {
 			((TextView) spnCategoryPost.getSelectedView()).setError("bạn phải chọn danh mục!");
@@ -476,7 +496,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 				output = jsonProduct.paserPostProduct(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, arrImgFromCamere, arrImgFromCamere.get(0), title,
 						String.valueOf(id_category), String.valueOf(id_type), String.valueOf(outputgoogle.getLat()),
-						String.valueOf(outputgoogle.getLog()), price, description, outputgoogle.getCity(), address);
+						String.valueOf(outputgoogle.getLog()), price, description, city_id, address);
 
 			} catch (Exception e) {
 				Debug.e(e.toString());

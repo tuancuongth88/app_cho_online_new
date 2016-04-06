@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
+import com.onlinemarketing.activity.ProductDetailActivity.ProductSaveAndReportAsynTask;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.json.JsonProfile;
@@ -41,8 +43,8 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 	ProfileVO profile = new ProfileVO();
 	Output out;
 	ImageView imgAvatar;
-	EditText editName, editPhone, editAdd, editPass, editConfigPass;
-	Button btnSave, btnBacklist;
+	EditText editName, editPhone, editAdd, editPass, editConfigPass,editErrorReport;
+	Button btnSave, btnBacklist,btnOk,btnCancle;
 	TextView btnApprovePhone, editMail;
 	Uri selectedUriImage;
 	String picturePath;
@@ -50,6 +52,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 	private Uri fileUri;
 	private AQuery aQuery;
 	ProgressDialog prgDialog;
+	Dialog dialog;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.activity_profile);
@@ -118,6 +121,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.btnApprovePhone_profile:
+			dialogApprovePhone();
 			break;
 		case R.id.btnBackList:
 			startActivity(new Intent(ProfileActivity.this, BackListActivity.class));
@@ -142,7 +146,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			picturePath = getPicturePath(selectedUriImage);
 			selectedBitmap = getThumbnail(picturePath);
 			selectedBitmap = rotateImageIfRequired(selectedBitmap, selectedUriImage);
-			selectedBitmap = Util.getCroppedBitmap(selectedBitmap);
+//			selectedBitmap = Util.getCroppedBitmap(selectedBitmap);
 			new UpdateAsystask().execute(Constan.getIntProperty("status_upload_avatar"));
 
 		}
@@ -212,7 +216,7 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 		protected Output doInBackground(Integer... params) {
 			if (params[0] == Constan.getIntProperty("status_upload_avatar")) {
 				out = jsonProfile.doFileUpload(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
-						picturePath);
+						picturePath,selectedBitmap);
 			} else {
 				out = jsonProfile.postPaserProfile(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, profile);
@@ -225,10 +229,36 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			prgDialog.dismiss();
 			if (result.getCode() == Constan.getIntProperty("success")) {
 				Debug.showAlert(ProfileActivity.this, result.getMessage());
-				imgAvatar.setImageBitmap(selectedBitmap);
+				Bitmap bit = selectedBitmap;
+				bit = Util.getCroppedBitmap(bit);
+				imgAvatar.setImageBitmap(bit);
 			}
 			super.onPostExecute(result);
 		}
 
+	}
+	public void dialogApprovePhone() {
+		dialog = new Dialog(this);
+		dialog.setContentView(R.layout.dialog_errorreport);
+		dialog.setTitle("Thông Báo");
+		editErrorReport = (EditText) dialog.findViewById(R.id.editErrorReport);
+		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_ErrorReport);
+		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_ErrorReport);
+		btnOk.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+//				new ProductSaveAndReportAsynTask().execute(SystemConfig.statusErrorReport);
+				dialog.dismiss();
+			}
+		});
+		btnCancle.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
 	}
 }

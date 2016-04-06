@@ -64,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center|left"
-            android:text="Nhơ mật khẩu"
+            android:text="Nhớ mật khẩu"
             android:textColor="#373945" />
 
         <TextView
@@ -134,13 +134,15 @@
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <com.google.android.gms.common.SignInButton
+        
+            <Button
             android:id="@+id/googlebtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginRight="5dp"
-            android:background="@drawable/icon_google" />
+            android:background="@drawable/icon_google"
+             />
 
         <Button
             android:id="@+id/btnFace"

@@ -56,6 +56,7 @@ public class JsonMessage {
 					objmessage.setUsername(objjson_message.getString("chat_name"));
 					objmessage.setAvatar(objjson_message.getString("chat_avatar"));
 					objmessage.setStatus(Integer.parseInt(objjson_message.get("status").toString()));
+					objmessage.setBlock(objjson_message.getBoolean("block"));
 					arrayMessage.add(objmessage);
 				}
 				

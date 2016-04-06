@@ -5,6 +5,16 @@ public class MessageVO {
 	private int receiver_id, send_id;
 	int status;
 	boolean send;
+	boolean block;
+	
+	public boolean isBlock() {
+		return block;
+	}
+
+	public void setBlock(boolean block) {
+		this.block = block;
+	}
+
 	public int getStatus() {
 		return status;
 	}

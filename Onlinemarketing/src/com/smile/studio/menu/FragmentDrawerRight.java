@@ -288,9 +288,9 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 		dialog.setTitle("Thông Báo");
 		txtalert = (TextView) dialog.findViewById(R.id.txtalert);
 		if (!SystemConfig.session_id.isEmpty())
-			txtalert.setText("Bạn muốn đămg xuất không!");
+			txtalert.setText("Bạn muốn đăng xuất không!");
 		else
-			txtalert.setText("Bạn muốn đămg nhập!");
+			txtalert.setText("Bạn muốn đăng nhập!");
 		txtalert.setTextSize(18);
 		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_Delete);
 		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_Delete);

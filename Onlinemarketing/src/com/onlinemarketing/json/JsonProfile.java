@@ -14,6 +14,8 @@ import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProfileVO;
 import com.onlinemarketing.util.Util;
 
+import android.graphics.Bitmap;
+
 public class JsonProfile {
 	JSONObject jsonObject;
 	StringBuilder request;
@@ -41,7 +43,8 @@ public class JsonProfile {
 					jsonObject = new JSONObject(str);
 					obj.setCode(jsonObject.getInt("code"));					
 					obj.setMessage(jsonObject.getString("message"));
-					obj.setSession_id(jsonObject.getString("session_id"));
+					if(jsonObject.has("session_id"))
+						obj.setSession_id(jsonObject.getString("session_id"));
 					if (status == SystemConfig.statusFavorite) {
 						jsonProfiledata = jsonObject.getJSONArray("data");
 						if (obj.getCode() == Constan.getIntProperty("success")) 
@@ -63,6 +66,7 @@ public class JsonProfile {
 								objProfile.setType(jsonProfile.get("type").toString());
 								objProfile.setStatus(jsonProfile.get("status").toString());
 								objProfile.setCreated_at(jsonProfile.get("created_at").toString());
+								
 								arrprofile.add(objProfile);
 								obj.setProfileVO(arrprofile);
 							}
@@ -132,9 +136,9 @@ public class JsonProfile {
 
 	} 
 	
-	public Output doFileUpload(String user_id, String session_id, String device_id, String link) {
+	public Output doFileUpload(String user_id, String session_id, String device_id, String link, Bitmap bit) {
 		Output output = new Output();
-		output = Util.doFileUpload(user_id, session_id, device_id, link);
+		output = Util.doFileUpload(user_id, session_id, device_id, link, bit);
 		return output;
 	}
 }

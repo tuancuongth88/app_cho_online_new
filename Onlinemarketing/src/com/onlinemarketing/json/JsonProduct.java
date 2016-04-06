@@ -323,7 +323,7 @@ public class JsonProduct {
 	
 	public Output paserPostProduct(String user_id, String session_id, String device_id, 
 			List<String> image_url, String avatar, String name, String category_id,
-			String type_id, String lat, String log, String price, String description, String city_id, String address
+			String type_id, String lat, String log, String price, String description, int city_id, String address
 			) {
 		Output obj = new Output();
 		String str = null;
@@ -345,7 +345,7 @@ public class JsonProduct {
 			request.append("&long=").append(URLEncoder.encode(log, "UTF-8"));
 			request.append("&price=").append(URLEncoder.encode(price, "UTF-8"));
 			request.append("&description=").append(URLEncoder.encode(description, "UTF-8"));
-			request.append("&city=").append(URLEncoder.encode(city_id = city_id == null ? "" : city_id, "UTF-8"));
+			request.append("&city_id=").append(city_id);
 			request.append("&address=").append(URLEncoder.encode(address, "UTF-8"));
 
 			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());

@@ -49,7 +49,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
-            android:background="@drawable/icon_sms" />
+            android:background="@drawable/icon_chat_product" />
 
         <Button
             android:id="@+id/btnFavorite_FragmentCategory"

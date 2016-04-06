@@ -1,10 +1,13 @@
 package com.onlinemarketing.activity;
 
+import java.util.List;
+
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
 import com.onlinemarketing.adapter.FavoriteAdapter;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.object.Output;
+import com.onlinemarketing.object.ProfileVO;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ public class FavoriteActivity extends BaseActivity implements OnItemClickListene
 	FavoriteAdapter adapter;
 	public static int id_delete;
 	public static String phone;
+	public static List<ProfileVO> listProfile;
 	static Output out;
 
 	ImageView imgBack;
@@ -45,6 +49,7 @@ public class FavoriteActivity extends BaseActivity implements OnItemClickListene
 		id_delete = SystemConfig.oOputproduct.getProfileVO().get(arg2).getId();
 		phone = SystemConfig.oOputproduct.getProfileVO().get(arg2).getPhone();
 		PosterDetailActivity.statutActivityCall = 2;
+		
 		startActivity(new Intent(FavoriteActivity.this, PosterDetailActivity.class));
 	}
 

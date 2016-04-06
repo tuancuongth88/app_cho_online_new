@@ -53,7 +53,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 	public static ProductVO objproductDetail;
 	ViewPager mPager;
 	ProgressDialog progressDialog;
-
+	ImageView imgback;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -82,6 +82,8 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		txt_contact_Detail = (TextView) findViewById(R.id.txt_contact_Detail);
 		txtPrice_Detail = (TextView) findViewById(R.id.txtPrice_Detail);
 		txt_titleDetaile = (TextView) findViewById(R.id.txt_titleDetaile);
+		imgback = (ImageView) findViewById(R.id.imgBackTitle);
+		imgback.setOnClickListener(this);
 		btnChatDirectly_Detail.setOnClickListener(this);
 		btnErrorReport.setOnClickListener(this);
 		btnProducSave.setOnClickListener(this);
@@ -92,25 +94,26 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 
 	private int index = 0;
 
-	private void autoChange() {
-		new Timer().schedule(new TimerTask() {
+//	private void autoChange() {
+//		new Timer().schedule(new TimerTask() {
+//
+//			@Override
+//			public void run() {
+//				runOnUiThread(new Runnable() {
+//					@Override
+//					public void run() {
+//						index += 1;
+//						index %= fragments.size();
+//						mIndicator.setCurrentItem(index);
+//					}
+//				});
+//
+//			}
+//		}, 5000, 5000);
+//
+//	}
 
-			@Override
-			public void run() {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						index += 1;
-						index %= fragments.size();
-						mIndicator.setCurrentItem(index);
-					}
-				});
 
-			}
-		}, 5000, 5000);
-
-	}
-    
 	@Override
 	public void onClick(View v) {
 		String phone = objproductDetail.getPhone();
@@ -133,12 +136,13 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			if (SystemConfig.user_id.isEmpty() && SystemConfig.session_id.isEmpty()) {
 				startActivity(new Intent(ProductDetailActivity.this, LoginActivity.class));
 			} else {
+//				if(!objproductDetail.isProduct_saved())
 				new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductSave);
 			}
 			break;
 		case R.id.btnChatDirectly_Detail:
 			ChatDialog chat = new ChatDialog(this);
-			chat.run(SystemConfig.statusGetHistoryMessage);  
+			chat.run(SystemConfig.statusGetHistoryMessage,objproductDetail.getUser_id());
 			chat.dialogChat(objproductDetail.getUser_id());
 			break;
 
@@ -149,7 +153,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 				dialogErrorReport();
 			}
 			break;
-
+		case R.id.imgBackTitle:
+			finish();
+			break;
 		}
 
 	}
@@ -256,7 +262,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 					mPager.setAdapter(mAdapter);
 					mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 					mIndicator.setViewPager(mPager);
-					autoChange();
+					//autoChange();
 					Debug.e("objproductDetail.isCheck(): " + objproductDetail.isCheck());
 					if (objproductDetail.isCheck()) {
 						btnCall.setClickable(false);

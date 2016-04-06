@@ -11,11 +11,11 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
         android:background="@drawable/background_boder"
         android:hint="Từ khóa tìm kiếm"
-        android:inputType="text" />
+        android:inputType="text"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -62,10 +62,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:src="@drawable/icon_price" />
+            android:src="@drawable/icon_category" />
 
         <Spinner
-            android:id="@+id/sinpnerPriceSearch"
+            android:id="@+id/sinpnerCategorySearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -93,10 +93,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:src="@drawable/icon_category" />
+            android:src="@drawable/icon_price" />
 
         <Spinner
-            android:id="@+id/sinpnerCategorySearch"
+            android:id="@+id/sinpnerPriceSearch"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -175,9 +175,9 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="5dp"
         android:gravity="center"
-        android:layout_marginBottom="10dp"
         android:orientation="horizontal" >
 
         <Button

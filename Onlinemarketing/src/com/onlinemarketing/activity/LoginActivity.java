@@ -68,7 +68,6 @@ public class LoginActivity extends BaseActivity
 	EditText editErrorReport;
 	Button btnOk, btnCancle;
 	// cuongntlogin google
-	private String link = "https://play.google.com/store/apps/details?id=com.freesmartapps.fancy.dress.changer";
 	private boolean mSignInClicked;
 	private boolean mIntentInProgress;
 	private GoogleApiClient mGoogleApiClient;
@@ -143,7 +142,7 @@ public class LoginActivity extends BaseActivity
 			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
 			mGoogleApiClient.disconnect();
 			mGoogleApiClient.connect();
-			isChecksignOut = 1;
+			isChecksignOut = 2;
 		}
 	}
 
@@ -323,7 +322,7 @@ public class LoginActivity extends BaseActivity
 		// Get user's information
 		if (isChecksignOut == 2) {
 			signOutFromGplus();
-		} else {
+		} else if(isChecksignOut == 1){
 			getProfileInformation();
 		}
 	}
@@ -346,6 +345,7 @@ public class LoginActivity extends BaseActivity
 				String emailAddr = Plus.AccountApi.getAccountName(mGoogleApiClient);
 				Person signedInUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 				String google_id = signedInUser.getId();
+				Debug.e("emailAddr: " + emailAddr + "\n signedInUser: " + google_id);
 				loginFacebook_google("", google_id, emailAddr, SystemConfig.statusgoogle);
 
 			} else {
@@ -360,7 +360,8 @@ public class LoginActivity extends BaseActivity
 	 * Sign-in into google
 	 */
 	private void signInWithGplus() {
-		if (!mGoogleApiClient.isConnecting()) {  
+		if (!mGoogleApiClient.isConnecting()) {
+			isChecksignOut = 1;
 			mSignInClicked = true;
 			resolveSignInError();
 		}   
@@ -369,7 +370,7 @@ public class LoginActivity extends BaseActivity
 	/**
 	 * Sign-out from google
 	 */
-	private void onActionLogoutGoogle() {
+	public void onActionLogoutGoogle() {
 		if (mGoogleApiClient.isConnected()) {
 			Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
 			mGoogleApiClient.disconnect();
@@ -404,5 +405,6 @@ public class LoginActivity extends BaseActivity
 			SystemConfig.avatar = result;
 		}
 	}
+	
 
 }

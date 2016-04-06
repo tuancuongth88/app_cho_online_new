@@ -203,10 +203,13 @@ public class FragmentCategory extends Fragment implements OnItemClickListener,
 
 		case R.id.btnChat_FragmentCategory:
 			//
-			if (AndroidUtils.isConnectedToInternet(context)) {
-				ChatDialog chat = new ChatDialog(context);
-				chat.run(SystemConfig.statusListMessage);
-			}
+			if(!SystemConfig.session_id.isEmpty())
+				if (AndroidUtils.isConnectedToInternet(context)) {
+					ChatDialog chat = new ChatDialog(context);
+					chat.run(SystemConfig.statusListMessage);
+				}
+			else
+				startActivity(new Intent(context, LoginActivity.class));
 			break;
 		case R.id.btnFavorite_FragmentCategory:
 			status = SystemConfig.statusFavorite;

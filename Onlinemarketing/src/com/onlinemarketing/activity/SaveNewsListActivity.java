@@ -49,7 +49,8 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		ProductDetailActivity.id_product = list.get(position).getId();
-		startActivity(new Intent(SaveNewsListActivity.this, ProductDetailActivity.class));
+		if(status != Constan.getIntProperty("daan"))
+			startActivity(new Intent(SaveNewsListActivity.this, ProductDetailActivity.class));
 	}
 
 	public class HomeAsystask extends AsyncTask<Integer, Integer, OutputProduct> {

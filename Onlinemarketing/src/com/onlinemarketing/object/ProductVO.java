@@ -26,13 +26,21 @@ public class ProductVO {
 	private String delete_at;
 	private String create_at;
 	private String lat, log;
-	private String time_id, phone;
+	private String time_id, phone, time_name;
 	private boolean isCheck;
 	private boolean product_saved;
 	private List<String> arrImageDetail;
 	private String start, end;
 	public boolean isProduct_saved() {
 		return product_saved;
+	}
+
+	public String getTime_name() {
+		return time_name;
+	}
+
+	public void setTime_name(String time_name) {
+		this.time_name = time_name;
 	}
 
 	public void setProduct_saved(boolean product_saved) {

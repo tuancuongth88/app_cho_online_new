@@ -1,6 +1,7 @@
 package com.onlinemarketing.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -49,6 +51,7 @@ import com.smile.android.gsm.utils.AndroidUtils;
 import com.sun.mail.smtp.SMTPTransport;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -142,9 +145,8 @@ public class Util {
 		}
 		return output;
 	}
-	public static Output UploadImageProduct(String user_id, String session_id, String device_id, String link) {
+	public static Output UploadImageProduct(String user_id, String session_id, String device_id, String link, Bitmap bit) {
 		Output output = new Output();
-		File file_path = new File(link);
 		try {
 			StringBuilder request = new StringBuilder(SystemConfig.API );
 			request.append(SystemConfig.Upload_image);
@@ -152,13 +154,15 @@ public class Util {
 			HttpClient client = new DefaultHttpClient();
 			// use your server path of php file
 			HttpPost post = new HttpPost(request.toString());
-
-
-			FileBody bin1 = new FileBody(file_path);
-			Log.e("Enter", "Filebody complete " + bin1);
-
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bit.compress(CompressFormat.JPEG, 75, bos);
+            byte[] data = bos.toByteArray();
+            String[] arrlink = link.split("/");
+            String name =  arrlink[arrlink.length - 1];
+            ByteArrayBody bab = new ByteArrayBody(data, name);
+			
 			MultipartEntity reqEntity = new MultipartEntity();
-			reqEntity.addPart("image_url[]", bin1);
+			reqEntity.addPart("image_url[]", bab);
 			reqEntity.addPart("user_id", new StringBody(user_id));
 			reqEntity.addPart("device_id", new StringBody(device_id));
 			reqEntity.addPart("session_id", new StringBody(session_id));

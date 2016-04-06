@@ -31,6 +31,7 @@ public class SystemConfig {
 	public static final String  Post_product = "post_product";
 	public static final String  ResetPassword = "resetpassword";
 	public static final String  Search = "search";
+	public static final String  SearchAction = "search_action";
 	//chat dialog
 	public static final String Message = "message";
 	public static final String SendMessage = "send";

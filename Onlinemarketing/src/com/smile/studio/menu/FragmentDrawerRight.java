@@ -305,6 +305,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 					settings.edit().remove(SystemConfig.USER_ID).commit();
 					settings.edit().remove(SystemConfig.SESSION_ID).commit();
 					settings.edit().remove(SystemConfig.CHECKLOGIN).commit();
+					LoginActivity obj = new LoginActivity();
 					startActivity(new Intent(context, LoginActivity.class));
 					
 				} else {

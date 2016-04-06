@@ -17,6 +17,8 @@ import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProductVO;
 import com.onlinemarketing.util.Util;
 
+import android.graphics.Bitmap;
+
 public class JsonProduct {
 	JSONObject jsonObject;
 	StringBuilder request;
@@ -52,7 +54,8 @@ public class JsonProduct {
 					ProductVO objproduct = new ProductVO();
 					objproduct.setId(objjson_product.getInt("id"));
 					objproduct.setName(objjson_product.get("name").toString());
-					objproduct.setAvatar(objjson_product.get("avatar").toString());
+					if(objjson_product.has("avatar"))
+						objproduct.setAvatar(objjson_product.get("avatar").toString());
 					objproduct.setPrice(objjson_product.get("price").toString());
 					objproduct.setPrice_id(objjson_product.getInt("price_id"));
 					objproduct.setCategory_id(objjson_product.getInt("category_id"));
@@ -111,7 +114,6 @@ public class JsonProduct {
 			request.append("&message=").append(URLEncoder.encode(message, "UTF-8"));
 
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
-			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
 			obj.setCode(jsonObject.getInt("code"));
 			obj.setMessage(jsonObject.getString("message"));
@@ -147,7 +149,6 @@ public class JsonProduct {
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
-			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
 			obj.setCode(jsonObject.getInt("code"));
 			obj.setMessage(jsonObject.getString("message"));
@@ -170,7 +171,6 @@ public class JsonProduct {
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
-			Debug.e("Str: " + str);
 			jsonObject = new JSONObject(str);
 			obj.setCode(jsonObject.getInt("code"));
 			obj.setMessage(jsonObject.getString("message"));
@@ -208,7 +208,8 @@ public class JsonProduct {
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
-			Debug.e("xxxx: " + str);
+			Debug.e(request.toString());
+			Debug.e(str);
 			jsonObject = new JSONObject(str);
 			obj.setCode(jsonObject.getInt("code"));
 			obj.setMessage(jsonObject.getString("message"));
@@ -292,7 +293,7 @@ public class JsonProduct {
 					objproduct.setCategory_id(objjson_product.getInt("category_id"));
 					objproduct.setUser_id(objjson_product.getInt("user_id"));
 					objproduct.setType_id(objjson_product.getInt("type_id"));
-					objproduct.setCity_id(objjson_product.getInt("city_id"));
+//					objproduct.setCity_id(objjson_product.getInt("city_id"));
 					objproduct.setStartdate(objjson_product.get("start_time").toString());
 					objproduct.setStatus(objjson_product.getInt("status"));
 					objproduct.setPosition(objjson_product.getInt("position"));
@@ -313,9 +314,9 @@ public class JsonProduct {
 	}
 	
 	//upload file
-	public Output doFileUpload(String user_id, String session_id, String device_id, String file) {
+	public Output doFileUpload(String user_id, String session_id, String device_id, String file, Bitmap bit) {
 		Output output = new Output();
-		output = Util.UploadImageProduct(user_id, session_id, device_id, file);
+		output = Util.UploadImageProduct(user_id, session_id, device_id, file, bit);
 		return output;
 	}
 
@@ -333,7 +334,9 @@ public class JsonProduct {
 			request.append("?user_id=").append(URLEncoder.encode(user_id, "UTF-8"));
 			request.append("&session_id=").append(URLEncoder.encode(session_id, "UTF-8"));
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
-			request.append("&image_url[]=").append(URLEncoder.encode(arrimg, "UTF-8"));
+			for (int i = 0; i < image_url.size(); i++) {
+				request.append("&image_url[]=").append(URLEncoder.encode(image_url.get(i), "UTF-8"));
+			}
 			request.append("&avatar=").append(URLEncoder.encode(avatar, "UTF-8"));
 			request.append("&name=").append(URLEncoder.encode(name, "UTF-8"));
 			request.append("&category_id=").append(URLEncoder.encode(category_id, "UTF-8"));

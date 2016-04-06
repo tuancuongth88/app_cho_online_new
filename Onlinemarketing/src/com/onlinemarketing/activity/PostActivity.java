@@ -1,10 +1,12 @@
 package com.onlinemarketing.activity;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +53,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -63,31 +66,32 @@ import android.widget.Toast;
  */
 public class PostActivity extends BaseActivity implements OnClickListener {
 	ProgressDialog prgDialog;
-	ImageView imgCamrePost,imgLocalPost;
-	TextView edit_TitlePost, edit_PricePost, edit_AddPost, edit_DescripPost;
+	ImageView imgCamrePost, imgLocalPost, img_25Post, img_50Post, img_75Post, imgBack;
+	EditText edit_TitlePost, edit_PricePost, edit_AddPost, edit_DescripPost;
 	Spinner spnCategoryPost, spnMenuPost;
 	Button btnpost;
 	JSONObject json;
 	static String imagePart;
-	List<String> arrImgFromCamere;
+	public static List<String> arrImgFromCamere;
 	List<Bitmap> arrImgFromCamereBitmap;
 	private final int PICK_IMAGE_MULTIPLE = 1;
 	private LinearLayout lnrImages;
 	private Uri fileUri;
-	String imageEncoded;    
+	String imageEncoded;
 	private List<CategoryVO> listCategory;
 	private List<TypeProductVO> listType;
 	protected LocationManager locationManager;
 	protected LocationListener locationListener;
-	String lag,log = "";
+	String lag, log = "";
 	GPSTracker gps;
 	Output out;
 	OutputGoogle outputgoogle;
-	static String title, price,address,description;
-	static int id_category,id_type;
-	 private RecyclerView mRecyclerView;
-	    private PostRecycleAdapter mAdapter;
-	    private RecyclerView.LayoutManager mLayoutManager;
+	static String title, price, address, description="";
+	static int id_category, id_type;
+	private RecyclerView mRecyclerView;
+	private PostRecycleAdapter mAdapter;
+	private RecyclerView.LayoutManager mLayoutManager;
+	Bitmap bit = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,25 +104,38 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		prgDialog = new ProgressDialog(this);
 		prgDialog.setMessage("Please wait...");
 		prgDialog.setCancelable(false);
-		edit_TitlePost = (TextView) findViewById(R.id.edit_TitlePost);
-		edit_PricePost = (TextView) findViewById(R.id.edit_PricePost);
-		edit_AddPost = (TextView) findViewById(R.id.edit_AddPost);
-		edit_DescripPost = (TextView) findViewById(R.id.edit_DescripPost);
+		edit_TitlePost = (EditText) findViewById(R.id.edit_TitlePost);
+		edit_PricePost = (EditText) findViewById(R.id.edit_PricePost);
+		edit_AddPost = (EditText) findViewById(R.id.edit_AddPost);
+		edit_DescripPost = (EditText) findViewById(R.id.edit_DescripPost);
 		spnCategoryPost = (Spinner) findViewById(R.id.spnCategoryPost);
 		spnMenuPost = (Spinner) findViewById(R.id.spnMenuPost);
 		imgCamrePost = (ImageView) findViewById(R.id.imgCamrePost);
 		lnrImages = (LinearLayout) findViewById(R.id.lnrImages);
 		btnpost = (Button) findViewById(R.id.btnpost);
 		imgLocalPost = (ImageView) findViewById(R.id.imgLocalPost);
+		img_25Post = (ImageView) findViewById(R.id.img_25Post);
+		img_50Post = (ImageView) findViewById(R.id.img_50Post);
+		img_75Post = (ImageView) findViewById(R.id.img_75Post);
+		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
 		imgLocalPost.setOnClickListener(this);
 		imgCamrePost.setOnClickListener(this);
 		btnpost.setOnClickListener(this);
-		
-		 listCategory = new ArrayList<CategoryVO>();
-		 listType = new ArrayList<TypeProductVO>();
-		 arrImgFromCamere = new ArrayList<String>();
-		 arrImgFromCamereBitmap = new ArrayList<Bitmap>();
-		 CallWSAsynsHttp callWS = new CallWSAsynsHttp(this, SystemConfig.API + SystemConfig.Post_product,
+		imgBack.setOnClickListener(this);
+		edit_PricePost.setOnClickListener(this);
+		edit_DescripPost.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (!edit_PricePost.getText().toString().isEmpty())
+					img_75Post.setImageResource(R.drawable.icon_75_success);
+			}
+		});
+		listCategory = new ArrayList<CategoryVO>();
+		listType = new ArrayList<TypeProductVO>();
+		arrImgFromCamere = new ArrayList<String>();
+		arrImgFromCamereBitmap = new ArrayList<Bitmap>();
+		CallWSAsynsHttp callWS = new CallWSAsynsHttp(this, SystemConfig.API + SystemConfig.Post_product,
 				SystemConfig.httpget);
 		RequestParams params = new RequestParams();
 		params.put("user_id", SystemConfig.user_id);
@@ -130,6 +147,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 
 	/**
 	 * ham nay load cac thong tin tren form tao moi san pham
+	 * 
 	 * @param params
 	 */
 	public void invokeWSGet(RequestParams params) {
@@ -160,7 +178,8 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 							title[i] = jsonCategory.getString("name");
 							listCategory.add(objcategory);
 						}
-						spnCategoryPost.setAdapter(new ArrayAdapter<String>(PostActivity.this, R.layout.item_spinersearch, title));
+						spnCategoryPost.setAdapter(
+								new ArrayAdapter<String>(PostActivity.this, R.layout.item_spinersearch, title));
 						for (int i = 0; i < jsonTypeArr.length(); i++) {
 							JSONObject jsonType = jsonTypeArr.getJSONObject(i);
 							TypeProductVO objTypeVO = new TypeProductVO();
@@ -169,7 +188,8 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 							type[i] = jsonType.getString("type_name");
 							listType.add(objTypeVO);
 						}
-						spnMenuPost.setAdapter(new ArrayAdapter<String>(PostActivity.this, R.layout.item_spinersearch, type));
+						spnMenuPost.setAdapter(
+								new ArrayAdapter<String>(PostActivity.this, R.layout.item_spinersearch, type));
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -187,26 +207,32 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
-		 if (requestCode == PICK_IMAGE_MULTIPLE) {
-		        if (resultCode == RESULT_OK) {
-		            // Image captured and saved to fileUri specified in the Intent
-		            Toast.makeText(this, "Image saved to:\n" +
-		                     data.getData(), Toast.LENGTH_LONG).show();
-		            Uri uri= data.getData();
-		           String linkFromCamera=  getPicturePath(uri);
-		           Bitmap bit = null;//= getThumbnail(linkFromCamera);
-		           
-		           linkFromCamera = getPicturePath(uri);
-		           bit = getThumbnail(linkFromCamera);
-		           bit = rotateImageIfRequired(bit, uri);
-		           
-		           imagePart = linkFromCamera;
-//		           arrImgFromCamere.add(linkFromCamera);
-		           arrImgFromCamereBitmap.add(bit);
-		           new UpdateAsystask().execute();
-		        }
-		 }
+		try {
+			if (requestCode == PICK_IMAGE_MULTIPLE) {
+				if (resultCode == RESULT_OK) {
+					// Image captured and saved to fileUri specified in the
+					// Intent
+					Uri uri = data.getData();
+					String linkFromCamera = getPicturePath(uri);
+					
+
+					linkFromCamera = getPicturePath(uri);
+					bit = getThumbnail(linkFromCamera);
+					bit = rotateImageIfRequired(bit, uri);
+					
+					imagePart = linkFromCamera;
+					arrImgFromCamereBitmap.add(bit);
+					//resize image
+					
+					new UpdateAsystask().execute(bit);
+				}
+			}
+		} catch (Exception e) {
+			startActivity(new Intent(this, PostActivity.class));
+		}
+
 	}
+
 	private Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) {
 		// Detect rotation
 		int rotation = getRotation(selectedImage);
@@ -220,6 +246,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 			return img;
 		}
 	}
+
 	private int getRotation(Uri uri) {
 		String[] filePathColumn = { MediaStore.Images.Media.ORIENTATION };
 		Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
@@ -230,6 +257,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		cursor.close();
 		return rotation;
 	}
+
 	public Bitmap getThumbnail(String pathHinh) {
 		BitmapFactory.Options bounds = new BitmapFactory.Options();
 		bounds.inJustDecodeBounds = true;
@@ -241,6 +269,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		opts.inSampleSize = originalSize / 500;
 		return BitmapFactory.decodeFile(pathHinh, opts);
 	}
+
 	public String getPicturePath(Uri uriImage) {
 		String[] filePathColumn = { MediaStore.Images.Media.DATA };
 		Cursor cursor = getContentResolver().query(uriImage, filePathColumn, null, null, null);
@@ -251,12 +280,13 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		cursor.close();
 		return path;
 	}
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.imgCamrePost:
-//			intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-			SystemConfig.productImage ="";
+			// intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+			SystemConfig.productImage = "";
 			Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 			i.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 			startActivityForResult(i, PICK_IMAGE_MULTIPLE);
@@ -266,159 +296,165 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 			PostProduct();
 			break;
 		case R.id.imgLocalPost:
-			  gps = new GPSTracker(PostActivity.this);
+			gps = new GPSTracker(PostActivity.this);
 
-				// check if GPS enabled		
-		        if(gps.canGetLocation()){
-		        	
-		        	lag = String.valueOf(gps.getLatitude());
-		        	log = String.valueOf(gps.getLongitude());
-		        	// \n is for new line
-		        	Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + lag + "\nLong: " + log, Toast.LENGTH_LONG).show();
-		        	  LocationAddress locationAddress = new LocationAddress();
-	                    locationAddress.getAddressFromLocation( Double.parseDouble(lag),Double.parseDouble(log),
-	                            getApplicationContext(), new GeocoderHandler());
-		        }else{
-		        	// can't get location
-		        	// GPS or Network is not enabled
-		        	// Ask user to enable GPS/network in settings
-		        	gps.showSettingsAlert();
-		        }
-			
+			// check if GPS enabled
+			if (gps.canGetLocation()) {
+
+				lag = String.valueOf(gps.getLatitude());
+				log = String.valueOf(gps.getLongitude());
+				// \n is for new line
+				LocationAddress locationAddress = new LocationAddress();
+				locationAddress.getAddressFromLocation(Double.parseDouble(lag), Double.parseDouble(log),
+						getApplicationContext(), new GeocoderHandler());
+			} else {
+				// can't get location
+				// GPS or Network is not enabled
+				// Ask user to enable GPS/network in settings
+				gps.showSettingsAlert();
+			}
+
+			break;
+		case R.id.imgBackTitle:
+			finish();
+			break;
+		case R.id.edit_PricePost:
+			if (!edit_TitlePost.getText().toString().isEmpty() && listCategory.get(spnCategoryPost.getSelectedItemPosition()).getId() != 0 && listType.get(spnMenuPost.getSelectedItemPosition()).getId() != 0)
+				img_50Post.setImageResource(R.drawable.icon_50_success);
 			break;
 		}
+
 	}
-	public void PostProduct(){
-		 title = edit_TitlePost.getText().toString();
-		 id_category = listCategory.get(spnCategoryPost.getSelectedItemPosition()).getId();
-		 id_type = listType.get(spnMenuPost.getSelectedItemPosition()).getId();
-		 price  = edit_PricePost.getText().toString();
-		 address =  edit_AddPost.getText().toString();
-		 description =  edit_DescripPost.getText().toString();
+
+	public void PostProduct() {
+		title = edit_TitlePost.getText().toString();
+		id_category = listCategory.get(spnCategoryPost.getSelectedItemPosition()).getId();
+		id_type = listType.get(spnMenuPost.getSelectedItemPosition()).getId();
+		price = edit_PricePost.getText().toString();
+		address = edit_AddPost.getText().toString();
+		description = edit_DescripPost.getText().toString();
 		boolean checkform = checkform(title, id_category, id_type, price, address, description);
-		// lay location va post anh luon 
-		
-		if(checkform){
-			if(arrImgFromCamere.size() == 0)
-			{
+		// lay location va post anh luon
+
+		if (checkform) {
+			if (arrImgFromCamere.size() == 0) {
 				com.onlinemarketing.util.Message msg = new com.onlinemarketing.util.Message(this);
 				msg.showMessage("Bạn phải chụp ảnh sản phẩm!");
-			}else {
-				
+			} else {
+
 				new AsystarkPostProduct().execute();
 			}
 		}
-		
+
 	}
 
-	public boolean checkform(String title, int id_category, int id_type, String price, String address, String description){
+	public boolean checkform(String title, int id_category, int id_type, String price, String address,
+			String description) {
 		boolean tmp = false;
-		if(!Util.isNotNull(title))
-		{
-			edit_TitlePost.setError( "Bạn phải nhập tiêu đề!" );
-			tmp =  false;
-		}
-		else if(id_category == 0)
-		{
-			((TextView)spnCategoryPost.getSelectedView()).setError("bạn phải chọn danh mục!");
-			tmp =  false;
-		}
-		else if(id_type == 0)
-		{
-			((TextView)spnMenuPost.getSelectedView()).setError("bạn phải tình trạng sản phẩm!");
-			tmp =  false;
-		}
-		else if(!Util.isNotNull(price))
-		{
-			edit_PricePost.setError( "Bạn phải nhập giá!" );
-			tmp =  false;
-		}
-		else if(!Util.isNotNull(address))
-		{
-			edit_AddPost.setError( "Bạn phải nhập địa chỉ!" );
-			tmp =  false;
-		}
-		else if(!Util.isNotNull(description)){
-			edit_DescripPost.setError( "Bạn phải nhập mô tả!" );
-			tmp =  false;
-		}
-		else {
+		if (!Util.isNotNull(title)) {
+			edit_TitlePost.setError("Bạn phải nhập tiêu đề!");
+			tmp = false;
+		} else if (id_category == 0) {
+			((TextView) spnCategoryPost.getSelectedView()).setError("bạn phải chọn danh mục!");
+			tmp = false;
+		} else if (id_type == 0) {
+			((TextView) spnMenuPost.getSelectedView()).setError("bạn phải tình trạng sản phẩm!");
+			tmp = false;
+		} else if (!Util.isNotNull(price)) {
+			edit_PricePost.setError("Bạn phải nhập giá!");
+			tmp = false;
+		} else if (!Util.isNotNull(address)) {
+			edit_AddPost.setError("Bạn phải nhập địa chỉ!");
+			tmp = false;
+		} else if (!Util.isNotNull(description)) {
+			edit_DescripPost.setError("Bạn phải nhập mô tả!");
+			tmp = false;
+		} else {
 			tmp = true;
 		}
 		return tmp;
 	}
 
-
 	@SuppressLint("HandlerLeak")
 	private class GeocoderHandler extends Handler {
-	        @Override
-	        public void handleMessage(Message message) {
-	            String locationAddress;
-	            switch (message.what) {
-	                case 1:
-	                    Bundle bundle = message.getData();
-	                    locationAddress = bundle.getString("address");
-	                    break;
-	                default:
-	                    locationAddress = null;
-	            }
-	            edit_AddPost.setText(locationAddress);
-	        }
-	    }
+		@Override
+		public void handleMessage(Message message) {
+			String locationAddress;
+			switch (message.what) {
+			case 1:
+				Bundle bundle = message.getData();
+				locationAddress = bundle.getString("address");
+				break;
+			default:
+				locationAddress = null;
+			}
+			edit_AddPost.setText(locationAddress);
+		}
+	}
+
 	/**
 	 * Su ly upload anh trong ActivityResult
+	 * 
 	 * @author tuanc_000
 	 *
 	 */
-	public class UpdateAsystask extends AsyncTask<Void, Void, Output> {
+	public class UpdateAsystask extends AsyncTask<Bitmap, Void, Output> {
 
 		JsonProduct jsonProfile;
 
 		@Override
 		protected void onPreExecute() {
 			jsonProfile = new JsonProduct();
-			 prgDialog.show();
+			prgDialog.show();
 			super.onPreExecute();
 		}
 
 		@Override
-		protected Output doInBackground(Void... params) {
-				out = jsonProfile.doFileUpload(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
-						imagePart);
+		protected Output doInBackground(Bitmap... params) {
+			Bitmap bitmap = params[0];
+			out = jsonProfile.doFileUpload(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+					imagePart,bitmap);
 			return out;
 		}
 
 		@Override
 		protected void onPostExecute(Output result) {
+			try{
 			prgDialog.dismiss();
 			if (result.getCode() == Constan.getIntProperty("success")) {
-				 LinearLayoutManager layoutManager  = new LinearLayoutManager(PostActivity.this, LinearLayoutManager.HORIZONTAL, false);
-				 mRecyclerView = (RecyclerView) findViewById(R.id.recyclerPost);
-		           mRecyclerView.setHasFixedSize(true);
-		           mLayoutManager = new LinearLayoutManager(PostActivity.this);
-		           mRecyclerView.setLayoutManager(mLayoutManager);
-		           mAdapter = new PostRecycleAdapter(PostActivity.this ,arrImgFromCamere,arrImgFromCamereBitmap);
-		           mRecyclerView.setLayoutManager(layoutManager);
-		           mRecyclerView.setAdapter(mAdapter);
-		           arrImgFromCamere.add(SystemConfig.productImage);
+				LinearLayoutManager layoutManager = new LinearLayoutManager(PostActivity.this,
+						LinearLayoutManager.HORIZONTAL, false);
+				mRecyclerView = (RecyclerView) findViewById(R.id.recyclerPost);
+				mRecyclerView.setHasFixedSize(true);
+				mLayoutManager = new LinearLayoutManager(PostActivity.this);
+				mRecyclerView.setLayoutManager(mLayoutManager);
+				mAdapter = new PostRecycleAdapter(PostActivity.this, arrImgFromCamere, arrImgFromCamereBitmap);
+				mRecyclerView.setLayoutManager(layoutManager);
+				mRecyclerView.setAdapter(mAdapter);
+				arrImgFromCamere.add(SystemConfig.productImage);
+				img_25Post.setImageResource(R.drawable.icon_25_success);
 			}
 			super.onPostExecute(result);
+			}catch(Exception ex){
+				Debug.e(ex.toString());
+			}
 		}
 
 	}
-	
-	
-	 /**
-	  * su ly upload san pham
+
+	/**
+	 * su ly upload san pham
+	 * 
 	 * @author tuanc_000
 	 *
 	 */
-	public class AsystarkPostProduct extends AsyncTask<Void, Void, Output>{
-		 Context contextasysn;
-		 UploadProduct upload;
-		 List<String> linkImgFromGallery;
-		 Output output;
+	public class AsystarkPostProduct extends AsyncTask<Void, Void, Output> {
+		Context contextasysn;
+		UploadProduct upload;
+		List<String> linkImgFromGallery;
+		Output output;
 		JsonProduct jsonProduct;
+
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
@@ -428,25 +464,24 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 
 		@Override
 		protected Output doInBackground(Void... params) {
-				try{
+			try {
 				StringBuffer str = new StringBuffer(SystemConfig.linkGetLaglogFromAddress);
 				str.append("?address=").append(URLEncoder.encode(address, "UTF-8"));
 				str.append("&sensor=").append(false);
-				
+
 				String response = Util.getjSonUrl(str.toString(), SystemConfig.httpget);
-				 JSONObject obj = new JSONObject(response);
-				 outputgoogle = LocationAddress.getLatLong(obj);
-           	 //su ly post san pham
-					output = jsonProduct.paserPostProduct(
-								SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, 
-								arrImgFromCamere, arrImgFromCamere.get(0), title, String.valueOf(id_category), 
-								String.valueOf(id_type), String.valueOf(outputgoogle.getLat()), 
-								String.valueOf(outputgoogle.getLog()), price, description, outputgoogle.getCity(), address);
-           	 
-				}catch(Exception e){
-					Debug.e(e.toString());
-				}
-			
+				JSONObject obj = new JSONObject(response);
+				outputgoogle = LocationAddress.getLatLong(obj);
+				// su ly post san pham
+				output = jsonProduct.paserPostProduct(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, arrImgFromCamere, arrImgFromCamere.get(0), title,
+						String.valueOf(id_category), String.valueOf(id_type), String.valueOf(outputgoogle.getLat()),
+						String.valueOf(outputgoogle.getLog()), price, description, outputgoogle.getCity(), address);
+
+			} catch (Exception e) {
+				Debug.e(e.toString());
+			}
+
 			return output;
 		}
 
@@ -454,10 +489,13 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		protected void onPostExecute(Output result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			if(result.getCode() == Constan.getIntProperty("success")){
-				Debug.e("post bai thanh cong: "+ result.getMessage());
+			if (result.getCode() == Constan.getIntProperty("success")) {
+				startActivity(new Intent(PostActivity.this, MainActivity.class));
+			} else {
+				com.onlinemarketing.util.Message msg = new com.onlinemarketing.util.Message(PostActivity.this);
+				msg.showMessage(result.getMessage());
 			}
 		}
-		 
-	 }
+
+	}
 }

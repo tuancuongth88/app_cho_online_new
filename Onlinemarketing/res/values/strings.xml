@@ -20,5 +20,6 @@
     <string name="title_activity_promotion">PromotionActivity</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_search">SearchActivity</string>
 
 </resources>

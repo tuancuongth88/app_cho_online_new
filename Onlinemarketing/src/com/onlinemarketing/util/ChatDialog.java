@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
+import com.onlinemarketing.activity.LoginActivity;
 import com.onlinemarketing.adapter.ListMessageAdapter;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
@@ -15,12 +16,14 @@ import com.smile.android.gsm.utils.AndroidUtils;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.Html;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -48,7 +51,7 @@ public class ChatDialog {
 	TableLayout tab;
 	static String messageMsg;
 	int idProduct;
-	static int chat_id_room, abc;
+	static int chat_id_room;
 	static int id_send;
 	static int message_id;
 	int status_callWS = 0;
@@ -87,6 +90,17 @@ public class ChatDialog {
 		}
 		
 	}
+	public void run(int status, int id_user){
+		if(!SystemConfig.session_id.isEmpty())
+		if (status == SystemConfig.statusGetHistoryMessage) {
+			chat_id_room = id_user;
+			status_callWS = SystemConfig.statusGetHistoryMessage;
+			new MessageAsystask().execute(status);
+		}
+		else {
+			context.startActivity(new Intent(context, LoginActivity.class));
+		}
+	}
 
 	public void dialogListMessage() {
 
@@ -101,7 +115,6 @@ public class ChatDialog {
 					int position, long id) {
 				// idProduct = listMessage.get(position).getReceiver_id();
 				chat_id_room = listMessage.get(position).getReceiver_id();
-				abc = chat_id_room;
 				ChatDialog chat = new ChatDialog(context);
 				chat.run(SystemConfig.statusGetHistoryMessage);
 				dialogChat(idProduct);
@@ -142,11 +155,7 @@ public class ChatDialog {
 			@Override
 			public void onClick(View v) {
 				messageMsg = editSendMessage.getText().toString();
-				if(iduser > 0){
 					chat_id_room = iduser;
-				}else{
-					chat_id_room = abc;
-				}
 				run(SystemConfig.statusSendMessage);
 //				setStyleSendMessage(editSendMessage.getText().toString(), 0);
 				
@@ -158,6 +167,7 @@ public class ChatDialog {
 
 	public void loadHistoryChat() { 
 		try {
+			
 			listMessage = oOputMsg.getArrMessage();
 			for (int i = 0; i < listMessage.size(); i++) {
 				MessageVO obj = new MessageVO();
@@ -257,6 +267,14 @@ public class ChatDialog {
 		});
 		dialog.show();
 	}
+	
+	public void clearTable(){
+		int count = tab.getChildCount();
+		for (int i = 0; i < count; i++) {
+		    View child = tab.getChildAt(i);
+		    if (child instanceof TableRow) ((ViewGroup) child).removeAllViews();
+		}
+	}
 
 	public class MessageAsystask extends
 			AsyncTask<Integer, Integer, OutputMessage> {
@@ -310,8 +328,10 @@ public class ChatDialog {
 		@Override
 		protected void onPostExecute(OutputMessage result) {
 			if (result.getCode() == Constan.getIntProperty("success") && status_callWS == SystemConfig.statusListMessage) {
+				if(listMessage!=null){
 				adapterListMessage = new ListMessageAdapter(context,R.layout.item_list_message, listMessage);
 				listviewChat.setAdapter(adapterListMessage);
+				}
 			}else if (result.getCode() == Constan.getIntProperty("success") && status_callWS == SystemConfig.statusGetHistoryMessage) {
 				loadHistoryChat();
 			}else if (result.getCode() == Constan.getIntProperty("success")&& status_callWS == SystemConfig.statusSendMessage) {
@@ -327,8 +347,10 @@ public class ChatDialog {
 					}
 				}
 //				tab.removeView(tr2);
+				if(listMessage!=null){
 				oOputMsg.setArrMessage(listMessage);
 				loadHistoryChat();
+				}
 			}
 		}
 	}

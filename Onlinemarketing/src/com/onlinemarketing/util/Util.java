@@ -95,7 +95,7 @@ public class Util {
 			is.close();
 		}
 	}
-	public static Output doFileUpload(String user_id, String session_id, String device_id, String link) {
+	public static Output doFileUpload(String user_id, String session_id, String device_id, String link, Bitmap bit) {
 		Output output = new Output();
 		File file_path = new File(link);
 		try {
@@ -105,12 +105,18 @@ public class Util {
 			// use your server path of php file
 			HttpPost post = new HttpPost(request.toString());
 
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			bit.compress(CompressFormat.JPEG, 75, bos);
+		    byte[] data = bos.toByteArray();
+            String[] arrlink = link.split("/");
+            String name =  arrlink[arrlink.length - 1];
+            ByteArrayBody bab = new ByteArrayBody(data, name);
 
-			FileBody bin1 = new FileBody(file_path);
-			Log.e("Enter", "Filebody complete " + bin1);
+//			FileBody bin1 = new FileBody(file_path);
+//			Log.e("Enter", "Filebody complete " + bin1);
 
 			MultipartEntity reqEntity = new MultipartEntity();
-			reqEntity.addPart("image_url[]", bin1);
+			reqEntity.addPart("image_url[]", bab);
 			reqEntity.addPart("user_id", new StringBody(user_id));
 			reqEntity.addPart("device_id", new StringBody(device_id));
 			reqEntity.addPart("session_id", new StringBody(session_id));

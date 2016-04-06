@@ -17,6 +17,14 @@ public class ProfileVO {
 	private String created_at;
 	private String pass;
 	private String old_pass;
+	private boolean block;
+	
+	public boolean isBlock() {
+		return block;
+	}
+	public void setBlock(boolean block) {
+		this.block = block;
+	}
 	public int getId() {
 		return id;
 	}

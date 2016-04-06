@@ -49,9 +49,9 @@ public class ChatDialog {
 	EditText editMessage, editSendMessage;
 	TextView txtShowMessageChat, txtalert;
 	TableLayout tab;
-	static String messageMsg;
+	static String messageMsg = "";
 	int idProduct;
-	static int chat_id_room;
+	private static int chat_id_room;
 	static int id_send;
 	static int message_id;
 	int status_callWS = 0;
@@ -109,16 +109,18 @@ public class ChatDialog {
 		dialogListMsg.setContentView(R.layout.dialog_list_message);
 		listviewChat = (ListView) dialogListMsg.findViewById(R.id.listChat);
 		listviewChat.setOnItemClickListener(new OnItemClickListener() {
-
+		
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// idProduct = listMessage.get(position).getReceiver_id();
+				if(!listMessage.get(position).isBlock()){
+				 idProduct = listMessage.get(position).getReceiver_id();
 				chat_id_room = listMessage.get(position).getReceiver_id();
 				ChatDialog chat = new ChatDialog(context);
 				chat.run(SystemConfig.statusGetHistoryMessage);
-				dialogChat(idProduct);
+				dialogChat(idProduct);			
 				dialogListMsg.dismiss();
+				}
 			}
 		});
 		dialogListMsg.show();
@@ -156,7 +158,8 @@ public class ChatDialog {
 			public void onClick(View v) {
 				messageMsg = editSendMessage.getText().toString();
 					chat_id_room = iduser;
-				run(SystemConfig.statusSendMessage);
+					if(!messageMsg.isEmpty())
+						run(SystemConfig.statusSendMessage);
 //				setStyleSendMessage(editSendMessage.getText().toString(), 0);
 				
 			}
@@ -198,18 +201,18 @@ public class ChatDialog {
 		tr2.setId(id);
 		tr2.addView(textview);
 		tr2.setClickable(true);
-		tr2.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				id_remove = v.getId();
-				message_id = tr2.getId();
-				tr2.removeView(v);
-				dialogDelete();
-
-			}
-		});
+//		tr2.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				id_remove = v.getId();
+//				message_id = tr2.getId();
+//				tr2.removeView(v);
+//				dialogDelete();
+//
+//			}
+//		});
 		tab.addView(tr2);
 	}
 
@@ -226,17 +229,17 @@ public class ChatDialog {
 		tr2.setId(id);
 		tr2.addView(textview);
 		tr2.setClickable(true);
-		tr2.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				id_remove = v.getId();
-				message_id = tr2.getId();
-				dialogDelete();
-				tr2.removeView(v);
-			}
-		});
+//		tr2.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				// TODO Auto-generated method stub
+//				id_remove = v.getId();
+//				message_id = tr2.getId();
+//				dialogDelete();
+//				tr2.removeView(v);
+//			}
+//		});
 		tab.addView(tr2);
 
 	}

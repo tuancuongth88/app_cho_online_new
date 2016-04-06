@@ -3,11 +3,14 @@ package com.onlinemarketing.activity;
 import java.io.InputStream;
 
 import com.example.onlinemarketing.R;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -59,14 +62,14 @@ public class LoginActivity extends BaseActivity
 	AlertDialog.Builder mProgressDialog;
 	LoginRegisterAsystask account;
 	// google
-	SignInButton btngoogle;
+//	SignInButton btngoogle;
 	// private PlusClient mPlusClient;
 	private int REQUEST_CODE_RESOLVE_ERR = 301;
 	private CallbackManager callback = null;
 	TextView txtFogotPass;
 	Dialog dialog;
 	EditText editErrorReport;
-	Button btnOk, btnCancle;
+	Button btnOk, btnCancle, btngoogle;
 	// cuongntlogin google
 	private boolean mSignInClicked;
 	private boolean mIntentInProgress;
@@ -89,7 +92,7 @@ public class LoginActivity extends BaseActivity
 		txtpass = (EditText) findViewById(R.id.txtpassword);
 		btnlogin = (Button) findViewById(R.id.btnlogin);
 		btnRegister = (Button) findViewById(R.id.btnRegister);
-		btngoogle = (SignInButton) findViewById(R.id.googlebtn);
+		btngoogle = (Button) findViewById(R.id.googlebtn);
 		btnFace = (Button) findViewById(R.id.btnFace);
 		btn_skip = (Button) findViewById(R.id.btnSkip);
 		chkRemember = (CheckBox) findViewById(R.id.chkremember);
@@ -97,8 +100,8 @@ public class LoginActivity extends BaseActivity
 		btnlogin.setOnClickListener(this);
 		btnRegister.setOnClickListener(this);
 		btngoogle.setOnClickListener(this);
-		// btngoogle.setEnabled(false);
-		btngoogle.setSize(SignInButton.SIZE_ICON_ONLY);
+		btngoogle.setEnabled(true);
+		
 		btnFace.setOnClickListener(this);
 		btn_skip.setOnClickListener(this);
 		txtFogotPass.setOnClickListener(this);
@@ -193,7 +196,12 @@ public class LoginActivity extends BaseActivity
 
 				@Override
 				public void onError(FacebookException error) {
-					Debug.e("Ä�Äƒng nháº­p tháº¥t báº¡i " + error.toString());
+					Debug.e("Đăng nhập thất bại" + error.toString());
+					 if (error instanceof FacebookAuthorizationException) {
+				            if (AccessToken.getCurrentAccessToken() != null) {
+				                LoginManager.getInstance().logOut();
+				            }
+				        }
 				}
 
 				@Override

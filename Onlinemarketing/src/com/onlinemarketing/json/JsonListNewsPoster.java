@@ -56,8 +56,8 @@ public class JsonListNewsPoster {
 					objproduct.setPosition(objjson_product.getInt("position"));
 					objproduct.setDelete_at(objjson_product.get("deleted_at").toString());
 					objproduct.setCreate_at(objjson_product.get("created_at").toString());
+					objproduct.setCheck(objjson_product.getBoolean("block"));
 					arrProduct.add(objproduct);
-					Debug.e("objproduct: " + objproduct.getAvatar());
 				}
 				obj.setProductVO(arrProduct);
 			}

@@ -228,6 +228,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 				}
 			}
 		} catch (Exception e) {
+			finish();
 			startActivity(new Intent(this, PostActivity.class));
 		}
 

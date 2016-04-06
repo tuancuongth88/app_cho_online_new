@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -239,8 +240,8 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 	}
 	public void dialogApprovePhone() {
 		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.dialog_errorreport);
-		dialog.setTitle("Thông Báo");
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dialog_forgot_pass);
 		editErrorReport = (EditText) dialog.findViewById(R.id.editErrorReport);
 		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_ErrorReport);
 		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_ErrorReport);

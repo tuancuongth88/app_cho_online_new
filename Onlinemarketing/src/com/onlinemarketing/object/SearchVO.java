@@ -8,7 +8,14 @@ public class SearchVO {
 	List<Category_SearchVO> lstCategorySearch;
 	List<TypeVO> lstType;
 	List<TimeVO> lstTime;
+	List<CityVO> lstCity;
 	
+	public List<CityVO> getLstCity() {
+		return lstCity;
+	}
+	public void setLstCity(List<CityVO> lstCity) {
+		this.lstCity = lstCity;
+	}
 	public List<TimeVO> getLstTime() {
 		return lstTime;
 	}

@@ -12,6 +12,7 @@ import com.lib.Debug;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.object.Category_SearchVO;
+import com.onlinemarketing.object.CityVO;
 import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.PriceVO;
@@ -29,7 +30,7 @@ public class JsonSearch {
 	StringBuilder request;
 
 	public Output paserSaveSearch(String user_id, String session_id, String device_id, String name, String lat,
-			String log, String price_id, String category_id, String type_id, String time_id) {
+			String log, String price_id, String category_id, String type_id, String time_id, int city_id) {
 		Output obj = new Output();
 		String str = null;
 		try {
@@ -45,7 +46,8 @@ public class JsonSearch {
 			request.append("&category_id=").append(URLEncoder.encode(category_id, "UTF-8"));
 			request.append("&type_id=").append(URLEncoder.encode(type_id, "UTF-8"));
 			request.append("&time_id=").append(URLEncoder.encode(time_id, "UTF-8"));
-
+			request.append("&city_id=").append(URLEncoder.encode(String.valueOf(city_id), "UTF-8"));
+			
 			Debug.e("link aaaaaaaaaaaaaaaa: " + request.toString());
 			str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 			Debug.e("Str: " + str);
@@ -134,6 +136,16 @@ public class JsonSearch {
 				objSearch.setCategory_id(jsonSearch.getString("category_id"));
 				objSearch.setType_id(jsonSearch.getString("type_id"));
 				objSearch.setTime_id(jsonSearch.getString("time_id"));
+				JSONArray jsonArrCity = jsonSearch.getJSONArray("cityArray");
+				List<CityVO> arrCity = new ArrayList<CityVO>();
+				for (int i = 0; i < jsonArrCity.length(); i++) {
+					CityVO objCity = new CityVO();
+					JSONObject jsonCity = jsonArrCity.getJSONObject(i);
+					objCity.setId(jsonCity.getInt("city_id"));
+					objCity.setName(jsonCity.get("city_name").toString());
+					arrCity.add(objCity);
+					
+				}
 				JSONArray jsonArrType = jsonSearch.getJSONArray("typeArray");
 				List<TypeVO> arrType = new ArrayList<TypeVO>();
 				for (int i = 0; i < jsonArrType.length(); i++) {
@@ -176,6 +188,7 @@ public class JsonSearch {
 				objSearch.setLstCategorySearch(arrcategory);
 				objSearch.setLstType(arrType);
 				objSearch.setLstTime(arrTime);
+				objSearch.setLstCity(arrCity);
 
 			}
 		} catch (Exception e) {
@@ -184,7 +197,7 @@ public class JsonSearch {
 		return objSearch;
 	}
 
-	public OutputProduct paserSearch(String user_id, String session_id, String device_id, String name, String city,
+	public OutputProduct paserSearch(String user_id, String session_id, String device_id, String name, int city_id,
 			int price_id, int category_id, int type_id, int time_id) {
 		OutputProduct obj = new OutputProduct();
 		String str = null;
@@ -198,7 +211,7 @@ public class JsonSearch {
 			request.append("&device_id=").append(URLEncoder.encode(device_id, "UTF-8"));
 
 			request.append("&name=").append(URLEncoder.encode(name, "UTF-8"));
-			request.append("&city=").append(URLEncoder.encode(city, "UTF-8"));
+			request.append("&city_id=").append(URLEncoder.encode(String.valueOf(city_id), "UTF-8"));
 			request.append("&price_id=").append(URLEncoder.encode(String.valueOf(price_id), "UTF-8"));
 			request.append("&category_id=").append(URLEncoder.encode(String.valueOf(category_id), "UTF-8"));
 			request.append("&type_id=").append(URLEncoder.encode(String.valueOf(type_id), "UTF-8"));

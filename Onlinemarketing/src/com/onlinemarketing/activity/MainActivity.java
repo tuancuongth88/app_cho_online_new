@@ -14,6 +14,7 @@ import com.onlinemarketing.json.JsonProduct;
 import com.onlinemarketing.json.JsonSearch;
 import com.onlinemarketing.object.CategoryVO;
 import com.onlinemarketing.object.Category_SearchVO;
+import com.onlinemarketing.object.CityVO;
 import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.PriceVO;
@@ -64,11 +65,11 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 	public static OutputProduct oOput;
 	Dialog dialog;
 	EditText edit_namSPSearch;
-	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch;
+	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch,sinpnerAddSearch;
 	Button btn_search, txt_saveSearch;
 	static Output out;
 
-	public int category_id, price_id, time_id, type_id;
+	public int category_id, price_id, time_id, type_id,city_id;
 	public String lat, log;
 	/**
 	 * Used to store the last screen title. For use in
@@ -138,6 +139,14 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 		sinpnerCategorySearch = (Spinner) dialog.findViewById(R.id.sinpnerCategorySearch);
 		sinpnerPriceSearch = (Spinner) dialog.findViewById(R.id.sinpnerPriceSearch);
 		sinpnerTypeProductSearch = (Spinner) dialog.findViewById(R.id.sinpnerTypeProductSearch);
+		sinpnerAddSearch = (Spinner) dialog.findViewById(R.id.sinpnerAddSearch);
+		List<CityVO> lstCity = search.getLstCity();
+		String [] city = new String[lstCity.size()];
+		for (int i = 0; i < city.length; i++) {
+			city[i] = lstCity.get(i).getName();
+		}
+		ArrayAdapter<String> adapteCity = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, city);
+		sinpnerAddSearch.setAdapter(adapteCity);
 		List<TypeVO> listType = search.getLstType();
 		int n1 = listType.size();
 		String[] type = new String[n1];
@@ -220,6 +229,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 
 		@Override
 		protected Output doInBackground(String... params) {
+			city_id = search.getLstCity().get(sinpnerAddSearch.getSelectedItemPosition()).getId();
 			time_id = search.getLstTime().get(spinnerDatetimeSearch.getSelectedItemPosition()).getTime_id();
 			type_id = search.getLstType().get(sinpnerTypeProductSearch.getSelectedItemPosition()).getType_id();
 			category_id = search.getLstCategorySearch().get(sinpnerCategorySearch.getSelectedItemPosition())
@@ -232,7 +242,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 					+ price_id + "\nlat: " + lat + "\nlog: " + log);
 			out = jsonSearch.paserSaveSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
 					edit_namSPSearch.getText().toString(), lat, log, String.valueOf(price_id),
-					String.valueOf(category_id), String.valueOf(type_id), String.valueOf(time_id));
+					String.valueOf(category_id), String.valueOf(type_id), String.valueOf(time_id), city_id);
 			return out;
 		}
 
@@ -265,6 +275,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 
 		@Override
 		protected OutputProduct doInBackground(Integer... params) {
+			city_id = search.getLstCity().get(sinpnerAddSearch.getSelectedItemPosition()).getId();
 			time_id = search.getLstTime().get(spinnerDatetimeSearch.getSelectedItemPosition()).getTime_id();
 			type_id = search.getLstType().get(sinpnerTypeProductSearch.getSelectedItemPosition()).getType_id();
 			category_id = search.getLstCategorySearch().get(sinpnerCategorySearch.getSelectedItemPosition())
@@ -276,7 +287,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 			Debug.e("time_id: " + time_id + "\ntype_id: " + type_id + "\ncategory_id: " + category_id + "\nprice_id: "
 					+ price_id + "\nlat: " + lat + "\nlog: " + log);
 			oOput = jsonSearch.paserSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
-					edit_namSPSearch.getText().toString(), "", price_id, category_id, type_id, time_id);
+					edit_namSPSearch.getText().toString(), city_id, price_id, category_id, type_id, time_id);
 			list = oOput.getProductVO();
 			SystemConfig.oOputproduct.setProductVO(list);
 			return MainActivity.oOput;

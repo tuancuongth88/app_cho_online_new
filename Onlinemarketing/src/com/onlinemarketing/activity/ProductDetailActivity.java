@@ -143,9 +143,14 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			}
 			break;
 		case R.id.btnChatDirectly_Detail:
-			ChatDialog chat = new ChatDialog(this);
-			chat.run(SystemConfig.statusGetHistoryMessage,objproductDetail.getUser_id());
-			chat.dialogChat(objproductDetail.getUser_id());
+			if(!SystemConfig.session_id.isEmpty()){
+				ChatDialog chat = new ChatDialog(this);
+				chat.run(SystemConfig.statusGetHistoryMessage,objproductDetail.getUser_id());
+				chat.dialogChat(objproductDetail.getUser_id());
+			}else {
+				Message msg = new Message(ProductDetailActivity.this);
+				msg.showMessage("Bạn phải đăng nhập!");
+			}
 			break;
 
 		case R.id.btnReportViolations_Detail:

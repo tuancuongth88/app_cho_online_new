@@ -121,7 +121,7 @@ public class ListMessageAdapter extends ArrayAdapter<MessageVO>{
 		MessageVO objmessage = listData.get(position);
 		int id = objmessage.getReceiver_id();
 		ChatDialog objchat = new ChatDialog(context,id);
-		objchat.run(SystemConfig.statusDeleteGroupMessage);
+		objchat.run(SystemConfig.statusBlockUser);
 	}
 	public void dialogDelete( int position, int status) {
 		status_callws = status;

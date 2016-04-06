@@ -20,5 +20,6 @@
     <color name="oragne">#ffa500</color>
     <color name="black_menu_bar_first">#343743</color>
     <color name="black_menu_bar_secone">#e7e7e7</color>
+    <color name="block">#FF9933</color>
 
 </resources>

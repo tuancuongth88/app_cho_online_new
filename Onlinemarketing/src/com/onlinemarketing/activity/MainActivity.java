@@ -46,6 +46,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
 public class MainActivity extends ActionBarActivity implements FragmentDrawerListener {
@@ -68,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch,sinpnerAddSearch;
 	Button btn_search, txt_saveSearch;
 	static Output out;
-
+	public static int search_id = 0;
 	public int category_id, price_id, time_id, type_id,city_id;
 	public String lat, log;
 	/**
@@ -77,6 +78,14 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 	 */
 	public static int id_category, id_category_search;
 	public static int status = SystemConfig.statusHomeProduct;
+	ImageView imgsearch;
+
+	
+	
+	public MainActivity() {
+		Bundle savedInstanceState = null;
+		onCreate(savedInstanceState);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +94,15 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		imgsearch = (ImageView) findViewById(R.id.imgSearchToolbar);
+		imgsearch.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+//				Debug.showAlert(MainActivity.this, "co ho");
+				new GetSearchAsystask().execute();
+			}
+		});
 		// getSupportActionBar().setIcon(R.drawable.icon_search);
 		drawerFragmentLeft = (FragmentDrawerLeft) getSupportFragmentManager()
 				.findFragmentById(R.id.fragment_navigation_drawer_left);
@@ -101,31 +119,6 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 	@Override
 	public void onDrawerItemSelected(View view, int position) {
 		Debug.e("sssssssssss");
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		int id = menuItem.getItemId();
-		if (id == R.id.action_search) {
-			new GetSearchAsystask().execute();
-
-			return true;
-		}
-		return (super.onOptionsItemSelected(menuItem));
-	}
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.clear();
-		getMenuInflater().inflate(R.menu.main, menu);
-		return super.onPrepareOptionsMenu(menu);
 	}
 
 	public void dialogSearch() {
@@ -217,7 +210,110 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 
 		dialog.show();
 	}
+	public void dialogHistorySearch(String name, int city_id, int category_id, int price_id, int type_id, int time_id) {
+		dialog = new Dialog(this);
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.dialog_search);
+		btn_search = (Button) dialog.findViewById(R.id.btn_Search);
+		txt_saveSearch = (Button) dialog.findViewById(R.id.txt_saveSearch);
+		edit_namSPSearch = (EditText) dialog.findViewById(R.id.edit_namSPSearch);
+		sinpnerCategorySearch = (Spinner) dialog.findViewById(R.id.sinpnerCategorySearch);
+		sinpnerPriceSearch = (Spinner) dialog.findViewById(R.id.sinpnerPriceSearch);
+		sinpnerTypeProductSearch = (Spinner) dialog.findViewById(R.id.sinpnerTypeProductSearch);
+		sinpnerAddSearch = (Spinner) dialog.findViewById(R.id.sinpnerAddSearch);
+		edit_namSPSearch.setText(name);
+		List<CityVO> lstCity = search.getLstCity();
+		String [] city = new String[lstCity.size()];
+		int positionCity = 0;
+		int positionCategory = 0;
+		int positionPrice = 0;
+		int positionType = 0;
+		int positionTime = 0;
+		for (int i = 0; i < city.length; i++) {
+			city[i] = lstCity.get(i).getName();
+			if(city_id == lstCity.get(i).getId())
+				positionCity = i;
+		}
+		ArrayAdapter<String> adapteCity = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, city);
+		sinpnerAddSearch.setAdapter(adapteCity);
+		sinpnerAddSearch.setSelection(positionCity);
+		List<TypeVO> listType = search.getLstType();
+		int n1 = listType.size();
+		String[] type = new String[n1];
+		for (int i = 0; i < n1; i++) {
+			type[i] = listType.get(i).getType_name();
+			if(type_id == listType.get(i).getType_id())
+				positionType = i;
+		}
+		ArrayAdapter<String> adapteType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, type);
+		sinpnerTypeProductSearch.setAdapter(adapteType);
+		sinpnerTypeProductSearch.setSelection(positionType);
+		List<Category_SearchVO> listcategory = search.getLstCategorySearch();
+		int n = listcategory.size();
+		String[] title = new String[n];
+		for (int i = 0; i < n; i++) {
+			title[i] = listcategory.get(i).getCategory_name();
+			if(category_id == listcategory.get(i).getCategory_id())
+				positionCategory = i;
+		}
+		ArrayAdapter<String> adapteCategory = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+				title);
+		sinpnerCategorySearch.setAdapter(adapteCategory);
+		sinpnerCategorySearch.setSelection(positionCategory);
+		sinpnerCategorySearch.setOnItemSelectedListener(new OnItemSelectedListener() {
 
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				// TODO Auto-generated method stub
+				List<PriceVO> lstprice = search.getLstCategorySearch().get(arg2).getLstPrice();
+				int n = lstprice.size();
+				String[] titlePrice = new String[n];
+				for (int i = 0; i < n; i++) {
+					titlePrice[i] = lstprice.get(i).getStart() + "->" + lstprice.get(i).getEnd();
+				}
+				ArrayAdapter<String> adaptePrice = new ArrayAdapter<String>(MainActivity.this,
+						android.R.layout.simple_spinner_item, titlePrice);
+				sinpnerPriceSearch.setAdapter(adaptePrice);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		spinnerDatetimeSearch = (Spinner) dialog.findViewById(R.id.sinpnerTimerSearch);
+		List<TimeVO> listTime = search.getLstTime();
+		int n2 = listTime.size();
+		String[] time = new String[n2];
+		for (int i = 0; i < n2; i++) {
+			time[i] = listTime.get(i).getTime_name();
+		}
+		ArrayAdapter<String> adapteTime = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, time);
+		spinnerDatetimeSearch.setAdapter(adapteTime);
+		txt_saveSearch.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (!SystemConfig.session_id.isEmpty()) {
+					new SaveSearchAsysTask().execute();
+				} else {
+					startActivity(new Intent(MainActivity.this, LoginActivity.class));
+				}
+				dialog.dismiss();
+			}
+		});
+		btn_search.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new SearchAsystask().execute();
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
 	public class SaveSearchAsysTask extends AsyncTask<String, String, Output> {
 		JsonSearch jsonSearch;
 
@@ -315,7 +411,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 
 		@Override
 		protected SearchVO doInBackground(Integer... params) {
-			search = jsonSearch.getSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, 0);
+			search = jsonSearch.getSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, search_id);
 			return search;
 		}
 

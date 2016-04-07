@@ -30,14 +30,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 public class ListSaveSearchActivity extends BaseActivity
-		implements OnItemClickListener,  CallbackPosition, OnClickListener {
-
+		implements OnItemClickListener, CallbackPosition, OnClickListener {
+	ArrayList<ProductVO> list = new ArrayList<ProductVO>();
 	ListView listview;
 	ListSaveSearchAdapter adapter;
 	OutputProduct oOput;
 	Output out;
 	ViewHolder viewHolder;
 	ImageView imgBack;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,14 +60,16 @@ public class ListSaveSearchActivity extends BaseActivity
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//		startActivity(new Intent(ListSaveSearchActivity.this, BackListActivity.class));
-		//
+		MainActivity.search_id = list.get(arg2).getId();
+		Debug.e("aaaaaaaaaa" + list.get(arg2).getId());
+		MainActivity activity = new MainActivity();
+		activity.dialogHistorySearch(list.get(arg2).getName(), list.get(arg2).getCity_id(),
+				list.get(arg2).getCategory_id(), list.get(arg2).getPrice_id(), list.get(arg2).getType_id(),
+				Integer.parseInt(list.get(arg2).getTime_id()));
 	}
-
 
 	public class ListSaveSearchAsystask extends AsyncTask<Integer, String, OutputProduct> {
 		JsonSearch jsonListSaveSearch;
-		ArrayList<ProductVO> list = new ArrayList<ProductVO>();
 
 		@Override
 		protected void onPreExecute() {
@@ -97,19 +100,8 @@ public class ListSaveSearchActivity extends BaseActivity
 	@Override
 	public void onClick(View v) {
 		this.finish();
-//		ArrayList<ProductVO> deletelist = new ArrayList<ProductVO>();
-//		ArrayList<ProductVO> list = new ArrayList<ProductVO>();
-//		for (int i = 0; i < adapter.getList().size(); i++) {
-//			if (!adapter.getList().get(i).isCheck()) {
-//				list.add(adapter.getList().get(i));
-//			} else {
-//				deletelist.add(adapter.getList().get(i));
-//			}
-//		}
-//		if (isConnect()) {
-//			new DeleteAsynTask().execute();
-//		}
 	}
+
 	public class DeleteAsynTask extends AsyncTask<Integer, String, Output> {
 
 		JsonProduct jsonProduct;
@@ -118,27 +110,28 @@ public class ListSaveSearchActivity extends BaseActivity
 		protected void onPreExecute() {
 			jsonProduct = new JsonProduct();
 			super.onPreExecute();
-		 }
+		}
 
 		@Override
 		protected Output doInBackground(Integer... params) {
 			Debug.e("User: " + SystemConfig.user_id + " Session: " + SystemConfig.session_id + " device: "
 					+ SystemConfig.device_id);
-			out = jsonProduct.paserDeleteBackListAndFavorite(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
-					4, SystemConfig.statusDeleteBackList);
+			out = jsonProduct.paserDeleteBackListAndFavorite(SystemConfig.user_id, SystemConfig.session_id,
+					SystemConfig.device_id, 4, SystemConfig.statusDeleteBackList);
 			return out;
-		}   
+		}
 
 		@Override
 		protected void onPostExecute(Output result) {
-			if (result.getCode() == Constan.getIntProperty("success")) { 
+			if (result.getCode() == Constan.getIntProperty("success")) {
 				Debug.showAlert(ListSaveSearchActivity.this, result.getMessage());
-//				list.remove(positon);
-//				adapter = new BackListAdapter(ListSaveSearchActivity.this, R.layout.item_backlist, list);
-//				Debu     g.e("danh sach: " + list.size());
-//				listview.setAdapter(adapter);
+				// list.remove(positon);
+				// adapter = new BackListAdapter(ListSaveSearchActivity.this,
+				// R.layout.item_backlist, list);
+				// Debu g.e("danh sach: " + list.size());
+				// listview.setAdapter(adapter);
 			}
 			super.onPostExecute(result);
 		}
-	}   
+	}
 }

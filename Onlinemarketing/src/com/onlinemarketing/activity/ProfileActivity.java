@@ -130,7 +130,12 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			profile.setAddress(editAdd.getText().toString());
 			profile.setPass(editPass.getText().toString());
 			profile.setOld_pass(editConfigPass.getText().toString());
-			profile.setAvatar(SystemConfig.Avatar);
+			if(selectedBitmap != null)
+				profile.setAvatar(SystemConfig.Avatar);
+			else{
+				String[] imagename =SystemConfig.oOputproduct.getProfileVO().get(0).getAvatar().split("/");
+				profile.setAvatar(imagename[imagename.length - 1]);
+			}
 			new UpdateAsystask().execute(Constan.getIntProperty("status_update_profile"));
 			break;
 
@@ -249,8 +254,19 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			if (result.getCode() == Constan.getIntProperty("success")) {
 				Debug.showAlert(ProfileActivity.this, result.getMessage());
 				Bitmap bit = selectedBitmap;
-				bit = Util.getCroppedBitmap(bit);
-				imgAvatar.setImageBitmap(bit);
+				if (bit != null) {
+					bit = Util.getCroppedBitmap(bit);
+					imgAvatar.setImageBitmap(bit);
+				}else {
+					Bitmap bitmap = aQuery.getCachedImage(SystemConfig.oOputproduct.getProfileVO().get(0).getAvatar());
+					if (bitmap != null) {
+						bitmap = Util.getCroppedBitmap(bitmap);
+						aQuery.id(imgAvatar).image(bitmap);
+					}
+					else {
+						aQuery.id(imgAvatar).image(SystemConfig.oOputproduct.getProfileVO().get(0).getAvatar(), true, true, 0, R.drawable.ic_launcher);
+					}
+				}
 			}
 			super.onPostExecute(result);
 		}

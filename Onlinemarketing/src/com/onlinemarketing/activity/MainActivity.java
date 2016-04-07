@@ -66,11 +66,12 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 	public static OutputProduct oOput;
 	Dialog dialog;
 	EditText edit_namSPSearch;
-	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch,sinpnerAddSearch;
+	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch,
+			sinpnerAddSearch;
 	Button btn_search, txt_saveSearch;
 	static Output out;
 	public static int search_id = 0;
-	public int category_id, price_id, time_id, type_id,city_id;
+	public int category_id, price_id, time_id, type_id, city_id;
 	public String lat, log;
 	/**
 	 * Used to store the last screen title. For use in
@@ -89,11 +90,11 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
 		imgsearch = (ImageView) findViewById(R.id.imgSearchToolbar);
 		imgsearch.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-//				Debug.showAlert(MainActivity.this, "co ho");
 				new GetSearchAsystask().execute();
+
 			}
 		});
 		// getSupportActionBar().setIcon(R.drawable.icon_search);
@@ -127,7 +128,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 		sinpnerTypeProductSearch = (Spinner) dialog.findViewById(R.id.sinpnerTypeProductSearch);
 		sinpnerAddSearch = (Spinner) dialog.findViewById(R.id.sinpnerAddSearch);
 		List<CityVO> lstCity = search.getLstCity();
-		String [] city = new String[lstCity.size()];
+		String[] city = new String[lstCity.size()];
 		for (int i = 0; i < city.length; i++) {
 			city[i] = lstCity.get(i).getName();
 		}
@@ -203,6 +204,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 
 		dialog.show();
 	}
+
 	public class SaveSearchAsysTask extends AsyncTask<String, String, Output> {
 		JsonSearch jsonSearch;
 
@@ -300,7 +302,8 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 
 		@Override
 		protected SearchVO doInBackground(Integer... params) {
-			search = jsonSearch.getSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, search_id);
+			search = jsonSearch.getSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+					search_id);
 			return search;
 		}
 

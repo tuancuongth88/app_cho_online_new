@@ -33,8 +33,8 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_marginBottom="30dp"
-        android:layout_weight="1" >
+        android:layout_marginBottom="0dp"
+        android:layout_weight="1.05" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -265,7 +265,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="2.1"
+        android:layout_weight="2.05"
         android:background="#383A47"
         android:gravity="center"
         android:orientation="horizontal" >

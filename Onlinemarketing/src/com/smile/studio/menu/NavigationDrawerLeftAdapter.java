@@ -77,16 +77,6 @@ public class NavigationDrawerLeftAdapter extends RecyclerView.Adapter<Navigation
 		public boolean isLike = true;
 		public MyViewHolder(View itemView) {
 			super(itemView);
-			imageview = (ImageView) itemView.findViewById(R.id.imageview);
-			imageview.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					id_position = getAdapterPosition();
-					Debug.showAlert(context, "Like sexy" + getAdapterPosition());
-					new LikeCategoryAsynTask().execute();
-				}
-			});
 			title = (TextView) itemView.findViewById(R.id.title);
 			aQuery = new AQuery(itemView);
 		}

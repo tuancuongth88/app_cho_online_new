@@ -268,6 +268,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
+			
 			adapter = new NavigationDrawerRightAdapter(getActivity(), listSetting);
 			recyclerView.setAdapter(adapter);
 		}

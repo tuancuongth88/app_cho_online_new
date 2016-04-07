@@ -66,7 +66,7 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 		if (statutActivityCall == 1) {
 			idUser = ProductDetailActivity.objproductDetail.getUser_id();
 			phone = ProductDetailActivity.objproductDetail.getPhone();
-			if (isConnect()) {
+			if (isConnect()) 	{
 				new NewsPosterAsystask().execute();
 			}
 
@@ -77,7 +77,6 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 				imgFavorite.setVisibility(View.VISIBLE);
 			else 
 				imgFavorite.setVisibility(View.VISIBLE);
-
 		} else if (statutActivityCall == 2) {
 			idUser = FavoriteActivity.id_delete;
 			phone = FavoriteActivity.phone;
@@ -86,6 +85,7 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 			}
 
 		}
+		
 	}
 
 	public class NewsPosterAsystask extends AsyncTask<Integer, Integer, OutputProduct> {
@@ -126,6 +126,11 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 					btnCall.setImageResource(R.drawable.call_hidden);
 					btnSendSMS_Detail.setImageResource(R.drawable.sms_hidden);
 					img_chat.setImageResource(R.drawable.chat_hidden);
+					imgFavorite.setVisibility(View.INVISIBLE);
+				}
+				if (objproduct.isFavorite()) {
+					imgFavorite.setClickable(false);
+					imgFavorite.setImageResource(R.drawable.icon_favorite_success);
 				}
 			}
 
@@ -193,6 +198,8 @@ public class PosterDetailActivity extends BaseActivity implements OnClickListene
 		protected void onPostExecute(Output result) {
 			if (result.getCode() == Constan.getIntProperty("success")) {
 				Debug.showAlert(PosterDetailActivity.this, result.getMessage());
+				imgFavorite.setImageResource(R.drawable.icon_favorite_success);
+				imgFavorite.setClickable(false);
 			}
 			super.onPostExecute(result);
 		}

@@ -27,13 +27,24 @@ public class ProductVO {
 	private String create_at;
 	private String lat, log;
 	private String time_id, phone, time_name;
-	private boolean isCheck;
+	private boolean isCheck,favorite;
 	private boolean product_saved;
 	private List<String> arrImageDetail;
 	private String start, end;
 	public boolean isProduct_saved() {
 		return product_saved;
 	}
+
+
+	public boolean isFavorite() {
+		return favorite;
+	}
+
+
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
+	}
+
 
 	public String getAddress() {
 		return address;

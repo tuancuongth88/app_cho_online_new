@@ -57,6 +57,7 @@ public class JsonListNewsPoster {
 					objproduct.setDelete_at(objjson_product.get("deleted_at").toString());
 					objproduct.setCreate_at(objjson_product.get("created_at").toString());
 					objproduct.setCheck(objjson_product.getBoolean("block"));
+					objproduct.setFavorite(objjson_product.getBoolean("favorite"));
 					arrProduct.add(objproduct);
 				}
 				obj.setProductVO(arrProduct);

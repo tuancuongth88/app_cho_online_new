@@ -5,6 +5,7 @@ import com.onlinemarketing.adapter.HomePageAdapter;
 import com.onlinemarketing.config.SystemConfig;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +38,8 @@ public class SearchActivity extends Activity implements OnClickListener, OnItemC
 
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		ProductDetailActivity.id_product = SystemConfig.oOputproduct.getProductVO().get(arg2).getId();
+		startActivity(new Intent(SearchActivity.this, ProductDetailActivity.class));
 	}
 
 }

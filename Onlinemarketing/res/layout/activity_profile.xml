@@ -77,7 +77,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/background_boder"
-            android:drawableLeft="@drawable/icon_phone"
+            android:drawableLeft="@drawable/icon_adderss"
             android:hint="Địa chỉ"
             android:inputType="text"
             android:paddingLeft="5dp" />

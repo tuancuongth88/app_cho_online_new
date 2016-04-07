@@ -50,7 +50,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
-            android:background="@drawable/icon_chat" />
+            android:background="@drawable/icon_chat_product" />
 
         <Button
             android:id="@+id/btnFavorite_FragmentCategory"
@@ -59,7 +59,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_weight="1"
-            android:background="@drawable/icon_favorite" />
+            android:background="@drawable/icon_favorite12" />
 
         <Button
             android:id="@+id/btnProfile_FragmentCategory"

@@ -23,9 +23,13 @@ public class NavigationDrawerRightAdapter extends RecyclerView.Adapter<Navigatio
 	private Context context;
 
 	public NavigationDrawerRightAdapter(Context context, List<SettingVO> data) {
+		try{
 		this.setContext(context);
 		inflater = LayoutInflater.from(context);
 		this.data = data;
+		}catch(Exception e){
+			Debug.e("null context");
+		}
 	}
 
 	public void delete(int position) {

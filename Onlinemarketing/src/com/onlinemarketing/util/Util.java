@@ -58,10 +58,12 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.Log;
+import android.util.Patterns;
 
 public class Util {
 	private static Pattern pattern;
@@ -472,5 +474,10 @@ public class Util {
 		canvas.drawBitmap(bitmap, rect, rect, paint);
 		return output;
 	}
-
+	public static boolean isValidPhoneNo(CharSequence phoneNo) {
+	    if (!TextUtils.isEmpty(phoneNo)) {
+	        return Patterns.PHONE.matcher(phoneNo).matches();
+	    }
+	    return false;
+	}
 }

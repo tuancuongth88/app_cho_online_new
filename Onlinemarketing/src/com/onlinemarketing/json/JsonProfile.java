@@ -73,6 +73,7 @@ public class JsonProfile {
 							}
 						}
 					}else{
+						try{
 						jsonProfile = jsonObject.getJSONObject("data");
 						if (obj.getCode() == Constan.getIntProperty("success")) 
 							{
@@ -94,6 +95,9 @@ public class JsonProfile {
 									arrprofile.add(objProfile);
 									obj.setProfileVO(arrprofile);
 							}
+						}catch(Exception e){
+							Debug.e("Data reponse null");
+						}
 					}
 				} catch (Exception e) {
 					Debug.e(e.toString());

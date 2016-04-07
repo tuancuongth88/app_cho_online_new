@@ -12,7 +12,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -56,6 +58,7 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.text.format.DateFormat;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.util.Log;
@@ -63,6 +66,7 @@ import android.util.Log;
 public class Util {
 	private static Pattern pattern;
 	private static Matcher matcher;
+
 	public static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -71,6 +75,7 @@ public class Util {
 		}
 		return sb.toString();
 	}
+
 	/**
 	 * Hàm trả về JSONObject
 	 * 
@@ -80,13 +85,11 @@ public class Util {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static JSONObject readJsonFromUrl(String url) throws IOException,
-			JSONException {
+	public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 		InputStream is = new URL(url).openStream();
 		try {
 			// đọc nội dung với Unicode:
-			BufferedReader rd = new BufferedReader(new InputStreamReader(is,
-					Charset.forName("UTF-8")));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);
 			Debug.e("jsonText" + jsonText);
 			JSONObject json = new JSONObject(jsonText);
@@ -95,11 +98,12 @@ public class Util {
 			is.close();
 		}
 	}
+
 	public static Output doFileUpload(String user_id, String session_id, String device_id, String link, Bitmap bit) {
 		Output output = new Output();
 		File file_path = new File(link);
 		try {
-			StringBuilder request = new StringBuilder(SystemConfig.API );
+			StringBuilder request = new StringBuilder(SystemConfig.API);
 			request.append(SystemConfig.Upload_image);
 			HttpClient client = new DefaultHttpClient();
 			// use your server path of php file
@@ -107,13 +111,13 @@ public class Util {
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			bit.compress(CompressFormat.JPEG, 75, bos);
-		    byte[] data = bos.toByteArray();
-            String[] arrlink = link.split("/");
-            String name =  arrlink[arrlink.length - 1];
-            ByteArrayBody bab = new ByteArrayBody(data, name);
+			byte[] data = bos.toByteArray();
+			String[] arrlink = link.split("/");
+			String name = arrlink[arrlink.length - 1];
+			ByteArrayBody bab = new ByteArrayBody(data, name);
 
-//			FileBody bin1 = new FileBody(file_path);
-//			Log.e("Enter", "Filebody complete " + bin1);
+			// FileBody bin1 = new FileBody(file_path);
+			// Log.e("Enter", "Filebody complete " + bin1);
 
 			MultipartEntity reqEntity = new MultipartEntity();
 			reqEntity.addPart("image_url[]", bab);
@@ -122,24 +126,24 @@ public class Util {
 			reqEntity.addPart("session_id", new StringBody(session_id));
 			post.setEntity(reqEntity);
 			HttpResponse response = client.execute(post);
-			HttpEntity resEntity ;
+			HttpEntity resEntity;
 			resEntity = response.getEntity();
-			Log.e("user_id", "user_id:"+ user_id+ "/n device_id: "+ device_id+ "/nsession_id:"+session_id );
+			Log.e("user_id", "user_id:" + user_id + "/n device_id: " + device_id + "/nsession_id:" + session_id);
 			Log.e("Enter", "Get Response");
 			try {
 				String response_str = EntityUtils.toString(resEntity);
-				Log.e( "Get Response",response_str);
+				Log.e("Get Response", response_str);
 				if (resEntity != null) {
 					JSONObject jsonObject = new JSONObject(response_str);
-					output.setCode(jsonObject.getInt("code"));					
+					output.setCode(jsonObject.getInt("code"));
 					output.setMessage(jsonObject.getString("message"));
 					output.setSession_id(jsonObject.getString("session_id"));
 					JSONArray jsonArrAvatar = jsonObject.getJSONArray("data");
 					if (output.getCode() == Constan.getIntProperty("success")) {
 						for (int i = 0; i < jsonArrAvatar.length(); i++) {
 							JSONObject objjsonAvatar = jsonArrAvatar.getJSONObject(i);
-							if(objjsonAvatar.has("image_url"))
-								SystemConfig.Avatar =  objjsonAvatar.getString("image_url");
+							if (objjsonAvatar.has("image_url"))
+								SystemConfig.Avatar = objjsonAvatar.getString("image_url");
 						}
 					}
 				}
@@ -151,22 +155,24 @@ public class Util {
 		}
 		return output;
 	}
-	public static Output UploadImageProduct(String user_id, String session_id, String device_id, String link, Bitmap bit) {
+
+	public static Output UploadImageProduct(String user_id, String session_id, String device_id, String link,
+			Bitmap bit) {
 		Output output = new Output();
 		try {
-			StringBuilder request = new StringBuilder(SystemConfig.API );
+			StringBuilder request = new StringBuilder(SystemConfig.API);
 			request.append(SystemConfig.Upload_image);
-			request.append("/"+ SystemConfig.Product);
+			request.append("/" + SystemConfig.Product);
 			HttpClient client = new DefaultHttpClient();
 			// use your server path of php file
 			HttpPost post = new HttpPost(request.toString());
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bit.compress(CompressFormat.JPEG, 75, bos);
-            byte[] data = bos.toByteArray();
-            String[] arrlink = link.split("/");
-            String name =  arrlink[arrlink.length - 1];
-            ByteArrayBody bab = new ByteArrayBody(data, name);
-			
+			bit.compress(CompressFormat.JPEG, 75, bos);
+			byte[] data = bos.toByteArray();
+			String[] arrlink = link.split("/");
+			String name = arrlink[arrlink.length - 1];
+			ByteArrayBody bab = new ByteArrayBody(data, name);
+
 			MultipartEntity reqEntity = new MultipartEntity();
 			reqEntity.addPart("image_url[]", bab);
 			reqEntity.addPart("user_id", new StringBody(user_id));
@@ -174,25 +180,25 @@ public class Util {
 			reqEntity.addPart("session_id", new StringBody(session_id));
 			post.setEntity(reqEntity);
 			HttpResponse response = client.execute(post);
-			HttpEntity resEntity ;
+			HttpEntity resEntity;
 			resEntity = response.getEntity();
-			Log.e("user_id", "user_id:"+ user_id+ "/n device_id: "+ device_id+ "/nsession_id:"+session_id );
+			Log.e("user_id", "user_id:" + user_id + "/n device_id: " + device_id + "/nsession_id:" + session_id);
 			Log.e("Enter", "Get Response");
 			try {
 				String response_str = EntityUtils.toString(resEntity);
-				Log.e( "Get Response",response_str);
+				Log.e("Get Response", response_str);
 				if (resEntity != null) {
 					JSONObject jsonObject = new JSONObject(response_str);
-					output.setCode(jsonObject.getInt("code"));					
+					output.setCode(jsonObject.getInt("code"));
 					output.setMessage(jsonObject.getString("message"));
 					output.setSession_id(jsonObject.getString("session_id"));
 					JSONArray jsonArrAvatar = jsonObject.getJSONArray("data");
 					if (output.getCode() == Constan.getIntProperty("success")) {
 						for (int i = 0; i < jsonArrAvatar.length(); i++) {
 							JSONObject objjsonAvatar = jsonArrAvatar.getJSONObject(i);
-							if(objjsonAvatar.has("image_url"))
-								SystemConfig.productImage =  objjsonAvatar.getString("image_url");
-							
+							if (objjsonAvatar.has("image_url"))
+								SystemConfig.productImage = objjsonAvatar.getString("image_url");
+
 						}
 					}
 				}
@@ -204,20 +210,21 @@ public class Util {
 		}
 		return output;
 	}
+
 	public static Output UploadImageArr(String user_id, String session_id, String device_id, List<String> link) {
 		Output output = new Output();
-		
+
 		try {
-			String linkUploadImage = SystemConfig.API+SystemConfig.Upload_image+"/"+SystemConfig.Product;
-			StringBuilder request = new StringBuilder(linkUploadImage );
+			String linkUploadImage = SystemConfig.API + SystemConfig.Upload_image + "/" + SystemConfig.Product;
+			StringBuilder request = new StringBuilder(linkUploadImage);
 			request.append(SystemConfig.Upload_image);
 			HttpClient client = new DefaultHttpClient();
 			// use your server path of php file
 			HttpPost post = new HttpPost(request.toString());
 			MultipartEntity reqEntity = new MultipartEntity();
 			File file_path = new File(link.get(0));
-//			for (int i = 0; i < link.size(); i++) {
-//			}
+			// for (int i = 0; i < link.size(); i++) {
+			// }
 			FileBody bin1 = new FileBody(file_path);
 			reqEntity.addPart("image_url[]", bin1);
 			reqEntity.addPart("user_id", new StringBody(user_id));
@@ -225,16 +232,16 @@ public class Util {
 			reqEntity.addPart("session_id", new StringBody(session_id));
 			post.setEntity(reqEntity);
 			HttpResponse response = client.execute(post);
-			HttpEntity resEntity ;
+			HttpEntity resEntity;
 			resEntity = response.getEntity();
-			Log.e("user_id", "user_id:"+ user_id+ "/n device_id: "+ device_id+ "/nsession_id:"+session_id );
+			Log.e("user_id", "user_id:" + user_id + "/n device_id: " + device_id + "/nsession_id:" + session_id);
 			Log.e("Enter", "Get Response");
 			try {
 				String response_str = EntityUtils.toString(resEntity);
-				Log.e( "Get Response",response_str);
+				Log.e("Get Response", response_str);
 				if (resEntity != null) {
 					JSONObject jsonObject = new JSONObject(response_str);
-					output.setCode(jsonObject.getInt("code"));					
+					output.setCode(jsonObject.getInt("code"));
 					output.setMessage(jsonObject.getString("message"));
 					output.setSession_id(jsonObject.getString("session_id"));
 					JSONArray jsonArrAvatar = jsonObject.getJSONArray("data");
@@ -242,9 +249,9 @@ public class Util {
 					if (output.getCode() == Constan.getIntProperty("success")) {
 						for (int i = 0; i < jsonArrAvatar.length(); i++) {
 							JSONObject objjsonAvatar = jsonArrAvatar.getJSONObject(i);
-							if(objjsonAvatar.has("image_url")){
-								  String name =objjsonAvatar.getString("image_url");
-								  nameImageUpload.add(name);
+							if (objjsonAvatar.has("image_url")) {
+								String name = objjsonAvatar.getString("image_url");
+								nameImageUpload.add(name);
 							}
 						}
 						output.setImage(nameImageUpload);
@@ -258,6 +265,7 @@ public class Util {
 		}
 		return output;
 	}
+
 	private static String convertToHex(byte[] data) {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < data.length; i++) {
@@ -283,8 +291,7 @@ public class Util {
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String hash(String text) throws NoSuchAlgorithmException,
-			UnsupportedEncodingException {
+	public static String hash(String text) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md;
 		md = MessageDigest.getInstance("MD5");
 		byte[] md5hash = new byte[32];
@@ -319,24 +326,25 @@ public class Util {
 	public static boolean isNotNull(String txt) {
 		return txt != null && txt.trim().length() > 0 ? true : false;
 	}
+
 	public static HttpGet httpget;
 	public static HttpPost httpPost;
 	public static HttpDelete httpDelete;
-	public static HttpResponse response ;
+	public static HttpResponse response;
 	// ham connecet webservice.
-	
+
 	public static String getjSonUrl(String link, int status) {
 		StringBuffer objbuffer = new StringBuffer();
 
 		HttpClient httpcliend = new DefaultHttpClient();
 		if (status == 1) {
-		 	 httpget = new HttpGet(link);
+			httpget = new HttpGet(link);
 		}
 		if (status == 2) {
-			 httpPost = new HttpPost(link);
+			httpPost = new HttpPost(link);
 		}
 		if (status == 3) {
-			 httpDelete = new HttpDelete(link);
+			httpDelete = new HttpDelete(link);
 		}
 		try {
 			switch (status) {
@@ -344,20 +352,19 @@ public class Util {
 				response = httpcliend.execute(httpget);
 				break;
 			case 2:
-				response =httpcliend.execute(httpPost);
+				response = httpcliend.execute(httpPost);
 				break;
 			case 3:
-				response =httpcliend.execute(httpDelete);
+				response = httpcliend.execute(httpDelete);
 				break;
 			}
-			
+
 			StatusLine statusLine = response.getStatusLine();
 			int statusCode = statusLine.getStatusCode();
 			if (statusCode == 200) {
 				HttpEntity entity = response.getEntity();
 				InputStream coInputStream = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(coInputStream));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(coInputStream));
 				String line;
 				while ((line = reader.readLine()) != null) {
 					objbuffer.append(line);
@@ -371,87 +378,99 @@ public class Util {
 		}
 		return objbuffer.toString();
 	}
-	
-	 public static void Send(final String username, final String password, String recipientEmail, String title, String message) throws AddressException, MessagingException {
-		   Send(username, password, recipientEmail, "", title, message);
-	    }
 
-	    /**
-	     * Send email using GMail SMTP server.
-	     *
-	     * @param username GMail username
-	     * @param password GMail password
-	     * @param recipientEmail TO recipient
-	     * @param ccEmail CC recipient. Can be empty if there is no CC recipient
-	     * @param title title of the message
-	     * @param message message to be sent
-	     * @throws AddressException if the email address parse failed
-	     * @throws MessagingException if the connection is dead or not in the connected state or if the message is not a MimeMessage
-	     */
-	    public static void Send(final String username, final String password, String recipientEmail, 
-	    		String ccEmail, String title, String message) 
-	    		throws AddressException, MessagingException {
-//	        Security.addProvider(new Provider());
-	        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+	public static void Send(final String username, final String password, String recipientEmail, String title,
+			String message) throws AddressException, MessagingException {
+		Send(username, password, recipientEmail, "", title, message);
+	}
 
-	        // Get a Properties object
-	        Properties props = System.getProperties();
-	        props.setProperty("mail.smtps.host", "smtp.gmail.com");
-	        props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
-	        props.setProperty("mail.smtp.socketFactory.fallback", "false");
-	        props.setProperty("mail.smtp.port", "465");
-	        props.setProperty("mail.smtp.socketFactory.port", "465");
-	        props.setProperty("mail.smtps.auth", "true");
+	/**
+	 * Send email using GMail SMTP server.
+	 *
+	 * @param username
+	 *            GMail username
+	 * @param password
+	 *            GMail password
+	 * @param recipientEmail
+	 *            TO recipient
+	 * @param ccEmail
+	 *            CC recipient. Can be empty if there is no CC recipient
+	 * @param title
+	 *            title of the message
+	 * @param message
+	 *            message to be sent
+	 * @throws AddressException
+	 *             if the email address parse failed
+	 * @throws MessagingException
+	 *             if the connection is dead or not in the connected state or if
+	 *             the message is not a MimeMessage
+	 */
+	public static void Send(final String username, final String password, String recipientEmail, String ccEmail,
+			String title, String message) throws AddressException, MessagingException {
+		// Security.addProvider(new Provider());
+		final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
-	        /*
-	        If set to false, the QUIT command is sent and the connection is immediately closed. If set 
-	        to true (the default), causes the transport to wait for the response to the QUIT command.
+		// Get a Properties object
+		Properties props = System.getProperties();
+		props.setProperty("mail.smtps.host", "smtp.gmail.com");
+		props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
+		props.setProperty("mail.smtp.socketFactory.fallback", "false");
+		props.setProperty("mail.smtp.port", "465");
+		props.setProperty("mail.smtp.socketFactory.port", "465");
+		props.setProperty("mail.smtps.auth", "true");
 
-	        ref :   http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/package-summary.html
-	                http://forum.java.sun.com/thread.jspa?threadID=5205249
-	                smtpsend.java - demo program from javamail
-	        */
-	        props.put("mail.smtps.quitwait", "false");
+		/*
+		 * If set to false, the QUIT command is sent and the connection is
+		 * immediately closed. If set to true (the default), causes the
+		 * transport to wait for the response to the QUIT command.
+		 * 
+		 * ref :
+		 * http://java.sun.com/products/javamail/javadocs/com/sun/mail/smtp/
+		 * package-summary.html
+		 * http://forum.java.sun.com/thread.jspa?threadID=5205249 smtpsend.java
+		 * - demo program from javamail
+		 */
+		props.put("mail.smtps.quitwait", "false");
 
-	        Session session = Session.getInstance(props, null);
+		Session session = Session.getInstance(props, null);
 
-	        // -- Create a new message --
-	        final MimeMessage msg = new MimeMessage(session);
+		// -- Create a new message --
+		final MimeMessage msg = new MimeMessage(session);
 
-	        // -- Set the FROM and TO fields --
-	        msg.setFrom(new InternetAddress(username + "@gmail.com"));
-	        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail, false));
+		// -- Set the FROM and TO fields --
+		msg.setFrom(new InternetAddress(username + "@gmail.com"));
+		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail, false));
 
-	        if (ccEmail.length() > 0) {
-	            msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmail, false));
-	        }
+		if (ccEmail.length() > 0) {
+			msg.setRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmail, false));
+		}
 
-	        msg.setSubject(title);
-	        msg.setText(message, "utf-8");
-	        msg.setSentDate(new Date());
+		msg.setSubject(title);
+		msg.setText(message, "utf-8");
+		msg.setSentDate(new Date());
 
-	        SMTPTransport t = (SMTPTransport)session.getTransport("smtps");
+		SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
 
-	        t.connect("smtp.gmail.com", username, password);
-	        t.sendMessage(msg, msg.getAllRecipients());      
-	        t.close();
-	    }
-	    public static Bitmap getCroppedBitmap(Bitmap bitmap) {
-	        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-	                bitmap.getHeight(), Config.ARGB_8888);
-	        Canvas canvas = new Canvas(output);
+		t.connect("smtp.gmail.com", username, password);
+		t.sendMessage(msg, msg.getAllRecipients());
+		t.close();
+	}
 
-	        final int color = 0xff424242;
-	        final Paint paint = new Paint();
-	        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+	public static Bitmap getCroppedBitmap(Bitmap bitmap) {
+		Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(output);
 
-	        paint.setAntiAlias(true);
-	        canvas.drawARGB(0, 0, 0, 0);
-	        paint.setColor(color);
-	        canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-	                bitmap.getWidth() / 2, paint);
-	        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-	        canvas.drawBitmap(bitmap, rect, rect, paint);
-	        return output;
-	    }
+		final int color = 0xff424242;
+		final Paint paint = new Paint();
+		final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
+		paint.setAntiAlias(true);
+		canvas.drawARGB(0, 0, 0, 0);
+		paint.setColor(color);
+		canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, bitmap.getWidth() / 2, paint);
+		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		canvas.drawBitmap(bitmap, rect, rect, paint);
+		return output;
+	}
+
 }

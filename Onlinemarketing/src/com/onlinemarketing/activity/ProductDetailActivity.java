@@ -245,11 +245,11 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 					txtPrice_Detail.setText(objproductDetail.getPrice());
 					txtName_Detail.setText(objproductDetail.getUser_name());
 					txtDatime_Detail.setText(objproductDetail.getStartdate());
-					txtAdd_Detail.setText(objproductDetail.getStartdate());
+					txtAdd_Detail.setText(objproductDetail.getCity_name());
 					txtCategory_Detail.setText(objproductDetail.getCategory_name());
 					txtTinhTrang_Detail.setText(objproductDetail.getType_name());
 					txt_info_Detail.setText(objproductDetail.getDescription());
-					txt_contact_Detail.setText(objproductDetail.getCity_name());
+					txt_contact_Detail.setText(objproductDetail.getAddress());
 					Bitmap bitmap = aQuery.getCachedImage(objproductDetail.getUser_avatar());
 					if (bitmap != null) {
 						bitmap = Util.getCroppedBitmap(bitmap);

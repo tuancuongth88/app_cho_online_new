@@ -19,7 +19,7 @@ public class ProductVO {
 	private String city;
 	private String startdate;
 	private int status;
-	private String status_name;
+	private String status_name, address;
 	private String user_name;
 	private String user_avatar;
 	private int position;
@@ -33,6 +33,14 @@ public class ProductVO {
 	private String start, end;
 	public boolean isProduct_saved() {
 		return product_saved;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public String getTime_name() {

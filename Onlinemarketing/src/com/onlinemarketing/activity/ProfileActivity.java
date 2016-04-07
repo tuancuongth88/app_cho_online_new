@@ -3,6 +3,11 @@ package com.onlinemarketing.activity;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -21,6 +26,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,12 +35,19 @@ import android.widget.TextView;
 import com.androidquery.AQuery;
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.onlinemarketing.activity.ProductDetailActivity.ProductSaveAndReportAsynTask;
 import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.json.JsonProfile;
+import com.onlinemarketing.object.CategoryVO;
+import com.onlinemarketing.object.CityVO;
 import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.ProfileVO;
+import com.onlinemarketing.object.TypeProductVO;
+import com.onlinemarketing.util.Message;
 import com.onlinemarketing.util.Util;
 
 public class ProfileActivity extends BaseActivity implements OnClickListener {
@@ -122,7 +135,12 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.btnApprovePhone_profile:
-			dialogApprovePhone();
+//			dialogApprovePhone();
+			RequestParams params = new RequestParams();
+			params.put("user_id", SystemConfig.user_id);
+			params.put("device_id", SystemConfig.device_id);
+			params.put("session_id", SystemConfig.session_id);
+			verifyAccount(params);
 			break;
 		case R.id.btnBackList:
 			startActivity(new Intent(ProfileActivity.this, BackListActivity.class));
@@ -238,10 +256,50 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 		}
 
 	}
+	
+	/**
+	 * ham nay load cac thong tin tren form tao moi san pham
+	 * 
+	 * @param params
+	 */
+	public void verifyAccount(RequestParams params) {
+		// TODO Auto-generated method stub
+		// Show Progress Dialog
+		prgDialog.show();
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.post(SystemConfig.API + SystemConfig.Verify_phone, params, new AsyncHttpResponseHandler() {
+			@Override
+			public void onSuccess(String response) {
+				// Hide Progress Dialog
+				prgDialog.hide();
+				try {
+					List<CategoryVO> lstCategoryVO = new ArrayList<CategoryVO>();
+					// JSON Object
+					JSONObject json = new JSONObject(response);
+					if (json.getInt("code") == 200) {
+						Message msg = new Message(ProfileActivity.this);
+						msg.showMessage(json.getString("message"));
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onFailure(int statusCode, Throwable error, String content) {
+				prgDialog.hide();
+			}
+		});
+	}
+
 	public void dialogApprovePhone() {
 		dialog = new Dialog(this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.dialog_forgot_pass);
+		TextView title = (TextView) dialog.findViewById(R.id.textviewTitle);
+		EditText code = (EditText) dialog.findViewById(R.id.editErrorReport);
+		title.setText("Nhập mã code!");
+		code.setHint("Mã xác nhận");;
 		editErrorReport = (EditText) dialog.findViewById(R.id.editErrorReport);
 		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_ErrorReport);
 		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_ErrorReport);

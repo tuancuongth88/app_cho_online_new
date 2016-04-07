@@ -114,7 +114,7 @@ public class ListSaveSearchActivity extends BaseActivity
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			adapter = new ListSaveSearchAdapter(getLayoutInflater(), list, ListSaveSearchActivity.this);
+			adapter = new ListSaveSearchAdapter(ListSaveSearchActivity.this, getLayoutInflater(), list, ListSaveSearchActivity.this);
 			listview.setAdapter(adapter);
 		}
 	}

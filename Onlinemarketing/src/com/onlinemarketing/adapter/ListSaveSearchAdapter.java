@@ -3,11 +3,14 @@ package com.onlinemarketing.adapter;
 import java.util.ArrayList;
 
 import com.example.onlinemarketing.R;
+import com.onlinemarketing.adapter.SaveNewsListAdapter.AsystarkDeleteSearchSave;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.json.JsonProduct;
 import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.ProductVO;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +28,15 @@ public class ListSaveSearchAdapter extends BaseAdapter {
 	private CallbackPosition callback;
 	public static int type = 0;
 	private ViewHolder holder = null;
+	Context context;
+	Dialog dialog;
+	Button btnOk, btnCancle;
+	TextView txtalert;
 
-	public ListSaveSearchAdapter(LayoutInflater layoutInflater, ArrayList<ProductVO> data, CallbackPosition callback) {
+	public ListSaveSearchAdapter(Context context, LayoutInflater layoutInflater, ArrayList<ProductVO> data, CallbackPosition callback) {
 		// TODO Auto-generated constructor stub
 		this.setList(data);
+		this.context = context;
 		this.inflater = layoutInflater;
 		this.callback = callback;
 	}
@@ -104,10 +112,36 @@ public class ListSaveSearchAdapter extends BaseAdapter {
 				// TODO Auto-generated method stub
 				Integer index = (Integer) v.getTag();
 				int id = index;
-				new AsystarkDeleteSearchSave().execute(id);
+//				new AsystarkDeleteSearchSave().execute(id);
+				dialogDelete(id);
 			}
 		});
 		return convertView;
+	}
+	public void dialogDelete(final int id) {
+		dialog = new Dialog(context);
+		dialog.setContentView(R.layout.dialog_delete);
+		dialog.setTitle("Thông Báo");
+		btnOk = (Button) dialog.findViewById(R.id.btn_Ok_Delete);
+		btnCancle = (Button) dialog.findViewById(R.id.btn_Cancle_Delete);
+		txtalert = (TextView)dialog.findViewById(R.id.txtalert);
+		txtalert.setText("Bạn muốn xóa tìm kiếm đã lưu này không?");
+		btnOk.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new AsystarkDeleteSearchSave().execute(id);
+				dialog.dismiss();
+			}
+		});
+		btnCancle.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		dialog.show();
 	}
 	class AsystarkDeleteSearchSave extends AsyncTask<Integer, Void, Output>{
 		JsonProduct obj ;
@@ -124,8 +158,12 @@ public class ListSaveSearchAdapter extends BaseAdapter {
 		@Override
 		protected Output doInBackground(Integer... params) {
 			position =params[0]; 
+			if(list.size() > 0){
 			int id = list.get(position).getId();
 			output = obj.paserDeleteBackListAndFavorite(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, id, SystemConfig.statusDeleteSearch);
+			}else {
+				output.setCode(99);
+			}
 			return output;
 		}
 		
@@ -133,8 +171,8 @@ public class ListSaveSearchAdapter extends BaseAdapter {
 		protected void onPostExecute(Output result) {
 			// TODO Auto-generated method stub
 			if(result.getCode()==200){
-			list.remove(position);
-			notifyDataSetChanged();
+				list.remove(position);
+				notifyDataSetChanged();
 			}
 			super.onPostExecute(result);
 		}

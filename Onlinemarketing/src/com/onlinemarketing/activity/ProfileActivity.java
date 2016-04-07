@@ -145,7 +145,14 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			params.put("user_id", SystemConfig.user_id);
 			params.put("device_id", SystemConfig.device_id);
 			params.put("session_id", SystemConfig.session_id);
-			verifyAccount(params);
+			Message msg = new Message(this);
+			if(!editPhone.getText().toString().isEmpty() && !editPhone.getText().toString().equals("null"))
+				if(Util.isValidPhoneNo(editPhone.getText().toString()))
+					verifyAccount(params);
+				else
+					msg.showMessage(Constan.getProperty("Error05"));	
+			else 
+				msg.showMessage(Constan.getProperty("Error04"));
 			break;
 		case R.id.btnBackList:
 			startActivity(new Intent(ProfileActivity.this, BackListActivity.class));

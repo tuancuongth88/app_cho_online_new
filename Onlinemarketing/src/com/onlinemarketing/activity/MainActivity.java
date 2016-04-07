@@ -84,6 +84,7 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		try{
 		setContentView(R.layout.activity_main);
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
@@ -108,6 +109,10 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 				(DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
 		drawerFragmentLeft.setDrawerListener(this);
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_body, new FragmentCategory()).commit();
+		}catch(Exception ex){
+			Debug.e("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+			startActivity(new Intent (MainActivity.this, MainActivity.class));
+		}
 	}
 
 	@Override

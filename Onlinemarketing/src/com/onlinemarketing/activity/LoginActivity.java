@@ -166,9 +166,13 @@ public class LoginActivity extends BaseActivity
 			break;
 		case R.id.btnSkip:
 			if (isConnect()) {
+				try{
 				SharedPreferencesUtils.putString(this, SystemConfig.USER_ID, "");
 				SharedPreferencesUtils.putString(this, SystemConfig.SESSION_ID, "");
 				startActivity(new Intent(LoginActivity.this, MainActivity.class));
+				}catch(Exception ex){
+					Debug.e(ex.toString());
+				}
 			}
 			break;
 

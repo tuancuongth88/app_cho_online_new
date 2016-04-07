@@ -40,6 +40,7 @@ public class JsonProfile {
 					}else if (status == SystemConfig.statusFavorite) {
 						str = Util.getjSonUrl(request.toString(), SystemConfig.httppost);
 					}
+					Debug.e("link: " + request);
 					jsonObject = new JSONObject(str);
 					obj.setCode(jsonObject.getInt("code"));					
 					obj.setMessage(jsonObject.getString("message"));

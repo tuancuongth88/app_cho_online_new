@@ -4,12 +4,18 @@ import java.util.List;
 
 public class SearchVO {
 	String code,message,user_id,session_id;
-	String id,name,lat, log, price_id, category_id, type_id, time_id;
+	String id,name,lat, log, price_id, category_id, type_id, time_id, city_id;
 	List<Category_SearchVO> lstCategorySearch;
 	List<TypeVO> lstType;
 	List<TimeVO> lstTime;
 	List<CityVO> lstCity;
 	
+	public String getCity_id() {
+		return city_id;
+	}
+	public void setCity_id(String city_id) {
+		this.city_id = city_id;
+	}
 	public List<CityVO> getLstCity() {
 		return lstCity;
 	}

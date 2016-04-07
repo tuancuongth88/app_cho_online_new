@@ -136,6 +136,7 @@ public class JsonSearch {
 				objSearch.setCategory_id(jsonSearch.getString("category_id"));
 				objSearch.setType_id(jsonSearch.getString("type_id"));
 				objSearch.setTime_id(jsonSearch.getString("time_id"));
+				objSearch.setCity_id(jsonSearch.getString("city_id"));
 				JSONArray jsonArrCity = jsonSearch.getJSONArray("cityArray");
 				List<CityVO> arrCity = new ArrayList<CityVO>();
 				for (int i = 0; i < jsonArrCity.length(); i++) {

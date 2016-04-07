@@ -87,7 +87,7 @@ public class ListSaveSearchActivity extends BaseActivity
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		search_id = list.get(arg2).getId();
-//		Debug.e("aaaaaaaaaa" + list.get(arg2).getId());
+		Debug.e("aaaaaaaaaa" + list.get(arg2).getId());
 		new GetSearchAsystask().execute();
 		
 		
@@ -172,7 +172,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		String [] city = new String[lstCity.size()];
 		int positionCity = 0;
 		int positionCategory = 0;
-		int positionPrice = 0;
+		final int positionPrice = 0;
 		int positionType = 0;
 		int positionTime = 0;
 		for (int i = 0; i < city.length; i++) {
@@ -220,6 +220,7 @@ public class ListSaveSearchActivity extends BaseActivity
 				ArrayAdapter<String> adaptePrice = new ArrayAdapter<String>(ListSaveSearchActivity.this,
 						android.R.layout.simple_spinner_item, titlePrice);
 				sinpnerPriceSearch.setAdapter(adaptePrice);
+				spinnerDatetimeSearch.setSelection(positionPrice);
 			}
 
 			@Override
@@ -234,14 +235,19 @@ public class ListSaveSearchActivity extends BaseActivity
 		String[] time = new String[n2];
 		for (int i = 0; i < n2; i++) {
 			time[i] = listTime.get(i).getTime_name();
+			if (time_id == listTime.get(i).getTime_id()) {
+				positionTime = i;
+				Debug.e("Time : " + listTime.get(positionTime).getTime_name());
+			}
 		}
 		ArrayAdapter<String> adapteTime = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, time);
 		spinnerDatetimeSearch.setAdapter(adapteTime);
+		spinnerDatetimeSearch.setSelection(positionTime);
+		
 		txt_saveSearch.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (!SystemConfig.session_id.isEmpty()) {
-//					new SaveSearchAsysTask().execute();
 					Debug.showAlert(ListSaveSearchActivity.this, "Tìm kiếm đã được lưu");
 				} else {
 					startActivity(new Intent(ListSaveSearchActivity.this, LoginActivity.class));
@@ -328,7 +334,8 @@ public class ListSaveSearchActivity extends BaseActivity
 		@Override
 		protected void onPostExecute(SearchVO result) {
 			if (result.getCode().equals("200")) {
-				dialogHistorySearch(search.getName(), 0,
+				Debug.e("time: " + search.getTime_id());
+				dialogHistorySearch(search.getName(), Integer.parseInt(search.getCity_id()),
 						Integer.parseInt(search.getCategory_id()), Integer.parseInt(search.getPrice_id()), Integer.parseInt(search.getType_id()),
 						Integer.parseInt(search.getTime_id()));
 			}

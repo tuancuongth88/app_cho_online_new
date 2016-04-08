@@ -66,7 +66,7 @@ public class FragmentCategory extends Fragment implements OnItemClickListener,
 	EditText editMessage, editSendMessage;
 	ProgressDialog progressDialog;
 	Button btnHome, btnChat, btnFavorite, btnProfile;
-	TextView txtShowMessageChat;
+	TextView txtShowMessageChat ,txtShowToast;
 	TableLayout tab;
 	public static OutputMessage oOputMsg;
 	ArrayList<MessageVO> listMessage = new ArrayList<MessageVO>();
@@ -103,6 +103,7 @@ public class FragmentCategory extends Fragment implements OnItemClickListener,
 				.findViewById(R.id.btnProfile_FragmentCategory);
 		listview = (ListView) rootView.findViewById(R.id.listHomePage);
 		imgPost = (ImageView) rootView.findViewById(R.id.imgPostHomepage);
+		txtShowToast = (TextView) rootView.findViewById(R.id.txt_showToast);
 		imgPost.setOnClickListener(this);
 		listview.setOnItemClickListener(this);
 		btnHome.setOnClickListener(this);
@@ -173,14 +174,24 @@ public class FragmentCategory extends Fragment implements OnItemClickListener,
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			if (result.getCode() == Constan.getIntProperty("success")
-					&& status == SystemConfig.statusListSaveProduct) {
-				startActivity(new Intent(context, SaveNewsListActivity.class));
+			
+			
+			if (list.size() > 0) {
+				if (result.getCode() == Constan.getIntProperty("success")
+						&& status == SystemConfig.statusListSaveProduct) {
+					startActivity(new Intent(context, SaveNewsListActivity.class));
+				}else {
+				adapter = new HomePageAdapter(context, R.layout.item_trang_chu,
+						list);
+				listview.setAdapter(adapter);
+				}
 			}else {
-			adapter = new HomePageAdapter(context, R.layout.item_trang_chu,
-					list);
-			listview.setAdapter(adapter);
+				listview.setVisibility(View.GONE);
+				txtShowToast.setText(Constan.getProperty("Error06"));
+				txtShowToast.setVisibility(View.VISIBLE);
 			}
+			
+			
 			progressDialog.dismiss();
 		}
 	}

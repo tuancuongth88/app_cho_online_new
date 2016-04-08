@@ -356,7 +356,7 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		if (checkform) {
 			if (arrImgFromCamere.size() == 0) {
 				com.onlinemarketing.util.Message msg = new com.onlinemarketing.util.Message(this);
-				msg.showMessage("Bạn phải chụp ảnh sản phẩm!");
+				msg.showMessage(Constan.getProperty("Error14"));
 			} else {
 
 				new AsystarkPostProduct().execute();
@@ -369,25 +369,25 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 			String description) {
 		boolean tmp = false;
 		if (!Util.isNotNull(title)) {
-			edit_TitlePost.setError("Bạn phải nhập tiêu đề!");
+			edit_TitlePost.setError(Constan.getProperty("Error07"));
 			tmp = false;
 		} else if (city_id == 0) {
-			((TextView) spnCityPost.getSelectedView()).setError("bạn phải chọn thành phố!");
+			((TextView) spnCityPost.getSelectedView()).setError(Constan.getProperty("Error08"));
 			tmp = false;
 		} else if (id_category == 0) {
-			((TextView) spnCategoryPost.getSelectedView()).setError("bạn phải chọn danh mục!");
+			((TextView) spnCategoryPost.getSelectedView()).setError(Constan.getProperty("Error09"));
 			tmp = false;
 		} else if (id_type == 0) {
-			((TextView) spnMenuPost.getSelectedView()).setError("bạn phải tình trạng sản phẩm!");
+			((TextView) spnMenuPost.getSelectedView()).setError(Constan.getProperty("Error10"));
 			tmp = false;
 		} else if (!Util.isNotNull(price)) {
-			edit_PricePost.setError("Bạn phải nhập giá!");
+			edit_PricePost.setError(Constan.getProperty("Error11"));
 			tmp = false;
 		} else if (!Util.isNotNull(address)) {
-			edit_AddPost.setError("Bạn phải nhập địa chỉ!");
+			edit_AddPost.setError(Constan.getProperty("Error12"));
 			tmp = false;
 		} else if (!Util.isNotNull(description)) {
-			edit_DescripPost.setError("Bạn phải nhập mô tả!");
+			edit_DescripPost.setError(Constan.getProperty("Error13"));
 			tmp = false;
 		} else {
 			tmp = true;

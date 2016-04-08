@@ -21,7 +21,7 @@
     <item name="y_scale_factor" format="float" type="dimen">2.3</item>
     <dimen name="top_fragment_height">200dip</dimen>
     <dimen name="top_fragment_margin">10dip</dimen>
-    <dimen name="dialogchat">300dp</dimen>
+    <dimen name="dialogchat">250dp</dimen>
     
 
 </resources>

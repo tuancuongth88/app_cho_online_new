@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
 import com.onlinemarketing.adapter.FavoriteAdapter;
+import com.onlinemarketing.config.Constan;
 import com.onlinemarketing.config.SystemConfig;
 import com.onlinemarketing.object.Output;
 import com.onlinemarketing.object.ProfileVO;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class FavoriteActivity extends BaseActivity implements OnItemClickListener, OnClickListener {
 
@@ -26,7 +28,7 @@ public class FavoriteActivity extends BaseActivity implements OnItemClickListene
 	public static String phone;
 	public static List<ProfileVO> listProfile;
 	static Output out;
-
+	TextView txt_showToast;
 	ImageView imgBack;
 
 	@Override
@@ -35,11 +37,16 @@ public class FavoriteActivity extends BaseActivity implements OnItemClickListene
 		setContentView(R.layout.activity_favorite);
 		listview = (ListView) findViewById(R.id.listFavorite);
 		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
+		txt_showToast  = (TextView) findViewById(R.id.txt_showToast);
 		imgBack.setOnClickListener(this);
 		Debug.e("list favorite : " + SystemConfig.oOputproduct.getProfileVO());
 		if (SystemConfig.oOputproduct.getProfileVO() != null) {
 			adapter = new FavoriteAdapter(this, R.layout.item_favorite, SystemConfig.oOputproduct.getProfileVO());
 			listview.setAdapter(adapter);
+		}else {
+			listview.setVisibility(View.GONE);
+			txt_showToast.setText(Constan.getProperty("Error06"));
+			txt_showToast.setVisibility(View.VISIBLE);
 		}
 		listview.setOnItemClickListener(this);
 	}

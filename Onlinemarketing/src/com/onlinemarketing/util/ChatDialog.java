@@ -47,7 +47,7 @@ public class ChatDialog {
 	Button btn_SMS, btnListChat, btnSend, btnOk, btnCancle;
 	ImageView blockchat;
 	EditText editMessage, editSendMessage;
-	TextView txtShowMessageChat, txtalert;
+	TextView txtShowMessageChat, txtalert,txtShowToast;
 	TableLayout tab;
 	static String messageMsg = "";
 	int idProduct;
@@ -107,6 +107,7 @@ public class ChatDialog {
 		dialogListMsg = new Dialog(context);
 		dialogListMsg.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialogListMsg.setContentView(R.layout.dialog_list_message);
+		txtShowToast = (TextView) dialogListMsg.findViewById(R.id.txt_showToast);
 		listviewChat = (ListView) dialogListMsg.findViewById(R.id.listChat);
 		listviewChat.setOnItemClickListener(new OnItemClickListener() {
 		
@@ -331,9 +332,13 @@ public class ChatDialog {
 		@Override
 		protected void onPostExecute(OutputMessage result) {
 			if (result.getCode() == Constan.getIntProperty("success") && status_callWS == SystemConfig.statusListMessage) {
-				if(listMessage!=null){
+				if(listMessage!=null ){
 				adapterListMessage = new ListMessageAdapter(context,R.layout.item_list_message, listMessage);
 				listviewChat.setAdapter(adapterListMessage);
+				}else{
+					listviewChat.setVisibility(View.GONE);
+					txtShowToast.setText(Constan.getProperty("Error06"));
+					txtShowToast.setVisibility(View.VISIBLE);
 				}
 			}else if (result.getCode() == Constan.getIntProperty("success") && status_callWS == SystemConfig.statusGetHistoryMessage) {
 				loadHistoryChat();

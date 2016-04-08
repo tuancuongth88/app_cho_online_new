@@ -36,7 +36,7 @@ public class BackListActivity extends BaseActivity implements OnItemClickListene
 	OutputProduct oOput;
 	Button btnSendSMS_Detail, btnCall;
 	Intent intent;
-	TextView txtDelete;
+	TextView txtDelete,txt_showToast;
 	static Output out;
 	Dialog dialog;
 	Button btnOk, btnCancle;
@@ -50,6 +50,7 @@ public class BackListActivity extends BaseActivity implements OnItemClickListene
 		setContentView(R.layout.activity_back_list);
 		listview = (ListView) findViewById(R.id.listBackList);
 		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
+		txt_showToast = (TextView) findViewById(R.id.txt_showToast);
 		imgBack.setOnClickListener(this);
 		listview.setOnItemClickListener(this);
 		if (isConnect()) {
@@ -82,8 +83,14 @@ public class BackListActivity extends BaseActivity implements OnItemClickListene
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
+			if(list.size() > 0){
 			adapter = new BackListAdapter(BackListActivity.this, R.layout.item_backlist, list);
 			listview.setAdapter(adapter);
+			}else{
+				listview.setVisibility(View.GONE);
+				txt_showToast.setText(Constan.getProperty("Error06"));
+				txt_showToast.setVisibility(View.VISIBLE);
+			}
 			progressDialog.dismiss();
 		}
 	}

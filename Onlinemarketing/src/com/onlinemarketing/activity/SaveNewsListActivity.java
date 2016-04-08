@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class SaveNewsListActivity extends BaseActivity implements OnItemClickListener, OnClickListener {
 	List<ProductVO> list = new ArrayList<ProductVO>();
@@ -31,6 +32,7 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 	SaveNewsListAdapter newsListAdapter;
 	Intent intent;
 	ImageView imgBack;
+	TextView txt_showToast;
 	// status va link ben fragment right goi sang
 	public static int status;
 	public static String link;
@@ -41,6 +43,7 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 		setContentView(R.layout.activity_save_news_list);
 		listview = (ListView) findViewById(R.id.listPoster);
 		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
+		txt_showToast = (TextView) findViewById(R.id.txt_showToast);
 		imgBack.setOnClickListener(this);
 		listview.setOnItemClickListener(this);
 		new HomeAsystask().execute(status);
@@ -49,7 +52,7 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		ProductDetailActivity.id_product = list.get(position).getId();
-		if(status != Constan.getIntProperty("daan"))
+		if (status != Constan.getIntProperty("daan"))
 			startActivity(new Intent(SaveNewsListActivity.this, ProductDetailActivity.class));
 	}
 
@@ -101,12 +104,19 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			if (status == Constan.getIntProperty("tindaluu")) {
-				newsListAdapter = new SaveNewsListAdapter(SaveNewsListActivity.this, R.layout.item_save_news_list, list);
-				listview.setAdapter(newsListAdapter);
-			} else {
-				adapter = new HomePageAdapter(SaveNewsListActivity.this, R.layout.item_trang_chu, list);
-				listview.setAdapter(adapter);
+			if (list.size() >  0) {
+				if (status == Constan.getIntProperty("tindaluu")) {
+					newsListAdapter = new SaveNewsListAdapter(SaveNewsListActivity.this, R.layout.item_save_news_list,
+							list);
+					listview.setAdapter(newsListAdapter);
+				} else {
+					adapter = new HomePageAdapter(SaveNewsListActivity.this, R.layout.item_trang_chu, list);
+					listview.setAdapter(adapter);
+				}
+			}else {
+				listview.setVisibility(View.GONE);
+				txt_showToast.setText(Constan.getProperty("Error06"));
+				txt_showToast.setVisibility(View.VISIBLE);
 			}
 			progressDialog.dismiss();
 		}

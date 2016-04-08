@@ -44,6 +44,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class ListSaveSearchActivity extends BaseActivity
 		implements OnItemClickListener, CallbackPosition, OnClickListener {
@@ -54,22 +55,25 @@ public class ListSaveSearchActivity extends BaseActivity
 	Output out;
 	ViewHolder viewHolder;
 	ImageView imgBack;
-	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch,sinpnerAddSearch;
+	Spinner sinpnerPriceSearch, sinpnerCategorySearch, spinnerDatetimeSearch, sinpnerTypeProductSearch,
+			sinpnerAddSearch;
 	Button btn_search, txt_saveSearch;
 	Dialog dialog;
 	public int search_id;
 	public static SearchVO search;
 	EditText edit_namSPSearch;
 	ProgressDialog progressDialog;
-	public int category_id, price_id, time_id, type_id,city_id;
+	TextView txt_showToast;
+	public int category_id, price_id, time_id, type_id, city_id;
 	public String lat, log;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_save_search);
 		listview = (ListView) findViewById(R.id.listSaveSearch);
 		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
+		txt_showToast = (TextView) findViewById(R.id.txt_showToast);
 		imgBack.setOnClickListener(this);
 		listview.setOnItemClickListener(this);
 		if (isConnect()) {
@@ -80,7 +84,7 @@ public class ListSaveSearchActivity extends BaseActivity
 	@Override
 	protected void onResume() {
 		ListSaveSearchAdapter.type = 0;
-//		new ListSaveSearchAsystask().execute();
+		// new ListSaveSearchAsystask().execute();
 		super.onResume();
 	}
 
@@ -89,9 +93,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		search_id = list.get(arg2).getId();
 		Debug.e("aaaaaaaaaa" + list.get(arg2).getId());
 		new GetSearchAsystask().execute();
-		
-		
-		
+
 	}
 
 	public class ListSaveSearchAsystask extends AsyncTask<Integer, String, OutputProduct> {
@@ -114,8 +116,15 @@ public class ListSaveSearchActivity extends BaseActivity
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			adapter = new ListSaveSearchAdapter(ListSaveSearchActivity.this, getLayoutInflater(), list, ListSaveSearchActivity.this);
-			listview.setAdapter(adapter);
+			if (list.size() > 0) {
+				adapter = new ListSaveSearchAdapter(ListSaveSearchActivity.this, getLayoutInflater(), list,
+						ListSaveSearchActivity.this);
+				listview.setAdapter(adapter);
+			} else {
+				listview.setVisibility(View.GONE);
+				txt_showToast.setText(Constan.getProperty("Error06"));
+				txt_showToast.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 
@@ -155,6 +164,7 @@ public class ListSaveSearchActivity extends BaseActivity
 			super.onPostExecute(result);
 		}
 	}
+
 	public void dialogHistorySearch(String name, int city_id, int category_id, int price_id, int type_id, int time_id) {
 		dialog = new Dialog(this);
 		dialog.setCanceledOnTouchOutside(false);
@@ -169,7 +179,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		sinpnerAddSearch = (Spinner) dialog.findViewById(R.id.sinpnerAddSearch);
 		edit_namSPSearch.setText(name);
 		List<CityVO> lstCity = search.getLstCity();
-		String [] city = new String[lstCity.size()];
+		String[] city = new String[lstCity.size()];
 		int positionCity = 0;
 		int positionCategory = 0;
 		final int positionPrice = 0;
@@ -177,7 +187,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		int positionTime = 0;
 		for (int i = 0; i < city.length; i++) {
 			city[i] = lstCity.get(i).getName();
-			if(city_id == lstCity.get(i).getId())
+			if (city_id == lstCity.get(i).getId())
 				positionCity = i;
 		}
 		ArrayAdapter<String> adapteCity = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, city);
@@ -188,7 +198,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		String[] type = new String[n1];
 		for (int i = 0; i < n1; i++) {
 			type[i] = listType.get(i).getType_name();
-			if(type_id == listType.get(i).getType_id())
+			if (type_id == listType.get(i).getType_id())
 				positionType = i;
 		}
 		ArrayAdapter<String> adapteType = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, type);
@@ -199,7 +209,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		String[] title = new String[n];
 		for (int i = 0; i < n; i++) {
 			title[i] = listcategory.get(i).getCategory_name();
-			if(category_id == listcategory.get(i).getCategory_id())
+			if (category_id == listcategory.get(i).getCategory_id())
 				positionCategory = i;
 		}
 		ArrayAdapter<String> adapteCategory = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
@@ -243,7 +253,7 @@ public class ListSaveSearchActivity extends BaseActivity
 		ArrayAdapter<String> adapteTime = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, time);
 		spinnerDatetimeSearch.setAdapter(adapteTime);
 		spinnerDatetimeSearch.setSelection(positionTime);
-		
+
 		txt_saveSearch.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -253,7 +263,7 @@ public class ListSaveSearchActivity extends BaseActivity
 					startActivity(new Intent(ListSaveSearchActivity.this, LoginActivity.class));
 				}
 				dialog.dismiss();
-				
+
 			}
 		});
 		btn_search.setOnClickListener(new OnClickListener() {
@@ -267,6 +277,7 @@ public class ListSaveSearchActivity extends BaseActivity
 
 		dialog.show();
 	}
+
 	public class SearchAsystask extends AsyncTask<Integer, Integer, OutputProduct> {
 		String Device_id;
 		JsonSearch jsonSearch;
@@ -315,7 +326,7 @@ public class ListSaveSearchActivity extends BaseActivity
 			progressDialog.dismiss();
 		}
 	}
-	
+
 	public class GetSearchAsystask extends AsyncTask<Integer, String, SearchVO> {
 		JsonSearch jsonSearch;
 
@@ -327,7 +338,8 @@ public class ListSaveSearchActivity extends BaseActivity
 
 		@Override
 		protected SearchVO doInBackground(Integer... params) {
-			search = jsonSearch.getSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id, search_id);
+			search = jsonSearch.getSearch(SystemConfig.user_id, SystemConfig.session_id, SystemConfig.device_id,
+					search_id);
 			return search;
 		}
 
@@ -336,8 +348,8 @@ public class ListSaveSearchActivity extends BaseActivity
 			if (result.getCode().equals("200")) {
 				Debug.e("time: " + search.getTime_id());
 				dialogHistorySearch(search.getName(), Integer.parseInt(search.getCity_id()),
-						Integer.parseInt(search.getCategory_id()), Integer.parseInt(search.getPrice_id()), Integer.parseInt(search.getType_id()),
-						Integer.parseInt(search.getTime_id()));
+						Integer.parseInt(search.getCategory_id()), Integer.parseInt(search.getPrice_id()),
+						Integer.parseInt(search.getType_id()), Integer.parseInt(search.getTime_id()));
 			}
 		}
 	}

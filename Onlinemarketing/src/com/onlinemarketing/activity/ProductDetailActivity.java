@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,6 +56,7 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 	ViewPager mPager;
 	ProgressDialog progressDialog;
 	ImageView imgback;
+	FrameLayout framDetail;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -269,6 +271,13 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 					mPager.setAdapter(mAdapter);
 					mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
 					mIndicator.setViewPager(mPager);
+					mPager .setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							Debug.showAlert(ProductDetailActivity.this, "aaaaaaaaaaaaaa");
+							
+						}
+					});
 					//autoChange();
 					Debug.e("objproductDetail.isCheck(): " + objproductDetail.isCheck());
 					if (objproductDetail.isCheck()) {

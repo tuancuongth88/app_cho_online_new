@@ -3,6 +3,7 @@ package com.onlinemarketing.fragment;
 import java.util.ArrayList;
 
 import com.example.onlinemarketing.R;
+import com.onlinemarketing.activity.BaseFragment;
 import com.onlinemarketing.activity.FavoriteActivity;
 import com.onlinemarketing.activity.LoginActivity;
 import com.onlinemarketing.activity.MainActivity;
@@ -49,13 +50,12 @@ import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
-public class FragmentCategoryGridView extends Fragment implements OnItemClickListener,
-		OnClickListener {
+public class FragmentCategoryGridView extends BaseFragment implements OnItemClickListener, OnClickListener {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private static final String ARG_SECTION_NUMBER = "section_number";
-	ListView  listviewChat;
+	ListView listviewChat;
 	GridView listview;
 	HomePageGridViewAdapter adapter;
 	ListMessageAdapter adapterListMessage;
@@ -74,6 +74,7 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 	public static OutputMessage oOputMsg;
 	ArrayList<MessageVO> listMessage = new ArrayList<MessageVO>();
 	ImageView imgPost;
+
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
@@ -84,26 +85,21 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 		fragment.setArguments(args);
 		return fragment;
 	}
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 	}
-	
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.fragment_home_page_gridview, container,
-				false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		rootView = inflater.inflate(R.layout.fragment_home_page_gridview, container, false);
 		context = rootView.getContext();
 		btnHome = (Button) rootView.findViewById(R.id.btnHome_FragmentCategory);
 		btnChat = (Button) rootView.findViewById(R.id.btnChat_FragmentCategory);
-		btnFavorite = (Button) rootView
-				.findViewById(R.id.btnFavorite_FragmentCategory);
-		btnProfile = (Button) rootView
-				.findViewById(R.id.btnProfile_FragmentCategory);
+		btnFavorite = (Button) rootView.findViewById(R.id.btnFavorite_FragmentCategory);
+		btnProfile = (Button) rootView.findViewById(R.id.btnProfile_FragmentCategory);
 		listview = (GridView) rootView.findViewById(R.id.gridHomePage);
 		imgPost = (ImageView) rootView.findViewById(R.id.imgPostHomepage);
 		imgPost.setOnClickListener(this);
@@ -112,19 +108,23 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 		btnChat.setOnClickListener(this);
 		btnFavorite.setOnClickListener(this);
 		btnProfile.setOnClickListener(this);
-		new HomeAsystask().execute(MainActivity.status);
+		if (isConnect()) {
+			new HomeAsystask().execute(MainActivity.status);
+		}
 		return rootView;
 	}
-	public void callAsystask(int status, Context contectcall){
-		if(status == SystemConfig.statusListSaveProduct){
+
+	public void callAsystask(int status, Context contectcall) {
+		if (status == SystemConfig.statusListSaveProduct) {
 			context = contectcall;
 			this.status = status;
-			new HomeAsystask().execute(status);
+			if (isConnect()) {
+				new HomeAsystask().execute(status);
+			}
 		}
 	}
 
-	public class HomeAsystask extends
-			AsyncTask<Integer, Integer, OutputProduct> {
+	public class HomeAsystask extends AsyncTask<Integer, Integer, OutputProduct> {
 		String Device_id;
 		JsonProduct product;
 
@@ -135,7 +135,7 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 		@Override
 		protected void onPreExecute() {
 			product = new JsonProduct();
-			
+
 			progressDialog = new ProgressDialog(context);
 			// Set progressdialog message
 			progressDialog.setMessage("Loading...");
@@ -149,22 +149,16 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 		protected OutputProduct doInBackground(Integer... params) {
 			switch (params[0]) {
 			case SystemConfig.statusHomeProduct:
-				MainActivity.oOput = product.paserProduct(
-						SystemConfig.user_id, SystemConfig.session_id,
-						SystemConfig.device_id, 0,
-						SystemConfig.statusHomeProduct);
+				MainActivity.oOput = product.paserProduct(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, 0, SystemConfig.statusHomeProduct);
 				break;
 			case SystemConfig.statusCategoryProduct:
-				MainActivity.oOput = product.paserProduct(
-						SystemConfig.user_id, SystemConfig.session_id,
-						SystemConfig.device_id, MainActivity.id_category,
-						SystemConfig.statusCategoryProduct);
+				MainActivity.oOput = product.paserProduct(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, MainActivity.id_category, SystemConfig.statusCategoryProduct);
 				break;
 			case SystemConfig.statusListSaveProduct:
-				MainActivity.oOput = product.paserProduct(
-						SystemConfig.user_id, SystemConfig.session_id,
-						SystemConfig.device_id, MainActivity.id_category,
-						SystemConfig.statusListSaveProduct);
+				MainActivity.oOput = product.paserProduct(SystemConfig.user_id, SystemConfig.session_id,
+						SystemConfig.device_id, MainActivity.id_category, SystemConfig.statusListSaveProduct);
 
 				break;
 			}
@@ -176,13 +170,11 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			if (result.getCode() == Constan.getIntProperty("success")
-					&& status == SystemConfig.statusListSaveProduct) {
+			if (result.getCode() == Constan.getIntProperty("success") && status == SystemConfig.statusListSaveProduct) {
 				startActivity(new Intent(context, SaveNewsListActivity.class));
-			}else {
-			adapter = new HomePageGridViewAdapter(context, R.layout.item_home_page_girdview,
-					list);
-			listview.setAdapter(adapter);
+			} else {
+				adapter = new HomePageGridViewAdapter(context, R.layout.item_home_page_girdview, list);
+				listview.setAdapter(adapter);
 			}
 			progressDialog.dismiss();
 		}
@@ -199,37 +191,38 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnHome_FragmentCategory:
-			if (AndroidUtils.isConnectedToInternet(context)) {
+			if (isConnect()) {
 				new HomeAsystask().execute(SystemConfig.statusHomeProduct);
 			}
 			break;
 
 		case R.id.btnChat_FragmentCategory:
 			//
-			if (AndroidUtils.isConnectedToInternet(context)) {
+			if (isConnect()) {
 				ChatDialog chat = new ChatDialog(context);
 				chat.run(SystemConfig.statusListMessage);
 			}
 			break;
 		case R.id.btnFavorite_FragmentCategory:
 			status = SystemConfig.statusFavorite;
-			new getProfileAndFavoriteAsystask()
-					.execute(SystemConfig.statusFavorite);
+			if (isConnect()) {
+				new getProfileAndFavoriteAsystask().execute(SystemConfig.statusFavorite);
+			}
 			break;
 		case R.id.btnProfile_FragmentCategory:
 			status = SystemConfig.statusProfile;
-			new getProfileAndFavoriteAsystask()
-					.execute(SystemConfig.statusProfile);
+			if (isConnect()) {
+				new getProfileAndFavoriteAsystask().execute(SystemConfig.statusProfile);
+			}
 			break;
 		case R.id.imgPostHomepage:
 			startActivity(new Intent(context, PostActivity.class));
 			break;
 		}
-		
-	}	
 
-	public class getProfileAndFavoriteAsystask extends
-			AsyncTask<Integer, String, OutputProduct> {
+	}
+
+	public class getProfileAndFavoriteAsystask extends AsyncTask<Integer, String, OutputProduct> {
 		JsonProfile profile;
 		ArrayList<ProfileVO> listProfile = new ArrayList<ProfileVO>();
 
@@ -243,16 +236,14 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 		protected OutputProduct doInBackground(Integer... params) {
 			switch (params[0]) {
 			case SystemConfig.statusProfile:
-				MainActivity.oOput = profile.paserProfile(
-						SystemConfig.user_id, SystemConfig.session_id,
+				MainActivity.oOput = profile.paserProfile(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, SystemConfig.statusProfile);
 				listProfile = MainActivity.oOput.getProfileVO();
 				SystemConfig.oOputproduct.setProfileVO(listProfile);
 				break;
 
 			case SystemConfig.statusFavorite:
-				MainActivity.oOput = profile.paserProfile(
-						SystemConfig.user_id, SystemConfig.session_id,
+				MainActivity.oOput = profile.paserProfile(SystemConfig.user_id, SystemConfig.session_id,
 						SystemConfig.device_id, SystemConfig.statusFavorite);
 				listProfile = MainActivity.oOput.getProfileVO();
 				SystemConfig.oOputproduct.setProfileVO(listProfile);
@@ -263,12 +254,10 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			if (result.getCode() == Constan.getIntProperty("success")
-					&& status == SystemConfig.statusProfile) {
+			if (result.getCode() == Constan.getIntProperty("success") && status == SystemConfig.statusProfile) {
 				startActivity(new Intent(context, ProfileActivity.class));
 
-			} else if (result.getCode() == Constan.getIntProperty("success")
-					&& status == SystemConfig.statusFavorite) {
+			} else if (result.getCode() == Constan.getIntProperty("success") && status == SystemConfig.statusFavorite) {
 				startActivity(new Intent(context, FavoriteActivity.class));
 			} else {
 				startActivity(new Intent(context, LoginActivity.class));
@@ -276,6 +265,5 @@ public class FragmentCategoryGridView extends Fragment implements OnItemClickLis
 			super.onPostExecute(result);
 		}
 	}
-
 
 }

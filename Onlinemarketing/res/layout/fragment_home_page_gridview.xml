@@ -25,7 +25,6 @@
             android:layout_gravity="bottom|center_horizontal"
             android:src="@drawable/icon_post" />
     </FrameLayout>
-
     <LinearLayout
         android:id="@+id/linearMenu"
         android:layout_width="fill_parent"

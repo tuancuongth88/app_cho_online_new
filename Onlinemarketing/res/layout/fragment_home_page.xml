@@ -21,7 +21,6 @@
             android:id="@+id/txt_showToast"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:text="Không có dữ liệu"
             android:visibility="gone"
             android:textSize="20sp"
             android:textColor="#383A47"

@@ -14,7 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-public class SearchActivity extends Activity implements OnClickListener, OnItemClickListener {
+public class SearchActivity extends BaseActivity implements OnClickListener, OnItemClickListener {
 
 	ListView listView;
 	ImageView imgBack;

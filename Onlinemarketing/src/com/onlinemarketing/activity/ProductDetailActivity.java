@@ -20,6 +20,7 @@ import com.onlinemarketing.object.ProductVO;
 import com.onlinemarketing.util.ChatDialog;
 import com.onlinemarketing.util.Message;
 import com.onlinemarketing.util.Util;
+import com.smile.android.gsm.utils.AndroidUtils;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import android.app.Dialog;
@@ -40,7 +41,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ProductDetailActivity extends FragmentActivity implements OnClickListener {
+public class ProductDetailActivity extends BaseFragmentActivity implements OnClickListener {
 	CirclePageIndicator mIndicator;
 	ArrayList<Fragment> fragments;
 	ImageView btnSendSMS_Detail, btnCall, btnChatDirectly_Detail, btnProducSave, btnErrorReport, btnPoster;
@@ -63,7 +64,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 		setContentView(R.layout.activity_product_detail);
 		mPager = (ViewPager) findViewById(R.id.pager);
 		findById();
-		new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductDetail);
+		if (isConnect()) {
+			new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductDetail);
+		}
 
 	}
 
@@ -140,8 +143,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 			if (SystemConfig.user_id.isEmpty() && SystemConfig.session_id.isEmpty()) {
 				startActivity(new Intent(ProductDetailActivity.this, LoginActivity.class));
 			} else {
-//				if(!objproductDetail.isProduct_saved())
-				new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductSave);
+				if (isConnect()) {
+					new ProductSaveAndReportAsynTask().execute(SystemConfig.statusProductSave);
+				}
 			}
 			break;
 		case R.id.btnChatDirectly_Detail:
@@ -180,7 +184,9 @@ public class ProductDetailActivity extends FragmentActivity implements OnClickLi
 
 			@Override
 			public void onClick(View v) {
-				new ProductSaveAndReportAsynTask().execute(SystemConfig.statusErrorReport);
+				if (isConnect()) {
+					new ProductSaveAndReportAsynTask().execute(SystemConfig.statusErrorReport);
+				}
 				dialog.dismiss();
 			}
 		});

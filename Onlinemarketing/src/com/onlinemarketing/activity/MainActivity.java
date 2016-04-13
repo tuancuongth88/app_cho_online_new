@@ -23,6 +23,7 @@ import com.onlinemarketing.object.SearchVO;
 import com.onlinemarketing.object.SettingVO;
 import com.onlinemarketing.object.TimeVO;
 import com.onlinemarketing.object.TypeVO;
+import com.smile.android.gsm.utils.AndroidUtils;
 import com.smile.studio.menu.FragmentDrawerLeft;
 import com.smile.studio.menu.FragmentDrawerLeft.FragmentDrawerListener;
 import com.smile.studio.menu.FragmentDrawerRight;
@@ -49,7 +50,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-public class MainActivity extends ActionBarActivity implements FragmentDrawerListener {
+public class MainActivity extends BaseActionBarActivity implements FragmentDrawerListener {
 
 	private Toolbar mToolbar;
 
@@ -89,13 +90,16 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 		mToolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(mToolbar);
 		getSupportActionBar().setDisplayShowHomeEnabled(true);
+		getSupportActionBar().setDisplayShowTitleEnabled(true);
+//		getSupportActionBar().setTitle();
 		imgsearch = (ImageView) findViewById(R.id.imgSearchToolbar);
 		imgsearch.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				new GetSearchAsystask().execute();
-
+				if (isConnect()) {
+					new GetSearchAsystask().execute();
+				}
 			}
 		});
 		// getSupportActionBar().setIcon(R.drawable.icon_search);
@@ -110,7 +114,6 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 		drawerFragmentLeft.setDrawerListener(this);
 		getSupportFragmentManager().beginTransaction().replace(R.id.container_body, new FragmentCategory()).commit();
 		}catch(Exception ex){
-			Debug.e("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
 			startActivity(new Intent (MainActivity.this, MainActivity.class));
 		}
 	}
@@ -191,7 +194,9 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 			@Override
 			public void onClick(View v) {
 				if (!SystemConfig.session_id.isEmpty()) {
-					new SaveSearchAsysTask().execute();
+					if (isConnect()) {
+						new SaveSearchAsysTask().execute();
+					}
 				} else {
 					startActivity(new Intent(MainActivity.this, LoginActivity.class));
 				}
@@ -199,10 +204,11 @@ public class MainActivity extends ActionBarActivity implements FragmentDrawerLis
 			}
 		});
 		btn_search.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				new SearchAsystask().execute();
+				if (isConnect()) {
+					new SearchAsystask().execute();
+				}
 				dialog.dismiss();
 			}
 		});

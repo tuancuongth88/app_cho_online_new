@@ -81,7 +81,7 @@ public class SplashActivity extends BaseActivity {
 				}
 			} catch (Exception e) {
 				Debug.e(e.toString());
-			}
+			}  
 			// SystemConfig.oOputproduct.setCategoryVO(list);
 			return null;
 		}
@@ -93,12 +93,12 @@ public class SplashActivity extends BaseActivity {
 						SystemConfig.CHECKLOGIN)) {
 					SharedPreferencesUtils.getString(SplashActivity.this,
 							SystemConfig.USER_ID);
-					SharedPreferencesUtils.getString(SplashActivity.this,
+					SharedPreferencesUtils.getString(SplashActivity.this, 
 							SystemConfig.SESSION_ID);
 					SystemConfig.user_id = String
-							.valueOf(SharedPreferencesUtils.getString(
+							.valueOf( SharedPreferencesUtils.getString(
 									SplashActivity.this, SystemConfig.USER_ID));
-					SystemConfig.session_id = SharedPreferencesUtils.getString(
+					SystemConfig.session_id = SharedPreferencesUtils.getString( 
 							SplashActivity.this, SystemConfig.SESSION_ID);
 					Intent intent = new Intent(SplashActivity.this,
 							MainActivity.class);

@@ -46,7 +46,9 @@ public class SaveNewsListActivity extends BaseActivity implements OnItemClickLis
 		txt_showToast = (TextView) findViewById(R.id.txt_showToast);
 		imgBack.setOnClickListener(this);
 		listview.setOnItemClickListener(this);
-		new HomeAsystask().execute(status);
+		if (isConnect()) {
+			new HomeAsystask().execute(status);
+		}
 	}
 
 	@Override

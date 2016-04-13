@@ -15,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PromotionActivity extends Activity implements OnClickListener{
+public class PromotionActivity extends BaseActivity implements OnClickListener{
 	ProgressDialog progressDialog;
 	TextView txt_titleKM, txt_DesKM;
 	PromotionVO objpromotionVo;
@@ -31,7 +31,9 @@ public class PromotionActivity extends Activity implements OnClickListener{
 		txt_DesKM = (TextView) findViewById(R.id.txt_DescriptionPromotion);
 		imgBack = (ImageView) findViewById(R.id.imgBackTitle);
 		imgBack.setOnClickListener(this);
-		new NewsAsystask().execute();
+		if (isConnect()) {
+			new NewsAsystask().execute();
+		}
 	}
 	
 	public class NewsAsystask extends AsyncTask<Integer, Integer, PromotionVO> {

@@ -6,6 +6,7 @@ import com.androidquery.AQuery;
 import com.example.onlinemarketing.R;
 import com.lib.Debug;
 import com.lib.recycler.OnItemTouchListener;
+import com.onlinemarketing.activity.BaseFragment;
 import com.onlinemarketing.activity.ListSaveSearchActivity;
 import com.onlinemarketing.activity.LoginActivity;
 import com.onlinemarketing.activity.MainActivity;
@@ -22,6 +23,7 @@ import com.onlinemarketing.object.OutputProduct;
 import com.onlinemarketing.object.ProfileVO;
 import com.onlinemarketing.object.SettingVO;
 import com.onlinemarketing.util.Util;
+import com.smile.android.gsm.utils.AndroidUtils;
 
 import android.annotation.TargetApi;
 import android.app.Dialog;
@@ -46,7 +48,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FragmentDrawerRight extends Fragment implements OnClickListener {
+public class FragmentDrawerRight extends BaseFragment implements OnClickListener {
 
 	ArrayList<SettingVO> listSetting = new ArrayList<SettingVO>();
 	public static OutputProduct oOput;
@@ -63,6 +65,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 	Button btnOk, btnCancle;
 	private AQuery aQuery;
 	boolean isType = true;
+
 	public FragmentDrawerRight() {
 
 	}
@@ -74,10 +77,15 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new SettingAsystask().execute();
-		if (!SystemConfig.session_id.isEmpty()) {
-			new getProfileAsystask().execute();
+		if (isConnect()) {
+			new SettingAsystask().execute();
 		}
+		if (!SystemConfig.session_id.isEmpty()) {
+			if (isConnect()) {
+				new getProfileAsystask().execute();
+			}
+		}
+
 	}
 
 	@Override
@@ -103,7 +111,6 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 						SettingVO objsetting = listSetting.get(position);
 						// đang ban(FragmentCategory)
 						FragmentCategory obj = new FragmentCategory();
-						
 
 						if (objsetting.getId() == Constan.getIntProperty("dangban")) {
 							SaveNewsListActivity.status = Constan.getIntProperty("dangban");
@@ -181,12 +188,14 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 						// kieu xem
 						if (objsetting.getId() == Constan.getIntProperty("kieuxem")) {
 							if (isType) {
-								getFragmentManager().beginTransaction().replace(R.id.container_body, new FragmentCategoryGridView()).commit();
-								isType= false;
+								getFragmentManager().beginTransaction()
+										.replace(R.id.container_body, new FragmentCategoryGridView()).commit();
+								isType = false;
 								Debug.e("kiểu xem " + isType);
-							}else {
-								getFragmentManager().beginTransaction().replace(R.id.container_body, new FragmentCategory()).commit();
-								isType= true;
+							} else {
+								getFragmentManager().beginTransaction()
+										.replace(R.id.container_body, new FragmentCategory()).commit();
+								isType = true;
 								Debug.e("kiểu xem " + isType);
 							}
 						}
@@ -243,8 +252,10 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
-		new getProfileAsystask().execute();
-		new SettingAsystask().execute();
+		if (isConnect()) {
+			new getProfileAsystask().execute();
+			new SettingAsystask().execute();
+		}
 		super.onResume();
 	}
 
@@ -268,7 +279,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 
 		@Override
 		protected void onPostExecute(OutputProduct result) {
-			
+
 			adapter = new NavigationDrawerRightAdapter(getActivity(), listSetting);
 			recyclerView.setAdapter(adapter);
 		}
@@ -308,7 +319,7 @@ public class FragmentDrawerRight extends Fragment implements OnClickListener {
 					settings.edit().remove(SystemConfig.CHECKLOGIN).commit();
 					LoginActivity obj = new LoginActivity();
 					startActivity(new Intent(context, LoginActivity.class));
-					
+
 				} else {
 					startActivity(new Intent(context, LoginActivity.class));
 				}

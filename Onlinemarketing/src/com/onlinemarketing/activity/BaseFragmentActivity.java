@@ -6,18 +6,20 @@ import com.onlinemarketing.config.SystemConfig;
 import com.smile.android.gsm.utils.AndroidDeviceInfo;
 import com.smile.android.gsm.utils.AndroidUtils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 
-public class BaseActivity extends Activity {
+
+public class BaseFragmentActivity extends FragmentActivity{
 
 	Dialog objdealog;
-
+	
 	public boolean isConnect() {
 		Constan.context = getApplicationContext();
 		SystemConfig.device_id = AndroidDeviceInfo.getAndroidID(this);
@@ -31,7 +33,7 @@ public class BaseActivity extends Activity {
 
 	public void showProgressDialogCheckInternet() {
 		@SuppressWarnings("deprecation")
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(BaseActivity.this, AlertDialog.THEME_HOLO_LIGHT);
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(BaseFragmentActivity.this, AlertDialog.THEME_HOLO_LIGHT);
 		try {
 			// alertDialog.setCancelable(false);
 			alertDialog.setTitle(Constan.getProperty("ErrorConnectInterNet"));
@@ -54,11 +56,11 @@ public class BaseActivity extends Activity {
 									showProgressDialogCheckInternet();
 									dialog.dismiss();
 								} else {
-									PackageManager packageManager = BaseActivity.this.getPackageManager();
+									PackageManager packageManager = BaseFragmentActivity.this.getPackageManager();
 									ActivityInfo info = packageManager
-											.getActivityInfo(BaseActivity.this.getComponentName(), 0);
+											.getActivityInfo(BaseFragmentActivity.this.getComponentName(), 0);
 									Debug.e("Activity name:" + info.name);
-									Intent intent = new Intent(BaseActivity.this, Class.forName(info.name));
+									Intent intent = new Intent(BaseFragmentActivity.this, Class.forName(info.name));
 									startActivity(intent);
 									dialog.dismiss();
 									finish();
@@ -76,5 +78,5 @@ public class BaseActivity extends Activity {
 		}
 		alertDialog.show();
 	}
-
+	
 }

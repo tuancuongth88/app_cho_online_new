@@ -145,7 +145,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 		params.put("user_id", SystemConfig.user_id);
 		params.put("session_id", SystemConfig.session_id);
 		params.put("device_id", SystemConfig.device_id);
-		invokeWSGet(params);
+		if (isConnect()) {
+			invokeWSGet(params);
+		}
 
 	}
 
@@ -238,8 +240,9 @@ public class PostActivity extends BaseActivity implements OnClickListener {
 					imagePart = linkFromCamera;
 					arrImgFromCamereBitmap.add(bit);
 					//resize image
-					
-					new UpdateAsystask().execute(bit);
+					if (isConnect()) {
+						new UpdateAsystask().execute(bit);
+					}
 				}
 			}
 		} catch (Exception e) {

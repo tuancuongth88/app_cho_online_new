@@ -6,7 +6,6 @@ import com.onlinemarketing.config.SystemConfig;
 import com.smile.android.gsm.utils.AndroidDeviceInfo;
 import com.smile.android.gsm.utils.AndroidUtils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -16,11 +15,11 @@ import android.content.pm.PackageManager;
 import android.support.v7.app.ActionBarActivity;
 
 
-public class BaseActivity1 extends ActionBarActivity{
+public class BaseActionBarActivity extends ActionBarActivity{
 
 	Dialog objdealog;
 	
-	public boolean isConnect(){
+	public boolean isConnect() {
 		Constan.context = getApplicationContext();
 		SystemConfig.device_id = AndroidDeviceInfo.getAndroidID(this);
 		Debug.e("DeviceId: " + SystemConfig.device_id);
@@ -30,14 +29,15 @@ public class BaseActivity1 extends ActionBarActivity{
 		}
 		return isconnect;
 	}
+
 	public void showProgressDialogCheckInternet() {
 		@SuppressWarnings("deprecation")
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(BaseActivity1.this, AlertDialog.THEME_HOLO_LIGHT);
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(BaseActionBarActivity.this, AlertDialog.THEME_HOLO_LIGHT);
 		try {
-//			alertDialog.setCancelable(false);
+			// alertDialog.setCancelable(false);
 			alertDialog.setTitle(Constan.getProperty("ErrorConnectInterNet"));
-			alertDialog.setMessage(Constan.getProperty("ErrorConnectInterNetMessage"))
-					.setCancelable(false).setPositiveButton(Constan.getProperty("Cancel"), new DialogInterface.OnClickListener() {
+			alertDialog.setMessage(Constan.getProperty("ErrorConnectInterNetMessage")).setCancelable(false)
+					.setPositiveButton(Constan.getProperty("Cancel"), new DialogInterface.OnClickListener() {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -49,33 +49,33 @@ public class BaseActivity1 extends ActionBarActivity{
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							try{
-							Debug.e("ket noi");
-							if (!isConnect()) {
-								showProgressDialogCheckInternet();
-							}
-							else{
-								PackageManager packageManager = BaseActivity1.this.getPackageManager();
-								
-								  ActivityInfo info = packageManager.getActivityInfo(BaseActivity1.this.getComponentName(), 0);
-								  Debug.e("Activity name:" + info.name);
-								Intent intent = new Intent(BaseActivity1.this, Class.forName(info.name));
-								startActivity(intent);
-							
+							try {
+								Debug.e("ket noi");
+								if (!isConnect()) {
+									showProgressDialogCheckInternet();
+									dialog.dismiss();
+								} else {
+									PackageManager packageManager = BaseActionBarActivity.this.getPackageManager();
+									ActivityInfo info = packageManager
+											.getActivityInfo(BaseActionBarActivity.this.getComponentName(), 0);
+									Debug.e("Activity name:" + info.name);
+									Intent intent = new Intent(BaseActionBarActivity.this, Class.forName(info.name));
+									startActivity(intent);
+									dialog.dismiss();
+									finish();
 								}
-							}catch (Exception e) {
+								
+							} catch (Exception e) {
 								// TODO: handle exception
-								  Debug.e("loi cmnr:" + e);
+								Debug.e("loi cmnr:" + e);
 							}
 						}
-						
+
 					});
 		} catch (Exception e) {
 			Debug.e(e.toString());
 		}
 		alertDialog.show();
 	}
-	
-
 	
 }

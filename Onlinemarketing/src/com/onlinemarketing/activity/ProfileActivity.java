@@ -49,6 +49,7 @@ import com.onlinemarketing.object.ProfileVO;
 import com.onlinemarketing.object.TypeProductVO;
 import com.onlinemarketing.util.Message;
 import com.onlinemarketing.util.Util;
+import com.smile.android.gsm.utils.AndroidUtils;
 
 public class ProfileActivity extends BaseActivity implements OnClickListener {
 
@@ -136,7 +137,9 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 				String[] imagename =SystemConfig.oOputproduct.getProfileVO().get(0).getAvatar().split("/");
 				profile.setAvatar(imagename[imagename.length - 1]);
 			}
-			new UpdateAsystask().execute(Constan.getIntProperty("status_update_profile"));
+			if (isConnect()){
+				new UpdateAsystask().execute(Constan.getIntProperty("status_update_profile"));
+			}
 			break;
 
 		case R.id.btnApprovePhone_profile:
@@ -178,7 +181,9 @@ public class ProfileActivity extends BaseActivity implements OnClickListener {
 			selectedBitmap = getThumbnail(picturePath);
 			selectedBitmap = rotateImageIfRequired(selectedBitmap, selectedUriImage);
 //			selectedBitmap = Util.getCroppedBitmap(selectedBitmap);
-			new UpdateAsystask().execute(Constan.getIntProperty("status_upload_avatar"));
+			if (isConnect()) {
+				new UpdateAsystask().execute(Constan.getIntProperty("status_upload_avatar"));
+			}
 
 		}
 
